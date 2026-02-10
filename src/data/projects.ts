@@ -12,68 +12,87 @@ export interface Project {
 export const selectedWorks: Project[] = [
   {
     id: "pixor",
-    category: "01 — AI & Content Creation",
+    category: "01 — Autonomous Media Systems",
     title: "Pixor",
     description:
-      "AI-powered video and image generation platform that allows you to post to all social medias within a click, featuring an integrated video editing studio.",
+      "Autonomous content production system that plans, generates, edits, and publishes media across platforms without human coordination.",
     image: "/projects/pixor.png",
     url: "https://pixor.media",
-    tags: ["Content Creation", "SaaS"],
-    achievements: ["10K+ Users", "500K Videos Generated"],
+    tags: ["Autonomous Systems", "Content"],
+    achievements: [
+      "Millions of creative decisions automated",
+      "Content pipelines running without supervision",
+    ],
   },
   {
     id: "oxium",
-    category: "02 — Crypto & Web3",
+    category: "02 — Autonomous Financial Systems",
     title: "Oxium",
     description:
-      "Decentralized exchange with intelligent trading algorithms, liquidity pools, and cross-chain swaps for seamless crypto operations.",
+      "Self-directed trading and liquidity system that executes market decisions continuously without manual intervention.",
     image: "/projects/oxium.png",
     url: "https://app.oxium.xyz",
-    tags: ["Crypto", "DeFi"],
-    achievements: ["$50M+ Volume", "99.9% Uptime"],
+    tags: ["Autonomous Finance", "DeFi"],
+    achievements: [
+      "$50M+ autonomously executed volume",
+      "Continuous decision-making at market speed",
+    ],
   },
   {
     id: "solar",
-    category: "03 — Energy & Sustainability",
+    category: "03 — Autonomous Infrastructure",
     title: "Solar Systems",
     description:
-      "Solar energy management platform leveraging machine learning for real-time monitoring, predictive maintenance, and optimization analytics.",
+      "Energy optimization system that monitors, predicts, and corrects infrastructure behavior without operator involvement.",
     image: "/projects/solar.png",
     url: "https://solar-bywebchain.vercel.app/",
-    tags: ["Analytics"],
-    achievements: ["30% Efficiency Gain", "Real-time Monitoring"],
+    tags: ["Autonomous Ops", "Energy"],
+    achievements: [
+      "30% efficiency gains through self-optimization",
+      "Predictive maintenance without manual scheduling",
+    ],
   },
   {
     id: "database-manager",
-    category: "04 — Infrastructure",
+    category: "04 — Self-Managing Systems",
     title: "Database Manager",
     description:
-      "Enterprise database tooling with AI-driven query optimization, visual schema design, and automated backup solutions.",
+      "Self-managing data infrastructure that optimizes queries, adapts schemas, and maintains uptime without human tuning.",
     image: "/projects/database.png",
     url: "https://database-bywebchain.vercel.app/",
-    tags: ["DevOps"],
-    achievements: ["5x Faster Queries", "Zero Downtime"],
+    tags: ["Autonomous Infrastructure"],
+    achievements: [
+      "5× performance improvements without manual tuning",
+      "Zero-downtime operations under changing load",
+    ],
   },
   {
     id: "vogue-fashion",
-    category: "05 — Fashion & Retail",
+    category: "05 — Autonomous Commerce",
     title: "Vogue Fashion",
     description:
-      "E-commerce platform with real-time inventory, intelligent product recommendations, and seamless checkout experience.",
+      "Commerce system that dynamically adjusts inventory, pricing, and recommendations based on real-time demand signals.",
     image: "/projects/vogue-fashion.png",
     url: "#",
-    tags: ["Mobile", "Web"],
-    achievements: ["40% Conversion Rate", "Sub-2s Load Time"],
+    tags: ["Autonomous Commerce"],
+    achievements: [
+      "Inventory decisions automated in real time",
+      "Conversion optimization without manual campaigns",
+    ],
   },
   {
     id: "stellar",
-    category: "06 — API Security",
+    category: "06 — Autonomous Security Systems",
     title: "Stellar",
     description:
-      "Open-source API security tool with autonomous threat detection, providing pre-built APIs to protect applications from common web attacks.",
+      "Self-defending API security system that detects, evaluates, and mitigates threats without human escalation.",
     image: "/projects/stellar.png",
     url: "https://stellar-bywebchain.vercel.app/",
-    tags: ["API"],
-    achievements: ["Open Source", "OWASP Compliant"],
+    tags: ["Autonomous Security"],
+    achievements: [
+      "Threats mitigated without operator review",
+      "Continuous protection aligned with OWASP standards",
+    ],
   },
 ];
+

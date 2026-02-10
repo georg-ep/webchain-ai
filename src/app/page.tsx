@@ -120,9 +120,9 @@ export default function Home() {
 
       <main className="relative pt-24">
         <div className="fixed inset-0 grid-lines pointer-events-none opacity-50 z-0"></div>
-        <section className="relative min-h-[85vh] flex items-center px-6 lg:px-12 py-24 z-10">
-          <div className="max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-            <div className="lg:col-span-8 flex flex-col justify-center">
+        <section className="relative min-h-[calc(100vh-6rem)] flex items-center px-6 lg:px-12 py-12 z-10">
+          <div className="max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+            <div className="lg:col-span-7 flex flex-col justify-center">
               <div className="flex items-center gap-4 mb-8">
                 <span className="h-px w-12 bg-slate-400 dark:bg-slate-600"></span>
                 <span className="text-xs font-mono uppercase tracking-widest text-slate-500">
@@ -149,47 +149,163 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            <div className="lg:col-span-4 relative hidden lg:block">
-              <div className="relative w-full aspect-[3/4] border-l border-white/10 p-8 flex flex-col justify-between">
-                <div className="space-y-6">
-                  <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                    <span className="text-[10px] uppercase tracking-widest text-slate-500">
-                      Latency
-                    </span>
-                    <span className="text-xs font-mono">12ms</span>
+            <div className="lg:col-span-5 relative hidden lg:block">
+              <div className="relative w-full aspect-[3/4] border-l border-white/10 p-12 pr-0 flex flex-col justify-between">
+                {/* Section 1: State Shift (core) */}
+                <div className="space-y-12">
+                  {/* Before */}
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600">
+                          Before
+                        </span>
+                      </div>
+                      <div className="flex-1 h-px bg-gradient-to-r from-slate-800/50 to-transparent"></div>
+                    </div>
+                    
+                    {/* Failed System Architecture */}
+                    <div className="relative h-24 bg-gradient-to-b from-red-950/5 to-transparent rounded-sm border border-red-900/10 p-4 overflow-hidden">
+                      <svg className="w-full h-full" viewBox="0 0 300 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        
+                        {/* 1. The Bottleneck (Input) */}
+                        <path d="M0 30 L60 30" stroke="#ef4444" strokeWidth="1.5" opacity="0.6" />
+                        <circle r="3" fill="#ef4444">
+                          <animateMotion dur="1s" repeatCount="indefinite" path="M0 30 L60 30" keyPoints="0;1" keyTimes="0;1" calcMode="linear" />
+                          <animate attributeName="opacity" values="1;0" dur="1s" keyTimes="0.9;1" repeatCount="indefinite" />
+                        </circle>
+                        
+                        {/* The Wall (Stoppage) */}
+                        <rect x="60" y="20" width="3" height="20" fill="#7f1d1d" opacity="0.9" />
+                        <circle cx="60" cy="30" r="4" fill="#ef4444" opacity="0.5">
+                           <animate attributeName="r" values="4;8;4" dur="1s" repeatCount="indefinite" />
+                           <animate attributeName="opacity" values="0.5;0;0.5" dur="1s" repeatCount="indefinite" />
+                        </circle>
+
+                        {/* 2. The Brittle Line (Leaking through) */}
+                        <path d="M65 30 L90 20 L110 40 L130 25 L150 35 L170 30" stroke="#7f1d1d" strokeWidth="1.5" fill="none" opacity="0.5" strokeDasharray="4 2"/>
+                        <circle r="2" fill="#ef4444">
+                          <animateMotion dur="2s" begin="0.5s" repeatCount="indefinite" path="M65 30 L90 20 L110 40 L130 25 L150 35 L170 30" />
+                        </circle>
+
+                        {/* 3. The Infinite Loop (The Trap) */}
+                        <path d="M170 30 C 190 30, 200 10, 220 30 C 240 50, 230 30, 210 30 C 190 30, 200 50, 220 30" stroke="#ef4444" strokeWidth="1.5" fill="none" opacity="0.6" strokeDasharray="2 2" />
+                        <circle r="2.5" fill="#f59e0b">
+                           <animateMotion dur="1.5s" begin="2.5s" repeatCount="indefinite" path="M170 30 C 190 30, 200 10, 220 30 C 240 50, 230 30, 210 30 C 190 30, 200 50, 220 30" />
+                        </circle>
+                        
+                        {/* Dead End Text Label */}
+                        <text x="240" y="32" fontSize="9" fill="#991b1b" fontFamily="monospace" opacity="0.8" fontWeight="bold">STUCK</text>
+                      </svg>
+                    </div>
+
+                    <ul className="space-y-3.5 pl-1">
+                      <li className="text-[13px] text-slate-500 font-light leading-relaxed flex items-start gap-3">
+                        <span className="text-slate-700 mt-0.5 select-none">•</span>
+                        <span>High-leverage decisions trapped in Slack</span>
+                      </li>
+                      <li className="text-[13px] text-slate-500 font-light leading-relaxed flex items-start gap-3">
+                        <span className="text-slate-700 mt-0.5 select-none">•</span>
+                        <span>Engineers babysitting brittle automations</span>
+                      </li>
+                      <li className="text-[13px] text-slate-500 font-light leading-relaxed flex items-start gap-3">
+                        <span className="text-slate-700 mt-0.5 select-none">•</span>
+                        <span>Every edge case becoming a meeting</span>
+                      </li>
+                    </ul>
                   </div>
-                  <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                    <span className="text-[10px] uppercase tracking-widest text-slate-500">
-                      Inference
-                    </span>
-                    <span className="text-xs font-mono">99.8%</span>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                    <span className="text-[10px] uppercase tracking-widest text-slate-500">
-                      Nodes
-                    </span>
-                    <span className="text-xs font-mono">14.2B</span>
+
+                  {/* After */}
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/70 animate-pulse"></div>
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400/80">
+                          After
+                        </span>
+                      </div>
+                      <div className="flex-1 h-px bg-gradient-to-r from-emerald-900/30 to-transparent"></div>
+                    </div>
+                    
+                    {/* Working Autonomous Architecture */}
+                    <div className="relative h-24 bg-gradient-to-b from-emerald-950/5 to-transparent rounded-sm border border-emerald-900/10 p-4 overflow-hidden">
+                      <svg className="w-full h-full" viewBox="0 0 300 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#10b981" stopOpacity="0" />
+                            <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
+                            <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+                          </linearGradient>
+                        </defs>
+
+                        {/* 1. Parallel Processing (Reasoning) */}
+                        <g>
+                          <path d="M0 30 L40 30 C 60 30, 60 15, 80 15 L 220 15 C 240 15, 240 30, 260 30 L 300 30" stroke="#10b981" strokeWidth="1" opacity="0.4" fill="none" />
+                          <path d="M0 30 L40 30 C 60 30, 60 45, 80 45 L 220 45 C 240 45, 240 30, 260 30 L 300 30" stroke="#10b981" strokeWidth="1" opacity="0.4" fill="none" />
+                          <path d="M0 30 L300 30" stroke="#10b981" strokeWidth="1.5" opacity="0.6" />
+                          
+                          {/* Flowing Particles - Main + Branches */}
+                          <circle r="2" fill="#34d399">
+                             <animateMotion dur="3s" repeatCount="indefinite" path="M0 30 L300 30" keyPoints="0;1" keyTimes="0;1" calcMode="linear" />
+                          </circle>
+                          <circle r="1.5" fill="#10b981" opacity="0.8">
+                             <animateMotion dur="4s" begin="0.5s" repeatCount="indefinite" path="M0 30 L40 30 C 60 30, 60 15, 80 15 L 220 15 C 240 15, 240 30, 260 30 L 300 30" />
+                          </circle>
+                           <circle r="1.5" fill="#10b981" opacity="0.8">
+                             <animateMotion dur="4s" begin="1s" repeatCount="indefinite" path="M0 30 L40 30 C 60 30, 60 45, 80 45 L 220 45 C 240 45, 240 30, 260 30 L 300 30" />
+                          </circle>
+                        </g>
+
+                        {/* 2. Logic Nodes (Hexagons) */}
+                        <g transform="translate(150, 30)">
+                          <polygon points="0,-8 7,-4 7,4 0,8 -7,4 -7,-4" stroke="#10b981" strokeWidth="1" fill="#064e3b" opacity="0.8" />
+                          <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite" />
+                        </g>
+
+                        {/* 3. Smooth Outlier Handling */}
+                        <path d="M100 30 Q 150 5, 200 30" stroke="url(#flowGradient)" strokeWidth="1" fill="none" opacity="0.5">
+                           <animate attributeName="d" values="M100 30 Q 150 5, 200 30; M100 30 Q 150 55, 200 30; M100 30 Q 150 5, 200 30" dur="8s" repeatCount="indefinite" />
+                        </path>
+                        
+                      </svg>
+                    </div>
+
+                    <ul className="space-y-3.5 pl-1">
+                      <li className="text-[13px] text-white font-light leading-relaxed flex items-start gap-3 group/item cursor-default">
+                        <span className="text-emerald-500/70 mt-0.5 select-none group-hover/item:text-emerald-400 transition-colors">•</span>
+                        <span className="group-hover/item:text-white/90 transition-colors">Decisions executed at machine speed</span>
+                      </li>
+                      <li className="text-[13px] text-white font-light leading-relaxed flex items-start gap-3 group/item cursor-default">
+                        <span className="text-emerald-500/70 mt-0.5 select-none group-hover/item:text-emerald-400 transition-colors">•</span>
+                        <span className="group-hover/item:text-white/90 transition-colors">Systems reason through unfamiliar inputs</span>
+                      </li>
+                      <li className="text-[13px] text-white font-light leading-relaxed flex items-start gap-3 group/item cursor-default">
+                        <span className="text-emerald-500/70 mt-0.5 select-none group-hover/item:text-emerald-400 transition-colors">•</span>
+                        <span className="group-hover/item:text-white/90 transition-colors">Edge cases handled without escalation</span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
-                <div className="mt-12 opacity-40">
-                  <svg
-                    className="w-full"
-                    fill="none"
-                    viewBox="0 0 200 100"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M0 50 C 50 50, 50 20, 100 20 C 150 20, 150 80, 200 80"
-                      stroke="currentColor"
-                      strokeWidth="1"
-                    ></path>
-                    <path
-                      d="M0 50 C 50 50, 50 80, 100 80 C 150 80, 150 20, 200 20"
-                      stroke="currentColor"
-                      strokeDasharray="4 4"
-                      strokeWidth="1"
-                    ></path>
-                  </svg>
+
+                {/* Section 2: Single anchoring metric (credibility) */}
+                <div className="relative group/metric mt-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent rounded-sm opacity-0 group-hover/metric:opacity-100 transition-opacity duration-500"></div>
+                  <div className="relative border border-white/5 group-hover/metric:border-white/10 transition-colors duration-300 rounded-sm p-6">
+                    <div className="flex justify-between items-baseline gap-4">
+                      <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-slate-600">
+                        Typical Outcome
+                      </span>
+                      <span className="text-sm font-mono text-white/90 tracking-tight">
+                        40–60 hrs
+                      </span>
+                    </div>
+                    <div className="mt-2 text-right">
+                      <span className="text-[10px] text-slate-500 font-mono">
+                        reclaimed / team / week
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

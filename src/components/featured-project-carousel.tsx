@@ -2,13 +2,15 @@
 
 import { selectedWorks } from "@/data/projects";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function FeaturedProjectCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const INTERVAL = 8000; // 8 seconds
   const PROGRESS_INTERVAL = 50; // Update progress every 50ms
 
@@ -35,8 +37,30 @@ export function FeaturedProjectCarousel() {
     setTimeout(() => setIsPaused(false), 1000);
   };
 
+  // Intersection Observer to pause when not in view
   useEffect(() => {
-    if (isPaused) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsInView(entry.isIntersecting);
+        });
+      },
+      { threshold: 0.2 } // Trigger when 20% visible
+    );
+
+    if (carouselRef.current) {
+      observer.observe(carouselRef.current);
+    }
+
+    return () => {
+      if (carouselRef.current) {
+        observer.unobserve(carouselRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isPaused || !isInView) return;
 
     // Reset progress when index changes
     setProgress(0);
@@ -59,12 +83,12 @@ export function FeaturedProjectCarousel() {
       clearInterval(progressTimer);
       clearTimeout(slideTimer);
     };
-  }, [currentIndex, isPaused]);
+  }, [currentIndex, isPaused, isInView]);
 
   const currentProject = selectedWorks[currentIndex];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+    <div ref={carouselRef} className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 min-h-[600px] lg:min-h-0">
       {/* Left: Image */}
       <div className="lg:col-span-6">
         <div className="relative aspect-[4/3] overflow-hidden bg-[#0a0a0a] rounded-lg border">
@@ -143,54 +167,54 @@ export function FeaturedProjectCarousel() {
             <h3 className="text-4xl lg:text-5xl font-serif font-light dark:text-white leading-tight">
               {currentProject.title}
             </h3>
-            <p className="text-slate-500 text-base font-light leading-relaxed max-w-xl">
+            <p className="text-slate-400 text-base font-light leading-relaxed max-w-xl">
               {currentProject.description}
             </p>
 
-            {/* Tags and Achievements */}
-            <div className="flex flex-wrap items-center gap-6 pt-2">
-              {/* Tags */}
-              <div className="flex items-center gap-2">
-                {currentProject.tags.map((tag, index) => (
-                  <div key={tag} className="flex items-center gap-2">
-                    <span className="text-[9px] font-mono uppercase tracking-wider text-slate-500">
-                      {tag}
-                    </span>
-                    {index < currentProject.tags.length - 1 && (
-                      <span className="text-slate-700">/</span>
-                    )}
-                  </div>
-                ))}
-              </div>
+            {/* Tags */}
+            <div className="flex flex-wrap items-center gap-2 pt-2">
+              {currentProject.tags.map((tag) => (
+                <div
+                  key={tag}
+                  className="px-3 py-1.5 bg-white/[0.02] border border-white/5 rounded-sm"
+                >
+                  <span className="text-[9px] font-mono uppercase tracking-wider text-slate-500">
+                    {tag}
+                  </span>
+                </div>
+              ))}
+            </div>
 
-              {/* Divider */}
-              <div className="h-3 w-px bg-white/10" />
-
-              {/* Achievements */}
-              <div className="flex flex-wrap items-center gap-4">
-                {currentProject.achievements.map((achievement) => (
-                  <div
-                    key={achievement}
-                    className="flex items-center gap-1.5 text-[9px] font-mono text-slate-400"
-                  >
+            {/* Achievements */}
+            <div className="space-y-2.5 pt-4 border-t border-white/5">
+              {currentProject.achievements.map((achievement) => (
+                <div
+                  key={achievement}
+                  className="flex items-start gap-2.5 group/achievement"
+                >
+                  <div className="mt-1 flex-shrink-0">
                     <svg
-                      className="w-2.5 h-2.5 opacity-40"
+                      className="w-3 h-3 text-emerald-500/60 group-hover/achievement:text-emerald-400 transition-colors"
                       viewBox="0 0 12 12"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        d="M6 2V10M2 6H10"
+                        d="M2 6L5 9L10 3"
                         stroke="currentColor"
-                        strokeWidth="1"
-                        strokeLinecap="square"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
-                    <span>{achievement}</span>
                   </div>
-                ))}
-              </div>
+                  <span className="text-[12px] text-slate-400 group-hover/achievement:text-slate-300 font-light leading-relaxed transition-colors">
+                    {achievement}
+                  </span>
+                </div>
+              ))}
             </div>
+
 
             {currentProject.url !== "#" && (
               <Link

@@ -1,3 +1,4 @@
+import GoogleAnalyticsProvider from "@/components/google-analytics-provider";
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${playfair.variable} antialiased bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-200 selection:bg-white selection:text-black font-sans`}
       >
+        <GoogleAnalyticsProvider />
         {children}
       </body>
     </html>
