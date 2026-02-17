@@ -16,7 +16,7 @@ export default function Home() {
         <div className="max-w-[1400px] mx-auto px-6 h-24 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-48 h-8 flex items-center justify-start">
-              <img src="/brand/large.svg" alt="WebChain Labs" className="h-full w-auto object-contain" />
+              <img src="/brand/large.svg" alt="WebChain Labs Logo" className="h-full w-auto object-contain" />
             </div>
           </div>
           <div className="hidden md:flex items-center gap-16">
@@ -518,7 +518,7 @@ export default function Home() {
               <div className="md:col-span-5">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-40 h-8 flex items-center justify-start">
-                    <img src="/brand/large.svg" alt="WebChain Labs" className="h-full w-auto object-contain" />
+                    <img src="/brand/large.svg" alt="WebChain Labs Logo" className="h-full w-auto object-contain" />
                   </div>
                 </div>
                 <p className="max-w-xs text-slate-500 text-xs leading-relaxed font-light">
