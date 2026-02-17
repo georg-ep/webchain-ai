@@ -15,7 +15,7 @@ export function StructuredData() {
       contactType: "Customer Service",
     },
     sameAs: [
-      "https://twitter.com/webchainlabs",
+      "https://twitter.com/webchainceo",
       "https://linkedin.com/company/webchain-labs",
       "https://github.com/webchain-labs",
     ],
