@@ -82,10 +82,13 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#000000" },
-  ],
+  // Paint edge to edge so the page's own background runs under the home
+  // indicator instead of the browser filling that strip with a flat colour.
+  // Elements that reach an edge pad themselves with env(safe-area-inset-*).
+  viewportFit: "cover",
+  // The site is dark in both schemes, so matching the page surface keeps the
+  // browser chrome from banding against it.
+  themeColor: "#070708",
 };
 
 export default function RootLayout({

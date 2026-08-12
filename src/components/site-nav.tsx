@@ -57,13 +57,46 @@ export function SiteNav() {
     return () => observer.disconnect();
   }, []);
 
-  // Lock body scroll behind the mobile drawer.
+  /**
+   * Lock scroll behind the mobile drawer.
+   *
+   * `overflow: hidden` on the body no longer works: the document reserves its
+   * scrollbar gutter with `overflow-y: scroll` on the html element, which
+   * stops the body's overflow propagating to the viewport. Pinning the body
+   * instead holds the page still and keeps the gutter, so nothing shifts
+   * sideways when the drawer opens.
+   */
   useEffect(() => {
-    document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
+    if (!mobileMenuOpen) return;
+
+    const { body } = document;
+    const scrollY = window.scrollY;
+    const previous = body.style.cssText;
+
+    body.style.position = "fixed";
+    body.style.top = `${-scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+
     return () => {
-      document.body.style.overflow = "";
+      body.style.cssText = previous;
+      // Instant, or the html element's smooth scrolling animates the restore.
+      window.scrollTo({ top: scrollY, behavior: "instant" });
     };
   }, [mobileMenuOpen]);
+
+  /**
+   * Drawer links scroll manually. The body is pinned while the drawer is
+   * open, so a default anchor jump would be undone by the scroll restore
+   * above; this waits for the pin to lift and then moves.
+   */
+  const followLink = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    event.preventDefault();
+    setMobileMenuOpen(false);
+    requestAnimationFrame(() => {
+      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    });
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMobileMenuOpen(false);
@@ -75,7 +108,9 @@ export function SiteNav() {
     <>
       <header
         className={cn(
-          "fixed top-0 z-50 w-full px-6 transition-all duration-500 [transition-timing-function:var(--ease-out-expo)] lg:px-12",
+          // Top padding keeps the logo clear of the status bar / notch now
+          // that the page paints edge to edge.
+          "fixed top-0 z-50 w-full px-6 pt-[env(safe-area-inset-top)] transition-all duration-500 [transition-timing-function:var(--ease-out-expo)] lg:px-12",
           scrolled ? "bg-surface-0/70 backdrop-blur-xl" : "bg-transparent",
         )}
       >
@@ -161,7 +196,7 @@ export function SiteNav() {
         />
         <div
           className={cn(
-            "absolute inset-y-0 right-0 flex w-[82%] max-w-sm flex-col border-l border-line bg-surface-1 transition-transform duration-500 [transition-timing-function:var(--ease-out-expo)]",
+            "absolute inset-y-0 right-0 flex w-[82%] max-w-sm flex-col border-l border-line bg-surface-1 pt-[env(safe-area-inset-top)] transition-transform duration-500 [transition-timing-function:var(--ease-out-expo)]",
             mobileMenuOpen ? "translate-x-0" : "translate-x-full",
           )}
         >
@@ -181,7 +216,7 @@ export function SiteNav() {
               <Link
                 key={href}
                 href={href}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(event) => followLink(event, href)}
                 className="group flex items-center justify-between border-b border-line py-5 text-ink-2 transition-colors hover:text-ink"
               >
                 <span className="font-serif text-2xl">{label}</span>
@@ -192,7 +227,7 @@ export function SiteNav() {
             ))}
           </nav>
 
-          <div className="mt-auto p-6">
+          <div className="mt-auto p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
             <InquireModal>
               <button className="shine w-full rounded-full bg-white px-6 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-black">
                 Inquire

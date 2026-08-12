@@ -81,7 +81,7 @@ export default function Home() {
         {/* ---------------- Hero ---------------- */}
         <section className="relative flex min-h-svh items-center px-6 pb-20 pt-32 lg:px-12 lg:pt-28">
           <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-8">
-            <div className="lg:col-span-6 xl:col-span-7">
+            <div className="order-2 lg:order-none lg:col-span-6 xl:col-span-7">
               <Reveal>
                 <div className="flex items-center gap-4">
                   <span className="h-px w-10 bg-gradient-to-r from-ink-4 to-transparent" />
@@ -132,7 +132,8 @@ export default function Home() {
               </Reveal>
             </div>
 
-            <Reveal delay={200} className="lg:col-span-6 xl:col-span-5">
+            {/* Leads on phones, sits beside the copy from lg up. */}
+            <Reveal delay={200} className="order-1 lg:order-none lg:col-span-6 xl:col-span-5">
               <Parallax distance={-52}>
                 <HeroMesh className="mx-auto aspect-square w-full max-w-[270px] sm:max-w-[400px] lg:max-w-none" />
               </Parallax>
@@ -381,7 +382,9 @@ export default function Home() {
         </section>
 
         {/* ---------------- Footer ---------------- */}
-        <footer className="relative bg-gradient-to-b from-transparent to-black px-6 py-20 lg:px-12">
+        {/* Bottom padding clears the home indicator now the page paints
+            under it, so the footer gradient fills the safe area. */}
+        <footer className="relative bg-gradient-to-b from-transparent to-black px-6 pt-20 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:px-12">
           <div className="mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
               <div className="md:col-span-5">

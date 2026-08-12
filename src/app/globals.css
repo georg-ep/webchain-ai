@@ -249,30 +249,31 @@ h6 {
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 7rem;
+
+  /*
+   * Standard properties only. Declaring `::-webkit-scrollbar` with a width
+   * opts the whole document out of overlay scrollbars, which is why the bar
+   * used to eat 10px off the right edge on phones as well as desktop.
+   * `scrollbar-width` is honoured by classic scrollbars and ignored by
+   * overlay ones, so touch devices get their full viewport back.
+   */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+
+  /*
+   * Keep the gutter reserved at all times. Locking scroll behind the mobile
+   * drawer otherwise drops the scrollbar and shifts the whole page sideways.
+   * `scrollbar-gutter: stable` is the tidier spelling but Chrome releases the
+   * gutter as soon as the document stops scrolling, so it does not hold here.
+   * Overlay scrollbars take no space, so phones pay nothing for this.
+   */
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
 }
 
 ::selection {
   background: #fff;
   color: #000;
-}
-
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #070708;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border: 3px solid #070708;
-  border-radius: 99px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.24);
 }
 
 @theme inline {
