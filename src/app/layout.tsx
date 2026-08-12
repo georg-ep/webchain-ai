@@ -1,7 +1,7 @@
 import GoogleAnalyticsProvider from "@/components/google-analytics-provider";
 import { StructuredData } from "@/components/structured-data";
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -11,6 +11,11 @@ const inter = Inter({
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
+  subsets: ["latin"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono-jet",
   subsets: ["latin"],
 });
 
@@ -98,11 +103,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-        <script src="https://analytics.ahrefs.com/analytics.js" data-key="5ttpepYQZEEqGz2PfKyLCg" async></script>      
+        <script src="https://analytics.ahrefs.com/analytics.js" data-key="5ttpepYQZEEqGz2PfKyLCg" async></script>
       </head>
       <body
-        className={`${inter.variable} ${playfair.variable} antialiased bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-200 selection:bg-white selection:text-black font-sans`}
+        className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} antialiased bg-surface-0 text-ink-2 selection:bg-white selection:text-black font-sans`}
       >
         <StructuredData />
         <GoogleAnalyticsProvider />

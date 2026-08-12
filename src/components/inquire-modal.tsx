@@ -63,18 +63,22 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-background-light dark:bg-[#0a0a0a] border-white/10 dark:text-white">
-        <DialogHeader>
-          <DialogTitle className="font-serif text-2xl font-light italic">
+      <DialogContent className="panel overflow-hidden rounded-2xl border-line bg-surface-1 text-ink sm:max-w-[440px]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgba(52,211,153,0.10),transparent_70%)]"
+        />
+        <DialogHeader className="relative">
+          <DialogTitle className="font-serif text-2xl font-light italic text-ink">
             Initiate Protocol
           </DialogTitle>
-          <DialogDescription className="text-slate-500 font-light text-xs">
+          <DialogDescription className="font-mono text-[11px] font-light text-ink-3">
             Submit your parameters for review. We engineer certainty.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="grid gap-4 py-4">
+        <form onSubmit={handleSubmit} className="relative grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="name" className="text-xs uppercase tracking-widest text-slate-500">
+            <Label htmlFor="name" className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-4">
               Name
             </Label>
             <Input
@@ -84,11 +88,11 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
               onChange={handleChange}
               required
               disabled={status === "loading" || status === "success"}
-              className="bg-white/5 border-white/10 text-xs font-mono focus-visible:ring-1 focus-visible:ring-white/20 placeholder:text-slate-700 dark:placeholder:text-slate-700"
+              className="h-11 rounded-lg border-line bg-white/[0.03] font-mono text-xs text-ink transition-colors placeholder:text-ink-4 focus-visible:border-signal/40 focus-visible:ring-2 focus-visible:ring-signal/15"
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="email" className="text-xs uppercase tracking-widest text-slate-500">
+            <Label htmlFor="email" className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-4">
               Email
             </Label>
             <Input
@@ -99,11 +103,11 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
               onChange={handleChange}
               required
               disabled={status === "loading" || status === "success"}
-              className="bg-white/5 border-white/10 text-xs font-mono focus-visible:ring-1 focus-visible:ring-white/20 placeholder:text-slate-700 dark:placeholder:text-slate-700"
+              className="h-11 rounded-lg border-line bg-white/[0.03] font-mono text-xs text-ink transition-colors placeholder:text-ink-4 focus-visible:border-signal/40 focus-visible:ring-2 focus-visible:ring-signal/15"
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="message" className="text-xs uppercase tracking-widest text-slate-500">
+            <Label htmlFor="message" className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-4">
               Directives
             </Label>
             <Textarea
@@ -113,19 +117,19 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
               onChange={handleChange}
               required
               disabled={status === "loading" || status === "success"}
-              className="bg-white/5 border-white/10 text-xs font-mono text-slate-300 min-h-[100px] focus-visible:ring-1 focus-visible:ring-white/20 placeholder:text-slate-700 dark:placeholder:text-slate-700"
+              className="min-h-[110px] rounded-lg border-line bg-white/[0.03] font-mono text-xs text-ink transition-colors placeholder:text-ink-4 focus-visible:border-signal/40 focus-visible:ring-2 focus-visible:ring-signal/15"
             />
           </div>
 
           {status === "error" && (
-            <div className="text-red-500 text-[10px] font-mono border border-red-500/20 bg-red-500/10 p-2 rounded">
+            <div className="rounded-lg border border-fault/25 bg-fault-soft p-2.5 font-mono text-[10px] text-fault">
               ERROR: {errorMessage}
             </div>
           )}
 
           {status === "success" && (
-            <div className="text-emerald-500 text-[10px] font-mono border border-emerald-500/20 bg-emerald-500/10 p-2 rounded flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"/>
+            <div className="flex items-center gap-2 rounded-lg border border-signal/25 bg-signal-soft p-2.5 font-mono text-[10px] text-signal">
+              <span className="h-1.5 w-1.5 rounded-full bg-signal animate-pulse"/>
               SIGNAL RECEIVED AND ACKNOWLEDGED
             </div>
           )}
@@ -133,7 +137,7 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
           <Button 
             type="submit" 
             disabled={status === "loading" || status === "success"}
-            className="mt-4 bg-white text-black hover:bg-slate-200 text-xs font-bold uppercase tracking-[0.2em] rounded-sm h-10 transition-all disabled:opacity-50"
+            className="shine mt-4 h-12 rounded-full bg-white font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-black transition-all hover:bg-white disabled:opacity-50"
           >
             {status === "loading" ? "Transmitting..." : status === "success" ? "Sent" : "Transmit Signal"}
           </Button>

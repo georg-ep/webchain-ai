@@ -1,550 +1,368 @@
-"use client";
-
 import { FeaturedProjectCarousel } from "@/components/featured-project-carousel";
 import { InquireModal } from "@/components/inquire-modal";
+import { Reveal } from "@/components/reveal";
+import { SectionLabel } from "@/components/section-label";
+import { SiteNav } from "@/components/site-nav";
+import { StateShift } from "@/components/state-shift";
 import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
+import {
+  ArrowRight,
+  Binary,
+  FlaskConical,
+  Radar,
+  Rocket,
+  ShieldCheck,
+  Waves,
+  UserRoundCheck,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+
+const PRINCIPLES = [
+  {
+    index: "001",
+    icon: Binary,
+    title: "Deterministic Core",
+    body: "Foundational logic must be absolute. We engineer 100% reliability for data integrity, reserving AI for higher-order reasoning.",
+  },
+  {
+    index: "002",
+    icon: Waves,
+    title: "Probabilistic Edge",
+    body: "Deployment of models for synthesis and pattern matching. Leveraging ambiguity as a feature, not a bug, in creative workflows.",
+  },
+  {
+    index: "003",
+    icon: UserRoundCheck,
+    title: "Human Agency",
+    body: "Systems designed to augment, not replace. We build rigorous “human-in-the-loop” protocols for high-stakes decision making.",
+  },
+] as const;
+
+const PHASES = [
+  {
+    phase: "PHASE I",
+    icon: Radar,
+    title: "Cognitive Mapping",
+    body: "Defining the boundaries of deterministic logic vs probabilistic reasoning. Establishing the architectural constraints.",
+  },
+  {
+    phase: "PHASE II",
+    icon: FlaskConical,
+    title: "Model Prototyping",
+    body: "Rapid iteration of model selection. Quantifying output quality against golden datasets.",
+  },
+  {
+    phase: "PHASE III",
+    icon: ShieldCheck,
+    title: "Guardrail Engineering",
+    body: "Implementing semantic filters and adversarial testing to ensure system safety and alignment.",
+  },
+  {
+    phase: "PHASE IV",
+    icon: Rocket,
+    title: "High-Availability Scale",
+    body: "Deploying to distributed edge networks with real-time monitoring of token usage and drift.",
+  },
+] as const;
 
 export default function Home() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 border-b border-border-subtle bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md">
-        <div className="max-w-[1400px] mx-auto px-6 h-24 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-48 h-8 flex items-center justify-start">
-              <img src="/brand/large.svg" alt="WebChain Labs Logo" className="h-full w-auto object-contain" />
-            </div>
+      <SiteNav />
+
+      <main id="top" className="relative overflow-x-clip">
+        {/* ---------------- Hero ---------------- */}
+        <section className="relative flex min-h-svh items-center overflow-hidden px-6 pb-20 pt-32 lg:px-12 lg:pt-28">
+          {/* Ambient field */}
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            <div className="absolute inset-0 grid-lines opacity-70" />
+            <div className="absolute -left-[10%] top-[-20%] h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle,rgba(52,211,153,0.10),transparent_65%)] blur-2xl animate-drift" />
+            <div className="absolute right-[-10%] top-[10%] h-[560px] w-[560px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.10),transparent_65%)] blur-2xl animate-drift [animation-delay:-9s]" />
+            <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-surface-0 to-transparent" />
           </div>
-          <div className="hidden md:flex items-center gap-16">
-            <Link
-              className="text-[10px] font-medium uppercase tracking-[0.2em] hover:text-white transition-colors opacity-60 hover:opacity-100"
-              href="#principles"
-            >
-              Principles
-            </Link>
-            <Link
-              className="text-[10px] font-medium uppercase tracking-[0.2em] hover:text-white transition-colors opacity-60 hover:opacity-100"
-              href="#projects"
-            >
-              Work
-            </Link>
-            <Link
-              className="text-[10px] font-medium uppercase tracking-[0.2em] hover:text-white transition-colors opacity-60 hover:opacity-100"
-              href="#process"
-            >
-              Process
-            </Link>
-          </div>
-          <InquireModal>
-            <button className="hidden md:block border border-slate-300 dark:border-white/20 hover:border-white px-6 py-2 text-[10px] font-bold uppercase tracking-[0.2em] transition-all">
-                Inquire
-            </button>
-          </InquireModal>
-          <button 
-            className="md:hidden p-2" 
-            onClick={() => setMobileMenuOpen(true)}
-            aria-label="Open menu"
-          >
-            <span className="material-symbols-outlined">menu</span>
-          </button>
-        </div>
-      </nav>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <>
-          {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-black/60 z-50 md:hidden"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-          
-          {/* Menu Drawer */}
-          <div className="fixed top-0 right-0 bottom-0 w-64 bg-background-dark border-l border-white/10 z-50 md:hidden">
-            <div className="flex flex-col h-full">
-              {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-white/10">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500">Menu</span>
-                <button 
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-2"
-                  aria-label="Close menu"
-                >
-                  <span className="material-symbols-outlined">close</span>
-                </button>
-              </div>
-
-              {/* Navigation Links */}
-              <div className="flex flex-col gap-1 p-6">
-                <Link
-                  className="text-sm font-medium uppercase tracking-wider hover:text-white transition-colors opacity-60 hover:opacity-100 py-3"
-                  href="#principles"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Principles
-                </Link>
-                <Link
-                  className="text-sm font-medium uppercase tracking-wider hover:text-white transition-colors opacity-60 hover:opacity-100 py-3"
-                  href="#projects"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Work
-                </Link>
-                <Link
-                  className="text-sm font-medium uppercase tracking-wider hover:text-white transition-colors opacity-60 hover:opacity-100 py-3"
-                  href="#process"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Process
-                </Link>
-              </div>
-
-              {/* Inquire Button */}
-              <div className="mt-auto p-6">
-                <InquireModal>
-                  <button 
-                    className="w-full border border-white/20 hover:border-white px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] transition-all"
-                  >
-                    Inquire
-                  </button>
-                </InquireModal>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-
-      <main className="relative pt-24">
-        <div className="fixed inset-0 grid-lines pointer-events-none opacity-50 z-0"></div>
-        <section className="relative min-h-[calc(100vh-6rem)] flex items-center px-6 lg:px-12 py-12 z-10">
-          <div className="max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
-            <div className="lg:col-span-7 flex flex-col justify-center">
-              <div className="flex items-center gap-4 mb-8">
-                <span className="h-px w-12 bg-slate-400 dark:bg-slate-600"></span>
-                <span className="text-xs font-mono uppercase tracking-widest text-slate-500">
-                  Est. 2024
-                </span>
-              </div>
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-medium tracking-tight leading-[1.1] dark:text-white mb-10">
-                We build systems that{" "}
-                <span className="italic font-light text-slate-400">think</span>,
-                <br /> not just software that executes.
-              </h1>
-              <p className="max-w-xl text-lg md:text-xl text-slate-600 dark:text-slate-400 leading-relaxed font-light mb-16 font-serif italic">
-                We design autonomous systems that handle the thinking, so your team can focus on the doing. Custom AI architecture built for real-world impact.
-              </p>
-              <div className="flex flex-wrap gap-8 items-center">
-                <Link
-                  className="group flex items-center gap-4 text-xs font-bold uppercase tracking-[0.2em] hover:text-white transition-colors"
-                  href="#projects"
-                >
-                  Explore Works
-                  <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">
-                    arrow_forward
+          <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-16 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-7">
+              <Reveal>
+                <div className="flex items-center gap-4">
+                  <span className="h-px w-10 bg-gradient-to-r from-ink-4 to-transparent" />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-3">
+                    Est. 2024
                   </span>
-                </Link>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative hidden lg:block">
-              <div className="relative w-full aspect-[3/4] border-l border-white/10 p-12 pr-0 flex flex-col justify-between">
-                {/* Section 1: State Shift (core) */}
-                <div className="space-y-12">
-                  {/* Before */}
-                  <div className="space-y-5">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
-                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600">
-                          Before
-                        </span>
-                      </div>
-                      <div className="flex-1 h-px bg-gradient-to-r from-slate-800/50 to-transparent"></div>
-                    </div>
-                    
-                    {/* Failed System Architecture */}
-                    <div className="relative h-24 bg-gradient-to-b from-red-950/5 to-transparent rounded-sm border border-red-900/10 p-4 overflow-hidden">
-                      <svg className="w-full h-full" viewBox="0 0 300 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        
-                        {/* 1. The Bottleneck (Input) */}
-                        <path d="M0 30 L60 30" stroke="#ef4444" strokeWidth="1.5" opacity="0.6" />
-                        <circle r="3" fill="#ef4444">
-                          <animateMotion dur="1s" repeatCount="indefinite" path="M0 30 L60 30" keyPoints="0;1" keyTimes="0;1" calcMode="linear" />
-                          <animate attributeName="opacity" values="1;0" dur="1s" keyTimes="0.9;1" repeatCount="indefinite" />
-                        </circle>
-                        
-                        {/* The Wall (Stoppage) */}
-                        <rect x="60" y="20" width="3" height="20" fill="#7f1d1d" opacity="0.9" />
-                        <circle cx="60" cy="30" r="4" fill="#ef4444" opacity="0.5">
-                           <animate attributeName="r" values="4;8;4" dur="1s" repeatCount="indefinite" />
-                           <animate attributeName="opacity" values="0.5;0;0.5" dur="1s" repeatCount="indefinite" />
-                        </circle>
-
-                        {/* 2. The Brittle Line (Leaking through) */}
-                        <path d="M65 30 L90 20 L110 40 L130 25 L150 35 L170 30" stroke="#7f1d1d" strokeWidth="1.5" fill="none" opacity="0.5" strokeDasharray="4 2"/>
-                        <circle r="2" fill="#ef4444">
-                          <animateMotion dur="2s" begin="0.5s" repeatCount="indefinite" path="M65 30 L90 20 L110 40 L130 25 L150 35 L170 30" />
-                        </circle>
-
-                        {/* 3. The Infinite Loop (The Trap) */}
-                        <path d="M170 30 C 190 30, 200 10, 220 30 C 240 50, 230 30, 210 30 C 190 30, 200 50, 220 30" stroke="#ef4444" strokeWidth="1.5" fill="none" opacity="0.6" strokeDasharray="2 2" />
-                        <circle r="2.5" fill="#f59e0b">
-                           <animateMotion dur="1.5s" begin="2.5s" repeatCount="indefinite" path="M170 30 C 190 30, 200 10, 220 30 C 240 50, 230 30, 210 30 C 190 30, 200 50, 220 30" />
-                        </circle>
-                        
-                        {/* Dead End Text Label */}
-                        <text x="240" y="32" fontSize="9" fill="#991b1b" fontFamily="monospace" opacity="0.8" fontWeight="bold">STUCK</text>
-                      </svg>
-                    </div>
-
-                    <ul className="space-y-3.5 pl-1">
-                      <li className="text-[13px] text-slate-500 font-light leading-relaxed flex items-start gap-3">
-                        <span className="text-slate-700 mt-0.5 select-none">•</span>
-                        <span>High-leverage decisions trapped in Slack</span>
-                      </li>
-                      <li className="text-[13px] text-slate-500 font-light leading-relaxed flex items-start gap-3">
-                        <span className="text-slate-700 mt-0.5 select-none">•</span>
-                        <span>Engineers babysitting brittle automations</span>
-                      </li>
-                      <li className="text-[13px] text-slate-500 font-light leading-relaxed flex items-start gap-3">
-                        <span className="text-slate-700 mt-0.5 select-none">•</span>
-                        <span>Every edge case becoming a meeting</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  {/* After */}
-                  <div className="space-y-5">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/70 animate-pulse"></div>
-                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400/80">
-                          After
-                        </span>
-                      </div>
-                      <div className="flex-1 h-px bg-gradient-to-r from-emerald-900/30 to-transparent"></div>
-                    </div>
-                    
-                    {/* Working Autonomous Architecture */}
-                    <div className="relative h-24 bg-gradient-to-b from-emerald-950/5 to-transparent rounded-sm border border-emerald-900/10 p-4 overflow-hidden">
-                      <svg className="w-full h-full" viewBox="0 0 300 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                          <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#10b981" stopOpacity="0" />
-                            <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
-                            <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
-                          </linearGradient>
-                        </defs>
-
-                        {/* 1. Parallel Processing (Reasoning) */}
-                        <g>
-                          <path d="M0 30 L40 30 C 60 30, 60 15, 80 15 L 220 15 C 240 15, 240 30, 260 30 L 300 30" stroke="#10b981" strokeWidth="1" opacity="0.4" fill="none" />
-                          <path d="M0 30 L40 30 C 60 30, 60 45, 80 45 L 220 45 C 240 45, 240 30, 260 30 L 300 30" stroke="#10b981" strokeWidth="1" opacity="0.4" fill="none" />
-                          <path d="M0 30 L300 30" stroke="#10b981" strokeWidth="1.5" opacity="0.6" />
-                          
-                          {/* Flowing Particles - Main + Branches */}
-                          <circle r="2" fill="#34d399">
-                             <animateMotion dur="3s" repeatCount="indefinite" path="M0 30 L300 30" keyPoints="0;1" keyTimes="0;1" calcMode="linear" />
-                          </circle>
-                          <circle r="1.5" fill="#10b981" opacity="0.8">
-                             <animateMotion dur="4s" begin="0.5s" repeatCount="indefinite" path="M0 30 L40 30 C 60 30, 60 15, 80 15 L 220 15 C 240 15, 240 30, 260 30 L 300 30" />
-                          </circle>
-                           <circle r="1.5" fill="#10b981" opacity="0.8">
-                             <animateMotion dur="4s" begin="1s" repeatCount="indefinite" path="M0 30 L40 30 C 60 30, 60 45, 80 45 L 220 45 C 240 45, 240 30, 260 30 L 300 30" />
-                          </circle>
-                        </g>
-
-                        {/* 2. Logic Nodes (Hexagons) */}
-                        <g transform="translate(150, 30)">
-                          <polygon points="0,-8 7,-4 7,4 0,8 -7,4 -7,-4" stroke="#10b981" strokeWidth="1" fill="#064e3b" opacity="0.8" />
-                          <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite" />
-                        </g>
-
-                        {/* 3. Smooth Outlier Handling */}
-                        <path d="M100 30 Q 150 5, 200 30" stroke="url(#flowGradient)" strokeWidth="1" fill="none" opacity="0.5">
-                           <animate attributeName="d" values="M100 30 Q 150 5, 200 30; M100 30 Q 150 55, 200 30; M100 30 Q 150 5, 200 30" dur="8s" repeatCount="indefinite" />
-                        </path>
-                        
-                      </svg>
-                    </div>
-
-                    <ul className="space-y-3.5 pl-1">
-                      <li className="text-[13px] text-white font-light leading-relaxed flex items-start gap-3 group/item cursor-default">
-                        <span className="text-emerald-500/70 mt-0.5 select-none group-hover/item:text-emerald-400 transition-colors">•</span>
-                        <span className="group-hover/item:text-white/90 transition-colors">Decisions executed at machine speed</span>
-                      </li>
-                      <li className="text-[13px] text-white font-light leading-relaxed flex items-start gap-3 group/item cursor-default">
-                        <span className="text-emerald-500/70 mt-0.5 select-none group-hover/item:text-emerald-400 transition-colors">•</span>
-                        <span className="group-hover/item:text-white/90 transition-colors">Systems reason through unfamiliar inputs</span>
-                      </li>
-                      <li className="text-[13px] text-white font-light leading-relaxed flex items-start gap-3 group/item cursor-default">
-                        <span className="text-emerald-500/70 mt-0.5 select-none group-hover/item:text-emerald-400 transition-colors">•</span>
-                        <span className="group-hover/item:text-white/90 transition-colors">Edge cases handled without escalation</span>
-                      </li>
-                    </ul>
-                  </div>
                 </div>
+              </Reveal>
 
-                {/* Section 2: Single anchoring metric (credibility) */}
-                <div className="relative group/metric mt-8">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent rounded-sm opacity-0 group-hover/metric:opacity-100 transition-opacity duration-500"></div>
-                  <div className="relative border border-white/5 group-hover/metric:border-white/10 transition-colors duration-300 rounded-sm p-6">
-                    <div className="flex justify-between items-baseline gap-4">
-                      <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-slate-600">
-                        Typical Outcome
-                      </span>
-                      <span className="text-sm font-mono text-white/90 tracking-tight">
-                        40–60 hrs
-                      </span>
-                    </div>
-                    <div className="mt-2 text-right">
-                      <span className="text-[10px] text-slate-500 font-mono">
-                        reclaimed / team / week
-                      </span>
-                    </div>
-                  </div>
+              <Reveal delay={80}>
+                <h1 className="mt-8 max-w-[15ch] font-serif text-[2.5rem] font-medium leading-[1.06] tracking-[-0.02em] text-ink sm:text-5xl lg:max-w-none lg:text-[3.5rem] xl:text-6xl">
+                  <span className="text-gradient">We build systems that </span>
+                  <span className="bg-gradient-to-br from-signal via-signal to-emerald-200 bg-clip-text font-light italic text-transparent">
+                    think
+                  </span>
+                  <span className="text-gradient">,</span>
+                  <br />
+                  <span className="text-gradient">not just software that executes.</span>
+                </h1>
+              </Reveal>
+
+              <Reveal delay={160}>
+                <p className="mt-9 max-w-xl font-serif text-lg font-light italic leading-relaxed text-ink-2 md:text-xl">
+                  We design autonomous systems that handle the thinking, so your team can focus on
+                  the doing. Custom AI architecture built for real-world impact.
+                </p>
+              </Reveal>
+
+              <Reveal delay={240}>
+                <div className="mt-12 flex flex-wrap items-center gap-4">
+                  <InquireModal>
+                    <button className="shine group inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-black transition-transform duration-500 [transition-timing-function:var(--ease-out-expo)] hover:-translate-y-0.5">
+                      Inquire
+                    </button>
+                  </InquireModal>
+
+                  <Link
+                    className="group inline-flex items-center gap-3 rounded-full border border-line px-8 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-ink-2 transition-all duration-500 [transition-timing-function:var(--ease-out-expo)] hover:-translate-y-0.5 hover:border-line-strong hover:text-ink"
+                    href="#projects"
+                  >
+                    Explore Works
+                    <ArrowRight
+                      className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1"
+                      strokeWidth={1.5}
+                    />
+                  </Link>
                 </div>
-              </div>
+              </Reveal>
             </div>
+
+            <Reveal delay={200} className="lg:col-span-5">
+              <StateShift />
+            </Reveal>
           </div>
         </section>
+
+        {/* ---------------- Principles ---------------- */}
         <section
-          className="relative py-32 px-6 lg:px-12 bg-background-light dark:bg-[#0c0c0c] z-10"
+          className="noise relative border-t border-line bg-surface-1 px-6 py-24 lg:px-12 lg:py-32"
           id="principles"
         >
-          <div className="max-w-[1400px] mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-20">
-              <div className="lg:col-span-1">
-                <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 mb-6">
-                  Manifesto
-                </h2>
-              </div>
-              <div className="lg:col-span-3">
-                <h3 className="text-3xl md:text-5xl font-serif font-light dark:text-white leading-tight">
-                  AI where it creates leverage, <br />
-                  <span className="italic text-slate-500">
-                    software where it creates certainty.
-                  </span>
+          <div className="mx-auto max-w-[1400px]">
+            <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
+              <Reveal className="lg:col-span-4">
+                <SectionLabel>Manifesto</SectionLabel>
+              </Reveal>
+              <Reveal delay={80} className="lg:col-span-8">
+                <h3 className="max-w-3xl font-serif text-3xl font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[2.75rem]">
+                  AI where it creates leverage,{" "}
+                  <span className="italic text-ink-3">software where it creates certainty.</span>
                 </h3>
-              </div>
+              </Reveal>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="group relative bg-white dark:bg-[#111] p-10 border border-slate-200 dark:border-white/5 hover:border-white/20 transition-all duration-500">
-                <div className="absolute top-6 right-6 w-2 h-2 rounded-full bg-slate-200 dark:bg-white/10 group-hover:bg-white transition-colors"></div>
-                <span className="text-[10px] font-mono text-slate-400 mb-12 block">
-                  001
-                </span>
-                <h4 className="text-2xl font-serif mb-4 dark:text-white italic">
-                  Deterministic Core
-                </h4>
-                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-light">
-                  Foundational logic must be absolute. We engineer 100%
-                  reliability for data integrity, reserving AI for higher-order
-                  reasoning.
-                </p>
-              </div>
-              <div className="group relative bg-white dark:bg-[#111] p-10 border border-slate-200 dark:border-white/5 hover:border-white/20 transition-all duration-500">
-                <div className="absolute top-6 right-6 w-2 h-2 rounded-full bg-slate-200 dark:bg-white/10 group-hover:bg-white transition-colors"></div>
-                <span className="text-[10px] font-mono text-slate-400 mb-12 block">
-                  002
-                </span>
-                <h4 className="text-2xl font-serif mb-4 dark:text-white italic">
-                  Probabilistic Edge
-                </h4>
-                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-light">
-                  Deployment of models for synthesis and pattern matching.
-                  Leveraging ambiguity as a feature, not a bug, in creative
-                  workflows.
-                </p>
-              </div>
-              <div className="group relative bg-white dark:bg-[#111] p-10 border border-slate-200 dark:border-white/5 hover:border-white/20 transition-all duration-500">
-                <div className="absolute top-6 right-6 w-2 h-2 rounded-full bg-slate-200 dark:bg-white/10 group-hover:bg-white transition-colors"></div>
-                <span className="text-[10px] font-mono text-slate-400 mb-12 block">
-                  003
-                </span>
-                <h4 className="text-2xl font-serif mb-4 dark:text-white italic">
-                  Human Agency
-                </h4>
-                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-light">
-                  Systems designed to augment, not replace. We build rigorous
-                  &quot;human-in-the-loop&quot; protocols for high-stakes decision making.
-                </p>
-              </div>
+
+            <div className="mt-20 grid grid-cols-1 gap-4 md:grid-cols-3">
+              {PRINCIPLES.map(({ index, icon: Icon, title, body }, i) => (
+                <Reveal key={index} delay={i * 100}>
+                  <article className="panel panel-hover group relative h-full overflow-hidden rounded-2xl p-8 lg:p-10">
+                    <div
+                      aria-hidden
+                      className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(52,211,153,0.12),transparent_65%)] opacity-0 blur-xl transition-opacity duration-700 group-hover:opacity-100"
+                    />
+
+                    <div className="relative flex items-start justify-between">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-ink-2 transition-colors duration-500 group-hover:border-signal/30 group-hover:text-signal">
+                        <Icon className="h-4.5 w-4.5" strokeWidth={1.25} />
+                      </span>
+                      <span className="font-mono text-[10px] tracking-[0.2em] text-ink-4">
+                        {index}
+                      </span>
+                    </div>
+
+                    <h4 className="relative mt-14 font-serif text-2xl italic text-ink">{title}</h4>
+                    <p className="relative mt-4 text-sm font-light leading-relaxed text-ink-3">
+                      {body}
+                    </p>
+                  </article>
+                </Reveal>
+              ))}
             </div>
           </div>
         </section>
+
+        {/* ---------------- Selected Works ---------------- */}
         <section
-          className="py-32 px-6 lg:px-12 z-10 relative bg-background-dark"
+          className="relative border-t border-line bg-surface-0 px-6 py-24 lg:px-12 lg:py-32"
           id="projects"
         >
-          <div className="max-w-[1400px] mx-auto">
-            <div className="flex justify-between items-end mb-24 border-b border-white/10 pb-8">
-              <h2 className="text-4xl md:text-6xl font-serif font-medium dark:text-white">
-                Selected Works
-              </h2>
-              <Link
-                className="hidden md:inline-block text-[10px] font-bold uppercase tracking-[0.2em] hover:text-white transition-colors opacity-60 hover:opacity-100 mb-2"
-                href="#"
-              >
-                Archive (14)
-              </Link>
-            </div>
-            <FeaturedProjectCarousel />
+          <div className="mx-auto max-w-[1400px]">
+            <Reveal>
+              <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-10">
+                <h2 className="font-serif text-4xl font-medium tracking-[-0.02em] text-ink md:text-6xl">
+                  Selected Works
+                </h2>
+                <Link
+                  className="group hidden items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-3 transition-colors hover:text-ink md:inline-flex"
+                  href="#"
+                >
+                  Archive (14)
+                  <ArrowRight
+                    className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1"
+                    strokeWidth={1.5}
+                  />
+                </Link>
+              </div>
+            </Reveal>
+
+            <Reveal delay={100} className="mt-16 block">
+              <FeaturedProjectCarousel />
+            </Reveal>
           </div>
         </section>
+
+        {/* ---------------- Process ---------------- */}
         <section
-          className="py-32 px-6 lg:px-12 bg-[#080808] z-10 relative border-t border-white/5"
+          className="noise relative border-t border-line bg-surface-1 px-6 py-24 lg:px-12 lg:py-32"
           id="process"
         >
-          <div className="max-w-[1400px] mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          <div className="mx-auto max-w-[1400px]">
+            <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-16">
               <div className="lg:col-span-4">
-                <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 mb-6">
-                  Methodology
-                </h2>
-                <h3 className="text-3xl md:text-4xl font-serif dark:text-white mb-8">
-                  Rigorous Evaluation
-                </h3>
-                <p className="text-slate-400 font-light text-sm leading-relaxed max-w-xs">
-                  We don't just prompt and pray. Our engineering process treats
-                  AI components with the same scientific rigor as traditional
-                  distributed systems.
-                </p>
+                <Reveal>
+                  <SectionLabel>Methodology</SectionLabel>
+                  <h3 className="mt-7 font-serif text-3xl text-ink md:text-4xl">
+                    Rigorous Evaluation
+                  </h3>
+                  <p className="mt-6 max-w-sm text-sm font-light leading-relaxed text-ink-3">
+                    We don&apos;t just prompt and pray. Our engineering process treats AI components
+                    with the same scientific rigor as traditional distributed systems.
+                  </p>
+
+                  {/* Phase rail: four steps, drawn rather than spelled out */}
+                  <ol aria-hidden className="mt-12 hidden lg:block">
+                    {PHASES.map(({ phase }, i) => (
+                      <li key={phase} className="group flex items-stretch gap-4">
+                        <div className="flex flex-col items-center">
+                          <span className="h-2 w-2 rotate-45 border border-signal/50 bg-signal/20" />
+                          {i < PHASES.length - 1 && (
+                            <span className="w-px flex-1 bg-gradient-to-b from-signal/25 to-line" />
+                          )}
+                        </div>
+                        <span
+                          className={cn(
+                            "font-mono text-[10px] uppercase tracking-[0.24em] text-ink-4",
+                            i < PHASES.length - 1 && "pb-8",
+                          )}
+                        >
+                          {phase}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                </Reveal>
               </div>
+
               <div className="lg:col-span-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10 border border-white/10">
-                  <div className="bg-[#080808] p-10 hover:bg-[#0f0f0f] transition-colors relative">
-                    <div className="flex justify-between items-start mb-8">
-                      <span className="text-xs font-mono text-slate-500">
-                        PHASE I
-                      </span>
-                      <span className="material-symbols-outlined text-white/40 text-lg">
-                        radar
-                      </span>
-                    </div>
-                    <h5 className="font-serif text-xl mb-3 dark:text-white">
-                      Cognitive Mapping
-                    </h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      Defining the boundaries of deterministic logic vs
-                      probabilistic reasoning. Establishing the architectural
-                      constraints.
-                    </p>
-                  </div>
-                  <div className="bg-[#080808] p-10 hover:bg-[#0f0f0f] transition-colors relative">
-                    <div className="flex justify-between items-start mb-8">
-                      <span className="text-xs font-mono text-slate-500">
-                        PHASE II
-                      </span>
-                      <span className="material-symbols-outlined text-white/40 text-lg">
-                        science
-                      </span>
-                    </div>
-                    <h5 className="font-serif text-xl mb-3 dark:text-white">
-                      Model Prototyping
-                    </h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      Rapid iteration of model selection. Quantifying output
-                      quality against golden datasets.
-                    </p>
-                  </div>
-                  <div className="bg-[#080808] p-10 hover:bg-[#0f0f0f] transition-colors relative">
-                    <div className="flex justify-between items-start mb-8">
-                      <span className="text-xs font-mono text-slate-500">
-                        PHASE III
-                      </span>
-                      <span className="material-symbols-outlined text-white/40 text-lg">
-                        security
-                      </span>
-                    </div>
-                    <h5 className="font-serif text-xl mb-3 dark:text-white">
-                      Guardrail Engineering
-                    </h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      Implementing semantic filters and adversarial testing to
-                      ensure system safety and alignment.
-                    </p>
-                  </div>
-                  <div className="bg-[#080808] p-10 hover:bg-[#0f0f0f] transition-colors relative">
-                    <div className="flex justify-between items-start mb-8">
-                      <span className="text-xs font-mono text-slate-500">
-                        PHASE IV
-                      </span>
-                      <span className="material-symbols-outlined text-white/40 text-lg">
-                        deployed_code
-                      </span>
-                    </div>
-                    <h5 className="font-serif text-xl mb-3 dark:text-white">
-                      High-Availability Scale
-                    </h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      Deploying to distributed edge networks with real-time
-                      monitoring of token usage and drift.
-                    </p>
-                  </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {PHASES.map(({ phase, icon: Icon, title, body }, i) => (
+                    <Reveal key={phase} delay={i * 90}>
+                      <article className="panel panel-hover group relative h-full overflow-hidden rounded-2xl p-8">
+                        <div
+                          aria-hidden
+                          className="pointer-events-none absolute inset-x-0 top-0 h-px scale-x-0 bg-gradient-to-r from-transparent via-signal/60 to-transparent transition-transform duration-700 [transition-timing-function:var(--ease-out-expo)] group-hover:scale-x-100"
+                        />
+
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-[10px] tracking-[0.24em] text-ink-4">
+                            {phase}
+                          </span>
+                          <Icon
+                            className="h-4 w-4 text-ink-4 transition-colors duration-500 group-hover:text-signal"
+                            strokeWidth={1.25}
+                          />
+                        </div>
+
+                        <h5 className="mt-10 font-serif text-xl text-ink">{title}</h5>
+                        <p className="mt-3 text-[13px] font-light leading-relaxed text-ink-3">
+                          {body}
+                        </p>
+                      </article>
+                    </Reveal>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         </section>
-        <section className="py-40 px-6 lg:px-12 bg-background-dark text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-white/[0.02] grid-lines opacity-20 pointer-events-none"></div>
-          <div className="max-w-4xl mx-auto relative z-10">
-            <h2 className="text-5xl md:text-7xl font-serif font-medium dark:text-white mb-12 tracking-tight">
-              Ready to architect the <br />
-              <span className="italic text-slate-500">intelligent layer?</span>
+
+        {/* ---------------- CTA ---------------- */}
+        <section className="relative overflow-hidden border-t border-line bg-surface-0 px-6 py-32 text-center lg:px-12 lg:py-40">
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            <div className="absolute inset-0 grid-lines opacity-60" />
+            <div className="absolute left-1/2 top-1/2 h-[560px] w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(52,211,153,0.10),transparent_65%)] blur-3xl animate-drift" />
+          </div>
+
+          <Reveal className="relative mx-auto max-w-4xl">
+            <h2 className="font-serif text-4xl font-medium leading-[1.08] tracking-[-0.02em] text-ink md:text-6xl lg:text-7xl">
+              <span className="text-gradient">Ready to architect the</span>
+              <br />
+              <span className="italic text-ink-3">intelligent layer?</span>
             </h2>
-            <div className="flex flex-col items-center gap-8">
+
+            <div className="mt-14 flex flex-col items-center gap-8">
               <InquireModal>
-                <button className="bg-white text-black hover:bg-slate-200 px-10 py-5 text-xs font-bold uppercase tracking-[0.2em] transition-all">
-                    Initiate Consultation
+                <button className="shine group inline-flex items-center gap-3 rounded-full bg-white px-10 py-5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-black transition-transform duration-500 [transition-timing-function:var(--ease-out-expo)] hover:-translate-y-0.5">
+                  Initiate Consultation
+                  <ArrowRight
+                    className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1"
+                    strokeWidth={2}
+                  />
                 </button>
               </InquireModal>
+
               <Link
-                className="text-xs uppercase tracking-widest font-medium text-slate-500 hover:text-white transition-colors"
+                className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-3 transition-colors hover:text-ink"
                 href="mailto:hello@webchain.studio"
               >
                 hello@webchain.studio
               </Link>
             </div>
-          </div>
+          </Reveal>
         </section>
-        <footer className="py-20 px-6 lg:px-12 bg-black border-t border-white/5">
-          <div className="max-w-[1400px] mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20">
+
+        {/* ---------------- Footer ---------------- */}
+        <footer className="border-t border-line bg-black px-6 py-20 lg:px-12">
+          <div className="mx-auto max-w-[1400px]">
+            <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
               <div className="md:col-span-5">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-40 h-8 flex items-center justify-start">
-                    <img src="/brand/large.svg" alt="WebChain Labs Logo" className="h-full w-auto object-contain" />
-                  </div>
-                </div>
-                <p className="max-w-xs text-slate-500 text-xs leading-relaxed font-light">
+                <img
+                  src="/brand/large.svg"
+                  alt="WebChain Labs Logo"
+                  className="h-7 w-auto object-contain"
+                />
+                <p className="mt-8 max-w-xs text-xs font-light leading-relaxed text-ink-3">
                   Dubai &amp; London based.
                   <br />
-                  Engineering next-generation systems with architectural
-                  precision.
+                  Engineering next-generation systems with architectural precision.
                 </p>
               </div>
-              <div className="md:col-span-4 md:col-start-9 flex flex-col items-end">
-                <div className="text-[10px] uppercase tracking-widest font-medium text-slate-500 mb-6">Connect</div>
-                <div className="flex items-center gap-2">
-                  {Object.entries(siteConfig.links).map(([name, url], index) => (
+
+              <div className="flex flex-col md:col-span-4 md:col-start-9 md:items-end">
+                <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-ink-4">
+                  Connect
+                </div>
+                <div className="mt-6 flex items-center gap-2">
+                  {Object.entries(siteConfig.links).map(([name, url]) => (
                     <Link
                       key={name}
                       href={url}
                       target="_blank"
-                      className={`border h-8 w-8 flex items-center justify-center border-white/5 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-300 rounded-full cursor-pointer group ${
-                        index === 4 ? "p-1" : "p-2"
-                      }`}
+                      aria-label={name}
+                      className="group flex h-9 w-9 items-center justify-center rounded-full border border-line bg-white/[0.03] p-2.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-line-strong hover:bg-white/[0.07]"
                     >
                       <Image
                         alt={`Webchain ${name}`}
                         width={16}
                         height={16}
-                        className="h-full w-full opacity-40 group-hover:opacity-100 transition-opacity"
+                        className="h-full w-full object-contain opacity-40 transition-opacity group-hover:opacity-100"
                         src={`/socials/${name}.svg`}
                       />
                     </Link>
@@ -552,16 +370,17 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-              <p className="text-[10px] font-medium text-slate-600 uppercase tracking-widest">
+
+            <div className="mt-16 flex flex-col items-center justify-between gap-6 border-t border-line pt-8 md:flex-row">
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-4">
                 © 2026 WebChain Labs Inc.
               </p>
-              <div className="flex gap-8 text-[10px] font-medium text-slate-600 uppercase tracking-widest">
-                <Link href="#" className="hover:text-white transition-colors">
+              <div className="flex gap-8 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-4">
+                <Link href="#" className="transition-colors hover:text-ink">
                   Privacy Policy
                 </Link>
-                <Link href="#" className="hover:text-white transition-colors">
-                  Terms & Conditions
+                <Link href="#" className="transition-colors hover:text-ink">
+                  Terms &amp; Conditions
                 </Link>
               </div>
             </div>

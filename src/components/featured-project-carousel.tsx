@@ -1,235 +1,223 @@
 "use client";
 
 import { selectedWorks } from "@/data/projects";
+import { cn } from "@/lib/utils";
+import { ArrowUpRight, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+const INTERVAL = 8000;
+const PROGRESS_STEP = 50;
 
 export function FeaturedProjectCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const INTERVAL = 8000; // 8 seconds
-  const PROGRESS_INTERVAL = 50; // Update progress every 50ms
 
-  const changeProject = (newIndex: number) => {
-    setIsAnimating(true);
-    setTimeout(() => {
-      setCurrentIndex(newIndex);
-      setProgress(0);
-      setTimeout(() => setIsAnimating(false), 50);
-    }, 300);
-  };
+  const goTo = useCallback((index: number) => {
+    setCurrentIndex((index + selectedWorks.length) % selectedWorks.length);
+    setProgress(0);
+  }, []);
 
-  const goToPrevious = () => {
-    const newIndex = (currentIndex - 1 + selectedWorks.length) % selectedWorks.length;
-    changeProject(newIndex);
-    setIsPaused(true);
-    setTimeout(() => setIsPaused(false), 1000);
-  };
+  const goToPrevious = useCallback(() => goTo(currentIndex - 1), [currentIndex, goTo]);
+  const goToNext = useCallback(() => goTo(currentIndex + 1), [currentIndex, goTo]);
 
-  const goToNext = () => {
-    const newIndex = (currentIndex + 1) % selectedWorks.length;
-    changeProject(newIndex);
-    setIsPaused(true);
-    setTimeout(() => setIsPaused(false), 1000);
-  };
-
-  // Intersection Observer to pause when not in view
+  // Only run the timer while the carousel is actually on screen.
   useEffect(() => {
+    const node = carouselRef.current;
+    if (!node) return;
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setIsInView(entry.isIntersecting);
-        });
-      },
-      { threshold: 0.2 } // Trigger when 20% visible
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.2 },
     );
-
-    if (carouselRef.current) {
-      observer.observe(carouselRef.current);
-    }
-
-    return () => {
-      if (carouselRef.current) {
-        observer.unobserve(carouselRef.current);
-      }
-    };
+    observer.observe(node);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
     if (isPaused || !isInView) return;
 
-    // Reset progress when index changes
-    setProgress(0);
-
-    // Progress bar animation
     const progressTimer = setInterval(() => {
-      setProgress((prev) => {
-        const increment = (PROGRESS_INTERVAL / INTERVAL) * 100;
-        if (prev >= 100) return 100;
-        return prev + increment;
-      });
-    }, PROGRESS_INTERVAL);
+      setProgress((prev) => Math.min(100, prev + (PROGRESS_STEP / INTERVAL) * 100));
+    }, PROGRESS_STEP);
 
-    // Auto-advance to next project
-    const slideTimer = setTimeout(() => {
-      changeProject((currentIndex + 1) % selectedWorks.length);
-    }, INTERVAL);
+    const slideTimer = setTimeout(() => goTo(currentIndex + 1), INTERVAL);
 
     return () => {
       clearInterval(progressTimer);
       clearTimeout(slideTimer);
     };
-  }, [currentIndex, isPaused, isInView]);
+  }, [currentIndex, isPaused, isInView, goTo]);
 
   const currentProject = selectedWorks[currentIndex];
 
   return (
-    <div ref={carouselRef} className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 min-h-[600px] lg:min-h-0">
-      {/* Left: Image */}
-      <div className="lg:col-span-6">
-        <div className="relative aspect-[4/3] overflow-hidden bg-[#0a0a0a] rounded-lg border">
-          <img
-            className={`w-full h-full object-cover transition-all duration-700 ease-out opacity-70 hover:opacity-100 ${
-              isAnimating ? "opacity-0 scale-105" : "opacity-70"
-            }`}
-            alt={currentProject.title}
-            src={currentProject.image}
-          />
-        </div>
-      </div>
+    <div
+      ref={carouselRef}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onKeyDown={(e) => {
+        if (e.key === "ArrowLeft") goToPrevious();
+        if (e.key === "ArrowRight") goToNext();
+      }}
+      tabIndex={0}
+      aria-roledescription="carousel"
+      className="outline-none"
+    >
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
+        {/* Visual */}
+        <div className="lg:col-span-7">
+          <div className="panel group relative aspect-[4/3] overflow-hidden rounded-2xl p-2">
+            <div className="relative h-full w-full overflow-hidden rounded-xl bg-surface-0">
+              {selectedWorks.map((project, index) => (
+                <img
+                  key={project.id}
+                  src={project.image}
+                  alt={project.title}
+                  className={cn(
+                    "absolute inset-0 h-full w-full object-cover object-top transition-all duration-1000 [transition-timing-function:var(--ease-out-expo)]",
+                    index === currentIndex
+                      ? "scale-100 opacity-90 group-hover:scale-[1.03] group-hover:opacity-100"
+                      : "scale-105 opacity-0",
+                  )}
+                />
+              ))}
 
-      {/* Right: Content + Controls */}
-      <div className="lg:col-span-6 flex flex-col justify-between space-y-8">
-        {/* Content */}
-        <div className="space-y-6">
-          {/* Progress Bar with Navigation */}
-          <div className="flex items-center gap-4">
+              {/* Legibility scrim + frame */}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-surface-0 via-surface-0/10 to-transparent" />
+              <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/10" />
+
+              {/* Corner index */}
+              <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-line bg-surface-0/70 px-3 py-1.5 backdrop-blur-md">
+                <span className="h-1.5 w-1.5 rounded-full bg-signal animate-breathe" />
+                <span className="font-mono text-[10px] tracking-[0.2em] text-ink-2 tabular-nums">
+                  {String(currentIndex + 1).padStart(2, "0")} / {String(selectedWorks.length).padStart(2, "0")}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Detail */}
+        <div className="flex flex-col lg:col-span-5">
+          <div className="flex items-center gap-3">
             <button
               onClick={goToPrevious}
-              className="group flex items-center justify-center w-8 h-8 border border-white/5 hover:border-white/20 transition-all duration-300"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-ink-3 transition-all duration-300 hover:border-line-strong hover:text-ink"
               aria-label="Previous project"
             >
-              <svg
-                className="w-3 h-3 text-slate-500 group-hover:text-white transition-colors"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M15 18L9 12L15 6"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="square"
-                />
-              </svg>
+              <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
             </button>
-
-            <div className="flex-1 h-0.5 bg-white/10 relative overflow-hidden rounded-full">
+            <button
+              onClick={goToNext}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-ink-3 transition-all duration-300 hover:border-line-strong hover:text-ink"
+              aria-label="Next project"
+            >
+              <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
+            </button>
+            <div className="relative h-px flex-1 overflow-hidden bg-white/10">
               <div
-                className="absolute inset-y-0 left-0 bg-white/40 transition-all duration-100 ease-linear rounded-full"
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-signal/60 to-signal transition-[width] duration-100 ease-linear"
                 style={{ width: `${progress}%` }}
               />
             </div>
-
-            <button
-              onClick={goToNext}
-              className="group flex items-center justify-center w-8 h-8 border border-white/5 hover:border-white/20 transition-all duration-300"
-              aria-label="Next project"
-            >
-              <svg
-                className="w-3 h-3 text-slate-500 group-hover:text-white transition-colors"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M9 18L15 12L9 6"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="square"
-                />
-              </svg>
-            </button>
           </div>
 
-          <div
-            className={`space-y-5 transition-all duration-600 ease-out ${
-              isAnimating ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
-            }`}
-          >
-            <span className="text-[9px] font-mono text-slate-600 uppercase tracking-widest">
+          <div key={currentProject.id} className="reveal mt-8" data-visible="true">
+            <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-ink-4">
               {currentProject.category}
             </span>
-            <h3 className="text-4xl lg:text-5xl font-serif font-light dark:text-white leading-tight">
+
+            <h3 className="mt-4 font-serif text-4xl font-light leading-[1.05] text-ink lg:text-5xl">
               {currentProject.title}
             </h3>
-            <p className="text-slate-400 text-base font-light leading-relaxed max-w-xl">
+
+            <p className="mt-5 max-w-xl text-[15px] font-light leading-relaxed text-ink-2">
               {currentProject.description}
             </p>
 
-            {/* Tags */}
-            <div className="flex flex-wrap items-center gap-2 pt-2">
+            <div className="mt-6 flex flex-wrap items-center gap-2">
               {currentProject.tags.map((tag) => (
-                <div
+                <span
                   key={tag}
-                  className="px-3 py-1.5 bg-white/[0.02] border border-white/5 rounded-sm"
+                  className="rounded-full border border-line bg-white/[0.03] px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-ink-3"
                 >
-                  <span className="text-[9px] font-mono uppercase tracking-wider text-slate-500">
-                    {tag}
-                  </span>
-                </div>
+                  {tag}
+                </span>
               ))}
             </div>
 
-            {/* Achievements */}
-            <div className="space-y-2.5 pt-4 border-t border-white/5">
+            <ul className="mt-7 space-y-3 border-t border-line pt-6">
               {currentProject.achievements.map((achievement) => (
-                <div
-                  key={achievement}
-                  className="flex items-start gap-2.5 group/achievement"
-                >
-                  <div className="mt-1 flex-shrink-0">
-                    <svg
-                      className="w-3 h-3 text-emerald-500/60 group-hover/achievement:text-emerald-400 transition-colors"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M2 6L5 9L10 3"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
-                  <span className="text-[12px] text-slate-400 group-hover/achievement:text-slate-300 font-light leading-relaxed transition-colors">
+                <li key={achievement} className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-signal-soft">
+                    <Check className="h-2.5 w-2.5 text-signal" strokeWidth={2.5} />
+                  </span>
+                  <span className="text-[13px] font-light leading-relaxed text-ink-2">
                     {achievement}
                   </span>
-                </div>
+                </li>
               ))}
-            </div>
-
+            </ul>
 
             {currentProject.url !== "#" && (
               <Link
                 href={currentProject.url}
                 target="_blank"
-                className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-slate-400 hover:text-white transition-colors pt-2 group/link"
+                className="group/link mt-8 inline-flex items-center gap-2 border-b border-line pb-1 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-2 transition-colors hover:border-white/40 hover:text-ink"
               >
                 View Site
-                <span className="group-hover/link:translate-x-1 transition-transform">
-                  →
-                </span>
+                <ArrowUpRight
+                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+                  strokeWidth={1.5}
+                />
               </Link>
             )}
           </div>
         </div>
+      </div>
+
+      {/* Index rail */}
+      <div className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-white/[0.06] sm:grid-cols-3 lg:grid-cols-6">
+        {selectedWorks.map((project, index) => {
+          const isActive = index === currentIndex;
+          return (
+            <button
+              key={project.id}
+              onClick={() => goTo(index)}
+              aria-current={isActive}
+              className={cn(
+                "group relative flex flex-col items-start gap-1.5 px-4 py-4 text-left transition-colors duration-500",
+                isActive ? "bg-surface-2" : "bg-surface-0 hover:bg-surface-1",
+              )}
+            >
+              <span
+                className={cn(
+                  "font-mono text-[9px] tracking-[0.2em] tabular-nums transition-colors",
+                  isActive ? "text-signal" : "text-ink-4",
+                )}
+              >
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span
+                className={cn(
+                  "text-[13px] font-light transition-colors",
+                  isActive ? "text-ink" : "text-ink-3 group-hover:text-ink-2",
+                )}
+              >
+                {project.title}
+              </span>
+              <span
+                className={cn(
+                  "absolute inset-x-0 top-0 h-px origin-left bg-signal transition-transform duration-500 [transition-timing-function:var(--ease-out-expo)]",
+                  isActive ? "scale-x-100" : "scale-x-0",
+                )}
+              />
+            </button>
+          );
+        })}
       </div>
     </div>
   );
