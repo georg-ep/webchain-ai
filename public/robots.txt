@@ -1,6 +1,0 @@
-# Allow all bots to crawl the site
-User-agent: *
-Allow: /
-
-# Sitemap location
-Sitemap: https://webchain.studio/sitemap.xml

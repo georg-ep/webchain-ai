@@ -1,5 +1,6 @@
 import GoogleAnalyticsProvider from "@/components/google-analytics-provider";
 import { StructuredData } from "@/components/structured-data";
+import { siteConfig } from "@/config/site";
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
@@ -19,29 +20,40 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+// Kept inside the lengths search engines actually render: roughly 60
+// characters for the title and 155 for the description.
+const TITLE = "AI Automation Agency for Autonomous Systems";
+const DESCRIPTION =
+  "We build custom AI agents and autonomous systems that run your operations end to end, so your team stops making routine decisions by hand. Dubai & London.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://webchain.studio"),
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "WebChain Labs | AI Architecture & Autonomous Systems",
+    default: `${TITLE} | WebChain Labs`,
     template: "%s | WebChain Labs",
   },
-  description:
-    "We build systems that think, not just software that executes. Custom AI architecture and autonomous systems built for real-world impact. Dubai & London based.",
+  description: DESCRIPTION,
+  applicationName: siteConfig.name,
+  category: "technology",
   keywords: [
-    "AI architecture",
+    "AI automation agency",
+    "business process automation",
+    "AI agents for business",
+    "workflow automation",
     "autonomous systems",
+    "AI architecture",
     "custom AI development",
-    "intelligent systems",
-    "AI engineering",
-    "machine learning",
-    "AI consulting",
-    "enterprise AI",
-    "AI solutions",
+    "AI integration services",
+    "enterprise AI consulting",
+    "intelligent automation",
     "WebChain Labs",
   ],
-  authors: [{ name: "WebChain Labs" }],
-  creator: "WebChain Labs",
-  publisher: "WebChain Labs",
+  authors: [{ name: siteConfig.name, url: siteConfig.url }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  alternates: {
+    canonical: "/",
+  },
   robots: {
     index: true,
     follow: true,
@@ -53,30 +65,22 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  // Images come from the opengraph-image / twitter-image file conventions,
+  // which produce a real 1200x630 PNG. Crawlers do not render SVG.
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://webchain.studio",
-    siteName: "WebChain Labs",
-    title: "WebChain Labs | AI Architecture & Autonomous Systems",
-    description:
-      "We build systems that think, not just software that executes. Custom AI architecture and autonomous systems built for real-world impact.",
-    images: [
-      {
-        url: "/brand/large.svg",
-        width: 1200,
-        height: 630,
-        alt: "WebChain Labs - Building the intelligent layer",
-      },
-    ],
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    title: `${TITLE} | WebChain Labs`,
+    description: DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "WebChain Labs | AI Architecture & Autonomous Systems",
-    description:
-      "We build systems that think, not just software that executes. Custom AI architecture and autonomous systems built for real-world impact.",
-    images: ["/brand/large.svg"],
-    creator: "@webchainlabs",
+    title: `${TITLE} | WebChain Labs`,
+    description: DESCRIPTION,
+    creator: "@webchainceo",
+    site: "@webchainceo",
   },
   icons: {
     icon: "/favicon.ico",

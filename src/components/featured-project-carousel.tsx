@@ -75,7 +75,7 @@ export function FeaturedProjectCarousel() {
                 <img
                   key={project.id}
                   src={project.image}
-                  alt={project.title}
+                  alt={`${project.title} — ${project.description}`}
                   className={cn(
                     "absolute inset-0 h-full w-full object-cover object-top transition-all duration-1000 [transition-timing-function:var(--ease-out-expo)]",
                     index === currentIndex

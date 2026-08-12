@@ -4,9 +4,7 @@ import { InquireModal } from "@/components/inquire-modal";
 import { PageBackdrop } from "@/components/page-backdrop";
 import { Parallax } from "@/components/parallax";
 import { Reveal } from "@/components/reveal";
-import { ScrollProgress } from "@/components/scroll-progress";
 import { SectionLabel } from "@/components/section-label";
-import { SectionThread } from "@/components/section-thread";
 import { SiteNav } from "@/components/site-nav";
 import { StateShift } from "@/components/state-shift";
 import { siteConfig } from "@/config/site";
@@ -45,9 +43,6 @@ const PRINCIPLES = [
   },
 ] as const;
 
-/** Stops on the thread that runs down the page, in scroll order. */
-const SECTION_IDS = ["shift", "projects", "principles", "process", "contact"];
-
 const PHASES = [
   {
     phase: "PHASE I",
@@ -81,11 +76,8 @@ export default function Home() {
       <SiteNav />
 
       <PageBackdrop />
-      <ScrollProgress />
 
       <main id="top" className="relative overflow-x-clip">
-        <SectionThread sectionIds={SECTION_IDS} />
-
         {/* ---------------- Hero ---------------- */}
         <section className="relative flex min-h-svh items-center px-6 pb-20 pt-32 lg:px-12 lg:pt-28">
           <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-8">
@@ -238,10 +230,10 @@ export default function Home() {
                 <SectionLabel>Manifesto</SectionLabel>
               </Reveal>
               <Reveal delay={80} className="lg:col-span-8">
-                <h3 className="max-w-3xl font-serif text-3xl font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[2.75rem]">
+                <h2 id="principles-heading" className="max-w-3xl font-serif text-3xl font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[2.75rem]">
                   AI where it creates leverage,{" "}
                   <span className="italic text-ink-3">software where it creates certainty.</span>
-                </h3>
+                </h2>
               </Reveal>
             </div>
 
@@ -263,7 +255,7 @@ export default function Home() {
                       </span>
                     </div>
 
-                    <h4 className="relative mt-14 font-serif text-2xl italic text-ink">{title}</h4>
+                    <h3 className="relative mt-14 font-serif text-2xl italic text-ink">{title}</h3>
                     <p className="relative mt-4 text-sm font-light leading-relaxed text-ink-3">
                       {body}
                     </p>
@@ -288,9 +280,9 @@ export default function Home() {
               <div className="lg:col-span-4">
                 <Reveal>
                   <SectionLabel>Methodology</SectionLabel>
-                  <h3 className="mt-7 font-serif text-3xl text-ink md:text-4xl">
+                  <h2 id="process-heading" className="mt-7 font-serif text-3xl text-ink md:text-4xl">
                     Rigorous Evaluation
-                  </h3>
+                  </h2>
                   <p className="mt-6 max-w-sm text-sm font-light leading-relaxed text-ink-3">
                     We don&apos;t just prompt and pray. Our engineering process treats AI components
                     with the same scientific rigor as traditional distributed systems.
@@ -340,7 +332,7 @@ export default function Home() {
                           />
                         </div>
 
-                        <h5 className="mt-10 font-serif text-xl text-ink">{title}</h5>
+                        <h3 className="mt-10 font-serif text-xl text-ink">{title}</h3>
                         <p className="mt-3 text-[13px] font-light leading-relaxed text-ink-3">
                           {body}
                         </p>
@@ -395,7 +387,9 @@ export default function Home() {
               <div className="md:col-span-5">
                 <img
                   src="/brand/large.svg"
-                  alt="WebChain Labs Logo"
+                  alt="WebChain Labs"
+                  width={127}
+                  height={17}
                   className="h-7 w-auto object-contain"
                 />
                 <p className="mt-8 max-w-xs text-xs font-light leading-relaxed text-ink-3">

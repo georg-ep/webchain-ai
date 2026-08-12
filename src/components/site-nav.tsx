@@ -1,5 +1,6 @@
 "use client";
 
+import { HeaderProgress } from "@/components/header-progress";
 import { InquireModal } from "@/components/inquire-modal";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
@@ -12,6 +13,9 @@ const NAV_LINKS = [
   { href: "#principles", label: "Principles" },
   { href: "#process", label: "Process" },
 ];
+
+/** Every stop shown on the header progress rail, in scroll order. */
+const PROGRESS_SECTIONS = ["shift", "projects", "principles", "process", "contact"];
 
 export function SiteNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -71,22 +75,24 @@ export function SiteNav() {
     <>
       <header
         className={cn(
-          "fixed top-0 z-50 w-full transition-all duration-500 [transition-timing-function:var(--ease-out-expo)]",
-          scrolled
-            ? "border-b border-line bg-surface-0/70 backdrop-blur-xl"
-            : "border-b border-transparent bg-transparent",
+          "fixed top-0 z-50 w-full px-6 transition-all duration-500 [transition-timing-function:var(--ease-out-expo)] lg:px-12",
+          scrolled ? "bg-surface-0/70 backdrop-blur-xl" : "bg-transparent",
         )}
       >
+        {/* Padding lives on the header and the max-width on the inner row, so
+            the logo lines up with the section content below it. */}
         <div
           className={cn(
-            "mx-auto flex max-w-[1400px] items-center justify-between px-6 transition-all duration-500 lg:px-12",
+            "mx-auto flex max-w-[1400px] items-center justify-between transition-all duration-500",
             scrolled ? "h-18" : "h-24",
           )}
         >
           <Link href="#top" className="flex items-center" aria-label="WebChain Labs, back to top">
             <img
               src="/brand/large.svg"
-              alt="WebChain Labs Logo"
+              alt="WebChain Labs"
+              width={127}
+              height={17}
               className={cn(
                 "w-auto object-contain transition-all duration-500",
                 scrolled ? "h-6" : "h-7",
@@ -134,6 +140,8 @@ export function SiteNav() {
             <Menu className="h-4 w-4" strokeWidth={1.5} />
           </button>
         </div>
+
+        <HeaderProgress sectionIds={PROGRESS_SECTIONS} />
       </header>
 
       {/* Mobile drawer */}

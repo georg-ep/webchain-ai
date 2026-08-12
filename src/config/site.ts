@@ -10,4 +10,4 @@ export const siteConfig = {
     linkedin: "https://www.linkedin.com/company/web-chain/",
     discord: "https://discord.gg/JwnQsKkk",
   },
-}
+};
