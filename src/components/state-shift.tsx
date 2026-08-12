@@ -1,7 +1,6 @@
 import { Reveal } from "@/components/reveal";
 import { FaultDiagram, FlowDiagram } from "@/components/system-diagram";
 import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
 
 const BEFORE_POINTS = [
   "High-leverage decisions trapped in Slack",
@@ -15,7 +14,12 @@ const AFTER_POINTS = [
   "Edge cases handled without escalation",
 ];
 
-function StateCard({
+/**
+ * One half of the diptych. Deliberately not a floating card: the two states
+ * live inside a single instrument panel, split by a hairline, so the eye
+ * compares them across a shared baseline instead of reading two boxes.
+ */
+function StatePane({
   label,
   status,
   tone,
@@ -31,156 +35,145 @@ function StateCard({
   const isFlow = tone === "flow";
 
   return (
-    <div
-      className={cn(
-        "panel panel-hover group relative h-full w-full overflow-hidden rounded-2xl p-5 md:p-6",
-        isFlow && "border-signal/15",
-      )}
-    >
-      {/* Tone wash */}
+    <div className="group/pane relative flex flex-col">
+      {/* Tone wash, stronger on hover */}
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-x-0 top-0 h-32 opacity-60 transition-opacity duration-700 group-hover:opacity-100",
+          "pointer-events-none absolute inset-0 opacity-70 transition-opacity duration-700 group-hover/pane:opacity-100",
           isFlow
-            ? "bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgba(52,211,153,0.10),transparent_70%)]"
-            : "bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgba(248,113,113,0.07),transparent_70%)]",
+            ? "bg-[radial-gradient(ellipse_75%_60%_at_50%_100%,rgba(52,211,153,0.08),transparent_70%)]"
+            : "bg-[radial-gradient(ellipse_75%_60%_at_50%_100%,rgba(248,113,113,0.05),transparent_70%)]",
         )}
       />
 
-      <div className="relative">
-        <div className="flex items-center gap-2.5">
-          <span
-            className={cn(
-              "relative flex h-1.5 w-1.5",
-              isFlow ? "text-signal" : "text-fault",
-            )}
-          >
-            <span className="absolute inline-flex h-full w-full rounded-full bg-current opacity-70 animate-ping" />
+      {/* Header row */}
+      <div className="relative flex items-baseline justify-between gap-4 px-6 pt-7 md:px-9 md:pt-9">
+        <div className="flex items-center gap-3">
+          <span className={cn("relative flex h-1.5 w-1.5", isFlow ? "text-signal" : "text-fault")}>
+            <span className="absolute inline-flex h-full w-full rounded-full bg-current opacity-60 animate-ping" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
           </span>
           <span
             className={cn(
-              "font-mono text-[10px] font-medium uppercase tracking-[0.28em]",
-              isFlow ? "text-signal/90" : "text-fault/70",
+              "font-mono text-[11px] font-medium uppercase tracking-[0.34em]",
+              isFlow ? "text-signal" : "text-fault/80",
             )}
           >
             {label}
           </span>
-          <span
-            className={cn(
-              "h-px flex-1",
-              isFlow
-                ? "bg-gradient-to-r from-signal/30 to-transparent"
-                : "bg-gradient-to-r from-fault/20 to-transparent",
-            )}
-          />
-          <span
-            className={cn(
-              "rounded-full border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.2em]",
-              isFlow
-                ? "border-signal/25 bg-signal-soft text-signal/90"
-                : "border-fault/25 bg-fault-soft text-fault/90",
-            )}
+        </div>
+
+        <span
+          className={cn(
+            "font-mono text-[10px] uppercase tracking-[0.22em]",
+            isFlow ? "text-signal/70" : "text-fault/60",
+          )}
+        >
+          {status}
+        </span>
+      </div>
+
+      {/* Diagram, bleeding to the pane edges and sitting on a shared baseline */}
+      <div className="relative mt-8 px-4 md:mt-10 md:px-6">{diagram}</div>
+
+      {/* Spec list */}
+      <ul className="relative mt-8 px-6 pb-8 md:px-9 md:pb-10">
+        {points.map((point, i) => (
+          <li
+            key={point}
+            className="flex items-baseline gap-4 border-t border-line py-3.5 first:border-t-0 md:py-4"
           >
-            {status}
-          </span>
-        </div>
-
-        <div className="relative mt-3.5 overflow-hidden rounded-lg border border-line bg-surface-0/60 px-3 py-2.5">
-          <div
-            aria-hidden
-            className="grid-fine pointer-events-none absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,#000_10%,transparent_100%)]"
-          />
-          <div className="relative">{diagram}</div>
-        </div>
-
-        <ul className="mt-4 space-y-2">
-          {points.map((point) => (
-            <li
-              key={point}
+            <span
               className={cn(
-                "flex items-start gap-2.5 text-[13px] font-light leading-relaxed transition-colors",
+                "font-mono text-[10px] tabular-nums",
+                isFlow ? "text-signal/60" : "text-ink-4",
+              )}
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span
+              className={cn(
+                "text-[13px] font-light leading-relaxed md:text-sm",
                 isFlow ? "text-ink" : "text-ink-3",
               )}
             >
-              <span
-                aria-hidden
-                className={cn(
-                  "mt-[7px] h-px w-3 shrink-0",
-                  isFlow ? "bg-signal/60" : "bg-ink-4",
-                )}
-              />
-              <span>{point}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+              {point}
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-/**
- * The state shift: the two system states side by side, with the transition
- * marker between them and the anchoring metric beneath.
- */
+/** The before/after diptych plus the anchoring metric, as one instrument. */
 export function StateShift() {
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-[1fr_auto_1fr] lg:gap-4">
-        <Reveal className="flex">
-          <StateCard
+    <Reveal>
+      <div className="panel relative overflow-hidden rounded-3xl">
+        {/* Corner registration marks */}
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          <span className="absolute left-5 top-5 h-3 w-3 border-l border-t border-white/15" />
+          <span className="absolute right-5 top-5 h-3 w-3 border-r border-t border-white/15" />
+        </div>
+
+        <div className="relative grid grid-cols-1 lg:grid-cols-2">
+          {/* Divider: horizontal when stacked, vertical when side by side */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent lg:inset-x-auto lg:inset-y-0 lg:left-1/2 lg:h-auto lg:w-px lg:bg-gradient-to-b"
+          />
+
+          {/* Transition marker riding the divider */}
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-1/2 z-10 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-signal/25 bg-surface-2 text-signal"
+          >
+            <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5 rotate-90 lg:rotate-0">
+              <path
+                d="M4 12h14m0 0-5-5m5 5-5 5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+
+          <StatePane
             label="Before"
             status="Stuck"
             tone="fault"
             diagram={<FaultDiagram />}
             points={BEFORE_POINTS}
           />
-        </Reveal>
-
-        {/* Transition marker: points right on wide screens, down when stacked */}
-        <Reveal delay={120} className="flex items-center justify-center lg:px-2">
-          {/* Stacked on small screens, so the marker points down there and
-              right once the cards sit side by side. */}
-          <div aria-hidden className="flex flex-col items-center gap-2 lg:flex-row">
-            <span className="h-8 w-px bg-gradient-to-b from-fault/30 to-signal/40 lg:h-px lg:w-8 lg:bg-gradient-to-r" />
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-signal/25 bg-signal-soft text-signal">
-              <ArrowRight className="h-3.5 w-3.5 rotate-90 lg:rotate-0" strokeWidth={1.5} />
-            </span>
-            <span className="h-8 w-px bg-gradient-to-b from-signal/40 to-transparent lg:h-px lg:w-8 lg:bg-gradient-to-r" />
-          </div>
-        </Reveal>
-
-        <Reveal delay={220} className="flex">
-          <StateCard
+          <StatePane
             label="After"
             status="Flowing"
             tone="flow"
             diagram={<FlowDiagram />}
             points={AFTER_POINTS}
           />
-        </Reveal>
-      </div>
+        </div>
 
-      <Reveal delay={300}>
-        <div className="panel panel-hover relative mt-6 overflow-hidden rounded-2xl px-6 py-5 lg:mt-4">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(ellipse_70%_100%_at_100%_50%,rgba(52,211,153,0.10),transparent_70%)]"
-          />
-          <div className="relative flex flex-wrap items-end justify-between gap-4">
-            <span className="font-mono text-[10px] font-medium uppercase tracking-[0.28em] text-ink-4">
+        {/* Metric footer, part of the same instrument */}
+        <div className="relative border-t border-line bg-white/[0.02]">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3 px-6 py-7 md:px-9 md:py-8">
+            <span className="font-mono text-[10px] font-medium uppercase tracking-[0.3em] text-ink-4">
               Typical Outcome
             </span>
-            <div className="flex items-baseline gap-3">
-              <span className="font-mono text-2xl tracking-tight text-ink tabular-nums md:text-3xl">
+            <div className="flex items-baseline gap-4">
+              <span className="whitespace-nowrap font-serif text-3xl tracking-tight text-ink tabular-nums md:text-4xl">
                 40–60 hrs
               </span>
-              <span className="font-mono text-[10px] text-ink-4">reclaimed / team / week</span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-4">
+                reclaimed / team / week
+              </span>
             </div>
           </div>
         </div>
-      </Reveal>
-    </div>
+      </div>
+    </Reveal>
   );
 }

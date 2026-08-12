@@ -6,9 +6,10 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+// Order mirrors the order the sections appear in on the page.
 const NAV_LINKS = [
-  { href: "#principles", label: "Principles" },
   { href: "#projects", label: "Work" },
+  { href: "#principles", label: "Principles" },
   { href: "#process", label: "Process" },
 ];
 

@@ -2,9 +2,11 @@ import { FeaturedProjectCarousel } from "@/components/featured-project-carousel"
 import { HeroMesh } from "@/components/hero-mesh";
 import { InquireModal } from "@/components/inquire-modal";
 import { PageBackdrop } from "@/components/page-backdrop";
+import { Parallax } from "@/components/parallax";
 import { Reveal } from "@/components/reveal";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { SectionLabel } from "@/components/section-label";
+import { SectionThread } from "@/components/section-thread";
 import { SiteNav } from "@/components/site-nav";
 import { StateShift } from "@/components/state-shift";
 import { siteConfig } from "@/config/site";
@@ -43,6 +45,9 @@ const PRINCIPLES = [
   },
 ] as const;
 
+/** Stops on the thread that runs down the page, in scroll order. */
+const SECTION_IDS = ["shift", "projects", "principles", "process", "contact"];
+
 const PHASES = [
   {
     phase: "PHASE I",
@@ -79,6 +84,8 @@ export default function Home() {
       <ScrollProgress />
 
       <main id="top" className="relative overflow-x-clip">
+        <SectionThread sectionIds={SECTION_IDS} />
+
         {/* ---------------- Hero ---------------- */}
         <section className="relative flex min-h-svh items-center px-6 pb-20 pt-32 lg:px-12 lg:pt-28">
           <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-8">
@@ -134,7 +141,9 @@ export default function Home() {
             </div>
 
             <Reveal delay={200} className="lg:col-span-6 xl:col-span-5">
-              <HeroMesh className="mx-auto aspect-square w-full max-w-[270px] sm:max-w-[400px] lg:max-w-none" />
+              <Parallax distance={-52}>
+                <HeroMesh className="mx-auto aspect-square w-full max-w-[270px] sm:max-w-[400px] lg:max-w-none" />
+              </Parallax>
             </Reveal>
           </div>
 
@@ -150,7 +159,7 @@ export default function Home() {
         </section>
 
         {/* ---------------- State shift ---------------- */}
-        <section className="relative px-6 py-24 lg:px-12 lg:py-28">
+        <section className="relative px-6 py-24 lg:px-12 lg:py-28" id="shift">
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(255,255,255,0.035),transparent_70%)]"
@@ -174,9 +183,43 @@ export default function Home() {
               </Reveal>
             </div>
 
-            <div className="mt-16 lg:mt-20">
+            <Parallax distance={-28} className="mt-16 lg:mt-20">
               <StateShift />
-            </div>
+            </Parallax>
+          </div>
+        </section>
+
+        {/* ---------------- Selected Works ---------------- */}
+        <section
+          className="relative px-6 py-24 lg:px-12 lg:py-32"
+          id="projects"
+        >
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_80%_10%,rgba(52,211,153,0.05),transparent_65%)]"
+          />
+          <div className="relative mx-auto max-w-[1400px]">
+            <Reveal>
+              <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-10">
+                <h2 className="font-serif text-4xl font-medium tracking-[-0.02em] text-ink md:text-6xl">
+                  Selected Works
+                </h2>
+                <Link
+                  className="group hidden items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-3 transition-colors hover:text-ink md:inline-flex"
+                  href="#"
+                >
+                  Archive (14)
+                  <ArrowRight
+                    className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1"
+                    strokeWidth={1.5}
+                  />
+                </Link>
+              </div>
+            </Reveal>
+
+            <Reveal delay={100} className="mt-16 block">
+              <FeaturedProjectCarousel />
+            </Reveal>
           </div>
         </section>
 
@@ -228,40 +271,6 @@ export default function Home() {
                 </Reveal>
               ))}
             </div>
-          </div>
-        </section>
-
-        {/* ---------------- Selected Works ---------------- */}
-        <section
-          className="relative px-6 py-24 lg:px-12 lg:py-32"
-          id="projects"
-        >
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_80%_10%,rgba(52,211,153,0.05),transparent_65%)]"
-          />
-          <div className="relative mx-auto max-w-[1400px]">
-            <Reveal>
-              <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-10">
-                <h2 className="font-serif text-4xl font-medium tracking-[-0.02em] text-ink md:text-6xl">
-                  Selected Works
-                </h2>
-                <Link
-                  className="group hidden items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-3 transition-colors hover:text-ink md:inline-flex"
-                  href="#"
-                >
-                  Archive (14)
-                  <ArrowRight
-                    className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1"
-                    strokeWidth={1.5}
-                  />
-                </Link>
-              </div>
-            </Reveal>
-
-            <Reveal delay={100} className="mt-16 block">
-              <FeaturedProjectCarousel />
-            </Reveal>
           </div>
         </section>
 
@@ -345,7 +354,7 @@ export default function Home() {
         </section>
 
         {/* ---------------- CTA ---------------- */}
-        <section className="relative overflow-hidden px-6 py-32 text-center lg:px-12 lg:py-40">
+        <section className="relative overflow-hidden px-6 py-32 text-center lg:px-12 lg:py-40" id="contact">
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <div className="absolute inset-0 grid-lines opacity-60" />
             <div className="absolute left-1/2 top-1/2 h-[560px] w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(52,211,153,0.10),transparent_65%)] blur-3xl animate-drift" />
