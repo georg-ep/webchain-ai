@@ -20,34 +20,22 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
-// Kept inside the lengths search engines actually render: roughly 60
-// characters for the title and 155 for the description.
-const TITLE = "AI Automation Agency for Autonomous Systems";
+// Short enough to survive a browser tab and a search result without
+// truncation: brand first, one plain descriptor after it.
+const TITLE = "WebChain Labs | AI Automation";
 const DESCRIPTION =
-  "We build custom AI agents and autonomous systems that run your operations end to end, so your team stops making routine decisions by hand. Dubai & London.";
+  "We build custom AI agents and autonomous systems that run your operations end to end. Dubai and London.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${TITLE} | WebChain Labs`,
+    default: TITLE,
     template: "%s | WebChain Labs",
   },
   description: DESCRIPTION,
   applicationName: siteConfig.name,
   category: "technology",
-  keywords: [
-    "AI automation agency",
-    "business process automation",
-    "AI agents for business",
-    "workflow automation",
-    "autonomous systems",
-    "AI architecture",
-    "custom AI development",
-    "AI integration services",
-    "enterprise AI consulting",
-    "intelligent automation",
-    "WebChain Labs",
-  ],
+  keywords: ["AI automation", "AI agents", "autonomous systems", "WebChain Labs"],
   authors: [{ name: siteConfig.name, url: siteConfig.url }],
   creator: siteConfig.name,
   publisher: siteConfig.name,
@@ -72,12 +60,12 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: `${TITLE} | WebChain Labs`,
+    title: TITLE,
     description: DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${TITLE} | WebChain Labs`,
+    title: TITLE,
     description: DESCRIPTION,
     creator: "@webchainceo",
     site: "@webchainceo",
