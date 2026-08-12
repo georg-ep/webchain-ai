@@ -1,5 +1,7 @@
+import { Reveal } from "@/components/reveal";
 import { FaultDiagram, FlowDiagram } from "@/components/system-diagram";
 import { cn } from "@/lib/utils";
+import { ArrowRight } from "lucide-react";
 
 const BEFORE_POINTS = [
   "High-leverage decisions trapped in Slack",
@@ -31,7 +33,7 @@ function StateCard({
   return (
     <div
       className={cn(
-        "panel panel-hover group relative overflow-hidden rounded-xl p-4",
+        "panel panel-hover group relative h-full w-full overflow-hidden rounded-2xl p-5 md:p-6",
         isFlow && "border-signal/15",
       )}
     >
@@ -118,40 +120,67 @@ function StateCard({
   );
 }
 
-/** The hero's right-hand column: the before/after state shift plus the anchoring metric. */
+/**
+ * The state shift: the two system states side by side, with the transition
+ * marker between them and the anchoring metric beneath.
+ */
 export function StateShift() {
   return (
-    <div className="flex w-full flex-col gap-3">
-      <StateCard
-        label="Before"
-        status="Stuck"
-        tone="fault"
-        diagram={<FaultDiagram />}
-        points={BEFORE_POINTS}
-      />
-      <StateCard
-        label="After"
-        status="Flowing"
-        tone="flow"
-        diagram={<FlowDiagram />}
-        points={AFTER_POINTS}
-      />
+    <div className="w-full">
+      <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-[1fr_auto_1fr] lg:gap-4">
+        <Reveal className="flex">
+          <StateCard
+            label="Before"
+            status="Stuck"
+            tone="fault"
+            diagram={<FaultDiagram />}
+            points={BEFORE_POINTS}
+          />
+        </Reveal>
 
-      <div className="panel panel-hover relative overflow-hidden rounded-xl px-4 py-3.5">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(ellipse_70%_100%_at_100%_50%,rgba(52,211,153,0.10),transparent_70%)]"
-        />
-        <div className="relative flex items-end justify-between gap-4">
-          <span className="font-mono text-[9px] font-medium uppercase tracking-[0.28em] text-ink-4">
-            Typical Outcome
-          </span>
-          <div className="text-right">
-            <div className="font-mono text-xl tracking-tight text-ink tabular-nums">40–60 hrs</div>
-            <div className="mt-0.5 font-mono text-[10px] text-ink-4">reclaimed / team / week</div>
+        {/* Transition marker: points right on wide screens, down when stacked */}
+        <Reveal delay={120} className="flex items-center justify-center lg:px-2">
+          {/* Stacked on small screens, so the marker points down there and
+              right once the cards sit side by side. */}
+          <div aria-hidden className="flex flex-col items-center gap-2 lg:flex-row">
+            <span className="h-8 w-px bg-gradient-to-b from-fault/30 to-signal/40 lg:h-px lg:w-8 lg:bg-gradient-to-r" />
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-signal/25 bg-signal-soft text-signal">
+              <ArrowRight className="h-3.5 w-3.5 rotate-90 lg:rotate-0" strokeWidth={1.5} />
+            </span>
+            <span className="h-8 w-px bg-gradient-to-b from-signal/40 to-transparent lg:h-px lg:w-8 lg:bg-gradient-to-r" />
+          </div>
+        </Reveal>
+
+        <Reveal delay={220} className="flex">
+          <StateCard
+            label="After"
+            status="Flowing"
+            tone="flow"
+            diagram={<FlowDiagram />}
+            points={AFTER_POINTS}
+          />
+        </Reveal>
+      </div>
+
+      <Reveal delay={300}>
+        <div className="panel panel-hover relative mt-6 overflow-hidden rounded-2xl px-6 py-5 lg:mt-4">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(ellipse_70%_100%_at_100%_50%,rgba(52,211,153,0.10),transparent_70%)]"
+          />
+          <div className="relative flex flex-wrap items-end justify-between gap-4">
+            <span className="font-mono text-[10px] font-medium uppercase tracking-[0.28em] text-ink-4">
+              Typical Outcome
+            </span>
+            <div className="flex items-baseline gap-3">
+              <span className="font-mono text-2xl tracking-tight text-ink tabular-nums md:text-3xl">
+                40–60 hrs
+              </span>
+              <span className="font-mono text-[10px] text-ink-4">reclaimed / team / week</span>
+            </div>
           </div>
         </div>
-      </div>
+      </Reveal>
     </div>
   );
 }

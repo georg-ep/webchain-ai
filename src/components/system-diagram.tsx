@@ -66,7 +66,16 @@ function NodeShape({
 
 export function FaultDiagram() {
   const intake = `M2 ${BASELINE} H${NODE_X[1] - 10}`;
-  const retry = `M${NODE_X[1] - 2} ${BASELINE - 12} C ${NODE_X[1] - 26} ${BASELINE - 38}, ${NODE_X[1] + 26} ${BASELINE - 38}, ${NODE_X[1] + 3} ${BASELINE - 13}`;
+
+  // A closed circle sitting on top of the node. Two arcs rather than a bezier
+  // so the start and end points are identical: an open path made the token
+  // jump back to the start on every repeat.
+  const retryR = 11;
+  const retryCy = BASELINE - 10 - retryR;
+  const retry =
+    `M${NODE_X[1] - retryR} ${retryCy} ` +
+    `A ${retryR} ${retryR} 0 1 1 ${NODE_X[1] + retryR} ${retryCy} ` +
+    `A ${retryR} ${retryR} 0 1 1 ${NODE_X[1] - retryR} ${retryCy}`;
 
   return (
     <svg
@@ -124,17 +133,10 @@ export function FaultDiagram() {
         strokeDasharray="3 4"
       />
 
-      {/* Retry loop */}
+      {/* Retry loop: work cycling on itself instead of moving on */}
       <path d={retry} stroke="#f87171" strokeWidth="1" strokeDasharray="3 3" strokeOpacity="0.5" fill="none" />
-      <path
-        d={`M${NODE_X[1] + 8} ${BASELINE - 19} L${NODE_X[1] + 3} ${BASELINE - 13} L${NODE_X[1] - 3} ${BASELINE - 16}`}
-        stroke="#f87171"
-        strokeOpacity="0.65"
-        strokeWidth="1"
-        fill="none"
-      />
       <circle r="2" fill="#fbbf24">
-        <animateMotion dur="2.4s" repeatCount="indefinite" path={retry} />
+        <animateMotion dur="2.4s" repeatCount="indefinite" path={retry} calcMode="linear" />
       </circle>
 
       <NodeShape x={NODE_X[0]} tone="fault" />
@@ -184,15 +186,8 @@ export function FlowDiagram() {
       {/* Main line */}
       <path d={mainPath} stroke="url(#flowEdge)" strokeWidth="1.25" />
 
-      {/* Bypass route for the outlier */}
+      {/* Bypass route for the outlier, landing back on the final node */}
       <path d={bypassPath} stroke="#34d399" strokeWidth="1" strokeOpacity="0.4" strokeDasharray="3 3" fill="none" />
-      <path
-        d={`M${NODE_X[3] - 5} ${BASELINE - 18} L${NODE_X[3]} ${BASELINE - 11} L${NODE_X[3] + 5} ${BASELINE - 18}`}
-        stroke="#34d399"
-        strokeOpacity="0.55"
-        strokeWidth="1"
-        fill="none"
-      />
 
       {/* Tokens: a steady main stream plus the rerouted outlier */}
       {[0, 1.1, 2.2].map((begin, i) => (

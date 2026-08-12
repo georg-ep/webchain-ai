@@ -32,6 +32,9 @@ export function Reveal({ children, className, delay = 0, as = "div" }: RevealPro
       return;
     }
 
+    // threshold 0 rather than a ratio: short elements (a one-line eyebrow,
+    // for instance) can measure zero height at observe time, report a ratio
+    // of 0, and then never fire again because nothing about them changes.
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -39,11 +42,25 @@ export function Reveal({ children, className, delay = 0, as = "div" }: RevealPro
           observer.disconnect();
         }
       },
-      { threshold: 0.15, rootMargin: "0px 0px -8% 0px" },
+      { threshold: 0, rootMargin: "0px 0px -8% 0px" },
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
+
+    // Anything already on screen at mount should just be shown, in case the
+    // observer's first callback lands before layout settles.
+    const raf = requestAnimationFrame(() => {
+      const rect = node.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        setVisible(true);
+        observer.disconnect();
+      }
+    });
+
+    return () => {
+      cancelAnimationFrame(raf);
+      observer.disconnect();
+    };
   }, []);
 
   return (

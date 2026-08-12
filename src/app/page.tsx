@@ -1,6 +1,9 @@
 import { FeaturedProjectCarousel } from "@/components/featured-project-carousel";
+import { HeroMesh } from "@/components/hero-mesh";
 import { InquireModal } from "@/components/inquire-modal";
+import { PageBackdrop } from "@/components/page-backdrop";
 import { Reveal } from "@/components/reveal";
+import { ScrollProgress } from "@/components/scroll-progress";
 import { SectionLabel } from "@/components/section-label";
 import { SiteNav } from "@/components/site-nav";
 import { StateShift } from "@/components/state-shift";
@@ -72,19 +75,14 @@ export default function Home() {
     <>
       <SiteNav />
 
+      <PageBackdrop />
+      <ScrollProgress />
+
       <main id="top" className="relative overflow-x-clip">
         {/* ---------------- Hero ---------------- */}
-        <section className="relative flex min-h-svh items-center overflow-hidden px-6 pb-20 pt-32 lg:px-12 lg:pt-28">
-          {/* Ambient field */}
-          <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute inset-0 grid-lines opacity-70" />
-            <div className="absolute -left-[10%] top-[-20%] h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle,rgba(52,211,153,0.10),transparent_65%)] blur-2xl animate-drift" />
-            <div className="absolute right-[-10%] top-[10%] h-[560px] w-[560px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.10),transparent_65%)] blur-2xl animate-drift [animation-delay:-9s]" />
-            <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-surface-0 to-transparent" />
-          </div>
-
-          <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-16 lg:grid-cols-12 lg:gap-14">
-            <div className="lg:col-span-7">
+        <section className="relative flex min-h-svh items-center px-6 pb-20 pt-32 lg:px-12 lg:pt-28">
+          <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-8">
+            <div className="lg:col-span-6 xl:col-span-7">
               <Reveal>
                 <div className="flex items-center gap-4">
                   <span className="h-px w-10 bg-gradient-to-r from-ink-4 to-transparent" />
@@ -116,13 +114,13 @@ export default function Home() {
               <Reveal delay={240}>
                 <div className="mt-12 flex flex-wrap items-center gap-4">
                   <InquireModal>
-                    <button className="shine group inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-black transition-transform duration-500 [transition-timing-function:var(--ease-out-expo)] hover:-translate-y-0.5">
+                    <button className="shine group inline-flex items-center gap-3 rounded-full bg-white px-6 py-4 font-mono sm:px-8 text-[10px] font-bold uppercase tracking-[0.22em] text-black transition-transform duration-500 [transition-timing-function:var(--ease-out-expo)] hover:-translate-y-0.5">
                       Inquire
                     </button>
                   </InquireModal>
 
                   <Link
-                    className="group inline-flex items-center gap-3 rounded-full border border-line px-8 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-ink-2 transition-all duration-500 [transition-timing-function:var(--ease-out-expo)] hover:-translate-y-0.5 hover:border-line-strong hover:text-ink"
+                    className="group inline-flex items-center gap-3 rounded-full border border-line px-6 py-4 font-mono sm:px-8 text-[10px] font-bold uppercase tracking-[0.22em] text-ink-2 transition-all duration-500 [transition-timing-function:var(--ease-out-expo)] hover:-translate-y-0.5 hover:border-line-strong hover:text-ink"
                     href="#projects"
                   >
                     Explore Works
@@ -135,18 +133,63 @@ export default function Home() {
               </Reveal>
             </div>
 
-            <Reveal delay={200} className="lg:col-span-5">
-              <StateShift />
+            <Reveal delay={200} className="lg:col-span-6 xl:col-span-5">
+              <HeroMesh className="mx-auto aspect-square w-full max-w-[270px] sm:max-w-[400px] lg:max-w-none" />
             </Reveal>
+          </div>
+
+          {/* Scroll cue: a signal running down the line */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-8 hidden justify-center lg:flex"
+          >
+            <span className="relative h-14 w-px overflow-hidden bg-gradient-to-b from-transparent via-line-strong to-transparent">
+              <span className="absolute inset-x-0 top-0 h-4 animate-scroll-cue bg-gradient-to-b from-transparent via-signal to-transparent" />
+            </span>
+          </div>
+        </section>
+
+        {/* ---------------- State shift ---------------- */}
+        <section className="relative px-6 py-24 lg:px-12 lg:py-28">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(255,255,255,0.035),transparent_70%)]"
+          />
+          <div className="relative mx-auto max-w-[1400px]">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
+              <Reveal className="lg:col-span-5">
+                <SectionLabel>The Shift</SectionLabel>
+                <h2 className="mt-7 font-serif text-3xl font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[2.5rem]">
+                  What changes when the{" "}
+                  <span className="italic text-ink-3">system does the thinking.</span>
+                </h2>
+              </Reveal>
+              <Reveal delay={100} className="lg:col-span-6 lg:col-start-7 lg:self-end">
+                <p className="max-w-xl text-[15px] font-light leading-relaxed text-ink-2">
+                  Most operations stall in the same place: work arrives faster than people can
+                  route it, and anything unfamiliar waits for a human. Below is the same pipeline
+                  before and after we rebuild it — where the work stops today, and where it keeps
+                  moving once the system can reason for itself.
+                </p>
+              </Reveal>
+            </div>
+
+            <div className="mt-16 lg:mt-20">
+              <StateShift />
+            </div>
           </div>
         </section>
 
         {/* ---------------- Principles ---------------- */}
         <section
-          className="noise relative border-t border-line bg-surface-1 px-6 py-24 lg:px-12 lg:py-32"
+          className="relative px-6 py-24 lg:px-12 lg:py-32"
           id="principles"
         >
-          <div className="mx-auto max-w-[1400px]">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_15%_0%,rgba(255,255,255,0.03),transparent_65%)]"
+          />
+          <div className="relative mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
               <Reveal className="lg:col-span-4">
                 <SectionLabel>Manifesto</SectionLabel>
@@ -190,10 +233,14 @@ export default function Home() {
 
         {/* ---------------- Selected Works ---------------- */}
         <section
-          className="relative border-t border-line bg-surface-0 px-6 py-24 lg:px-12 lg:py-32"
+          className="relative px-6 py-24 lg:px-12 lg:py-32"
           id="projects"
         >
-          <div className="mx-auto max-w-[1400px]">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_80%_10%,rgba(52,211,153,0.05),transparent_65%)]"
+          />
+          <div className="relative mx-auto max-w-[1400px]">
             <Reveal>
               <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-10">
                 <h2 className="font-serif text-4xl font-medium tracking-[-0.02em] text-ink md:text-6xl">
@@ -220,10 +267,14 @@ export default function Home() {
 
         {/* ---------------- Process ---------------- */}
         <section
-          className="noise relative border-t border-line bg-surface-1 px-6 py-24 lg:px-12 lg:py-32"
+          className="relative px-6 py-24 lg:px-12 lg:py-32"
           id="process"
         >
-          <div className="mx-auto max-w-[1400px]">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_60%_at_25%_20%,rgba(99,102,241,0.05),transparent_65%)]"
+          />
+          <div className="relative mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-16">
               <div className="lg:col-span-4">
                 <Reveal>
@@ -294,7 +345,7 @@ export default function Home() {
         </section>
 
         {/* ---------------- CTA ---------------- */}
-        <section className="relative overflow-hidden border-t border-line bg-surface-0 px-6 py-32 text-center lg:px-12 lg:py-40">
+        <section className="relative overflow-hidden px-6 py-32 text-center lg:px-12 lg:py-40">
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <div className="absolute inset-0 grid-lines opacity-60" />
             <div className="absolute left-1/2 top-1/2 h-[560px] w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(52,211,153,0.10),transparent_65%)] blur-3xl animate-drift" />
@@ -329,7 +380,7 @@ export default function Home() {
         </section>
 
         {/* ---------------- Footer ---------------- */}
-        <footer className="border-t border-line bg-black px-6 py-20 lg:px-12">
+        <footer className="relative bg-gradient-to-b from-transparent to-black px-6 py-20 lg:px-12">
           <div className="mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
               <div className="md:col-span-5">

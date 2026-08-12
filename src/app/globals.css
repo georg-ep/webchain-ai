@@ -46,6 +46,7 @@
   --animate-drift: drift 26s ease-in-out infinite;
   --animate-breathe: breathe 5s ease-in-out infinite;
   --animate-marquee: marquee 42s linear infinite;
+  --animate-scroll-cue: scroll-cue 2.6s ease-in-out infinite;
 }
 
 /* ---------- Custom Utilities ---------- */
@@ -100,6 +101,25 @@
   pointer-events: none;
   background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(52, 211, 153, 0.09), transparent 70%);
   filter: blur(20px);
+}
+
+/* Section divider that fades out at both ends, so sections melt together
+   instead of being cut apart by a hard full-bleed rule. */
+.seam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.03) 15%,
+    rgba(255, 255, 255, 0.11) 50%,
+    rgba(255, 255, 255, 0.03) 85%,
+    transparent 100%
+  );
 }
 
 .text-gradient {
@@ -184,6 +204,20 @@
   }
   50% {
     opacity: 0.9;
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(350%);
+    opacity: 0;
   }
 }
 
