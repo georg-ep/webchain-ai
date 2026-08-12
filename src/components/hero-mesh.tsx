@@ -17,12 +17,32 @@ import { useEffect, useRef } from "react";
 
 const NODE_COUNT = 72;
 const NEIGHBOURS = 3;
-const MAX_PULSES = 56;
+/** Hard ceiling, only ever hit if something goes wrong upstream. */
+const MAX_PULSES = 26;
+/** A cascade stops after this many hops, so it always burns out. */
+const MAX_GEN = 7;
+/** Chance a hop splits in two. Below 1 branch per hop on average. */
+const BRANCH_CHANCE = 0.28;
+/** Each hop carries less energy than the last. */
+const ENERGY_DECAY = 0.82;
+const MIN_ENERGY = 0.24;
+/** Quiet gap between cascades, so the mesh breathes instead of buzzing. */
+const SEED_GAP_MS = 850;
 const ASSEMBLE_MS = 2200;
 
 type Vec3 = { x: number; y: number; z: number };
 type Edge = { a: number; b: number };
-type Pulse = { edge: number; from: number; to: number; t: number; speed: number };
+type Pulse = {
+  edge: number;
+  from: number;
+  to: number;
+  t: number;
+  speed: number;
+  /** Hops from the node that started this cascade. */
+  gen: number;
+  /** Charge this pulse will deliver when it arrives. */
+  energy: number;
+};
 
 type Node = {
   /** Resting position on the sphere. */
@@ -115,6 +135,7 @@ export function HeroMesh({ className }: { className?: string }) {
     // resting drift, so the object feels connected to the page.
     let scrollSpin = 0;
     let lastScrollY = typeof window === "undefined" ? 0 : window.scrollY;
+    let lastSeed = 0;
 
     const reduceMotion =
       typeof window.matchMedia === "function" &&
@@ -132,23 +153,38 @@ export function HeroMesh({ className }: { className?: string }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    /** Fire a pulse down every edge leaving this node. */
-    const fireFrom = (nodeIndex: number, energy: number) => {
+    /**
+     * Activate a node and pass the signal on.
+     *
+     * The branching factor has to stay below 1 per hop, or the cascade is
+     * supercritical and grows until it pins every edge at once. So a hop
+     * continues down one edge, occasionally two, never back the way it came,
+     * and dies off on hop count or spent energy.
+     */
+    const fireFrom = (nodeIndex: number, energy: number, gen = 0, viaEdge = -1) => {
       const node = nodes[nodeIndex];
       node.charge = Math.min(1, node.charge + energy);
 
-      for (const edgeIndex of node.links) {
+      if (gen >= MAX_GEN || energy < MIN_ENERGY) return;
+
+      const candidates = node.links.filter((edgeIndex) => edgeIndex !== viaEdge);
+      const branches = Math.random() < BRANCH_CHANCE ? 2 : 1;
+
+      for (let n = 0; n < branches && candidates.length > 0; n++) {
         if (pulses.length >= MAX_PULSES) return;
+        const [edgeIndex] = candidates.splice(
+          Math.floor(Math.random() * candidates.length),
+          1,
+        );
         const edge = edges[edgeIndex];
-        const to = edge.a === nodeIndex ? edge.b : edge.a;
-        // Not every edge fires, so the cascade branches instead of flooding.
-        if (Math.random() > 0.45) continue;
         pulses.push({
           edge: edgeIndex,
           from: nodeIndex,
-          to,
+          to: edge.a === nodeIndex ? edge.b : edge.a,
           t: 0,
           speed: 0.014 + Math.random() * 0.012,
+          gen: gen + 1,
+          energy: energy * ENERGY_DECAY,
         });
       }
     };
@@ -274,8 +310,9 @@ export function HeroMesh({ className }: { className?: string }) {
           pulse.t += pulse.speed;
           if (pulse.t >= 1) {
             pulses.splice(i, 1);
-            // Arriving pulse re-ignites the next node: the cascade continues.
-            if (pulses.length < MAX_PULSES - 4) fireFrom(pulse.to, 0.9);
+            // Arriving pulse re-ignites the next node: the cascade continues,
+            // one generation weaker, and never straight back down this edge.
+            fireFrom(pulse.to, pulse.energy, pulse.gen, pulse.edge);
           }
         }
       }
@@ -301,10 +338,12 @@ export function HeroMesh({ className }: { className?: string }) {
         spin += 0.0015 + scrollSpin;
         wobble += 0.0035;
 
-        // Keep several cascades running so the mesh always reads as thinking,
-        // without letting them saturate the whole graph at once.
-        if (pulses.length < 10 && Math.random() < 0.09) {
+        // Cascades now burn out on their own, so the mesh needs re-seeding.
+        // Wait for the previous one to thin out and leave a beat of quiet,
+        // which reads as a thought rather than a constant swarm.
+        if (pulses.length < 3 && now - lastSeed > SEED_GAP_MS && Math.random() < 0.06) {
           fireFrom(Math.floor(Math.random() * nodes.length), 1);
+          lastSeed = now;
         }
 
         render(now);
