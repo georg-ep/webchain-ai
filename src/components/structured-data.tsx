@@ -20,7 +20,7 @@ const organization = {
     "WebChain Labs designs and builds custom AI architecture and autonomous systems, so businesses can automate the decisions their teams currently make by hand.",
   slogan: "We build systems that think, not just software that executes.",
   foundingDate: "2024",
-  email: siteConfig.email,
+  ...(siteConfig.email ? { email: siteConfig.email } : {}),
   areaServed: [
     { "@type": "Place", name: "United Arab Emirates" },
     { "@type": "Place", name: "United Kingdom" },
@@ -39,7 +39,7 @@ const organization = {
   ],
   contactPoint: {
     "@type": "ContactPoint",
-    email: siteConfig.email,
+    ...(siteConfig.email ? { email: siteConfig.email } : {}),
     contactType: "Sales",
     availableLanguage: ["English"],
   },
