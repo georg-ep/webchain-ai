@@ -2,16 +2,19 @@ import GoogleAnalyticsProvider from "@/components/google-analytics-provider";
 import { StructuredData } from "@/components/structured-data";
 import { siteConfig } from "@/config/site";
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import { JetBrains_Mono, Manrope, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+// Display face. Derived from Space Mono, so it shares terminal DNA with the
+// JetBrains Mono HUD labels. It ships no italic — emphasis inside headings
+// is done with colour and weight, never `italic`, to avoid a faux oblique.
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
 });
 
@@ -22,9 +25,9 @@ const jetbrainsMono = JetBrains_Mono({
 
 // Short enough to survive a browser tab and a search result without
 // truncation: brand first, one plain descriptor after it.
-const TITLE = "WebChain Labs | AI Automation";
+const TITLE = "WebChain Labs | AI Automation Agency";
 const DESCRIPTION =
-  "We build custom AI agents and autonomous systems that run your operations end to end. Dubai and London.";
+  "We build custom AI agents and autonomous systems that run your operations end to end. Dubai and London. Book a free 30-minute architecture call.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -35,7 +38,17 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   applicationName: siteConfig.name,
   category: "technology",
-  keywords: ["AI automation", "AI agents", "autonomous systems", "WebChain Labs"],
+  keywords: [
+    "AI automation agency",
+    "AI automation",
+    "custom AI agents",
+    "AI agents",
+    "autonomous systems",
+    "LLM integration",
+    "workflow automation",
+    "AI consulting",
+    "WebChain Labs",
+  ],
   authors: [{ name: siteConfig.name, url: siteConfig.url }],
   creator: siteConfig.name,
   publisher: siteConfig.name,
@@ -102,7 +115,7 @@ export default function RootLayout({
         <script src="https://analytics.ahrefs.com/analytics.js" data-key="5ttpepYQZEEqGz2PfKyLCg" async></script>
       </head>
       <body
-        className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} antialiased bg-surface-0 text-ink-2 selection:bg-white selection:text-black font-sans`}
+        className={`${manrope.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased bg-surface-0 text-ink-2 selection:bg-white selection:text-black font-sans`}
       >
         <StructuredData />
         <GoogleAnalyticsProvider />

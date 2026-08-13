@@ -53,27 +53,28 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
       // Reset success state after 3 seconds
       setTimeout(() => setStatus("idle"), 3000);
       
-    } catch (error: any) {
+    } catch (error) {
       console.error("Submission error:", error);
       setStatus("error");
-      setErrorMessage(error.message || "Transmission failed");
+      setErrorMessage(error instanceof Error ? error.message : "Something went wrong");
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="panel overflow-hidden rounded-2xl border-line bg-surface-1 text-ink sm:max-w-[440px]">
+      <DialogContent className="panel overflow-hidden rounded-2xl text-ink sm:max-w-[440px]">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgba(52,211,153,0.10),transparent_70%)]"
         />
         <DialogHeader className="relative">
-          <DialogTitle className="font-serif text-2xl font-light italic text-ink">
-            Initiate Protocol
+          <DialogTitle className="font-display text-2xl text-ink">
+            Book a Call
           </DialogTitle>
-          <DialogDescription className="font-mono text-[11px] font-light text-ink-3">
-            Submit your parameters for review. We engineer certainty.
+          <DialogDescription className="font-mono text-[11px] font-light leading-relaxed text-ink-3">
+            Tell us what you&apos;re building. We reply within 24 hours to schedule a free
+            30-minute architecture call.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="relative grid gap-4 py-4">
@@ -83,7 +84,7 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
             </Label>
             <Input
               id="name"
-              placeholder="J. Oppenheimer"
+              placeholder="Your name"
               value={formData.name}
               onChange={handleChange}
               required
@@ -93,12 +94,12 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="email" className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-4">
-              Email
+              Work Email
             </Label>
             <Input
               id="email"
               type="email"
-              placeholder="director@losalamos.gov"
+              placeholder="you@company.com"
               value={formData.email}
               onChange={handleChange}
               required
@@ -108,11 +109,11 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="message" className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-4">
-              Directives
+              What are you building?
             </Label>
             <Textarea
               id="message"
-              placeholder="Brief on project scope and limitations..."
+              placeholder="The workflow you want to automate, the decisions that stall, the scale you operate at..."
               value={formData.message}
               onChange={handleChange}
               required
@@ -130,16 +131,16 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
           {status === "success" && (
             <div className="flex items-center gap-2 rounded-lg border border-signal/25 bg-signal-soft p-2.5 font-mono text-[10px] text-signal">
               <span className="h-1.5 w-1.5 rounded-full bg-signal animate-pulse"/>
-              SIGNAL RECEIVED AND ACKNOWLEDGED
+              RECEIVED — WE&apos;LL BE IN TOUCH WITHIN 24 HOURS
             </div>
           )}
 
           <Button 
             type="submit" 
             disabled={status === "loading" || status === "success"}
-            className="shine mt-4 h-12 rounded-full bg-white font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-black transition-all hover:bg-white disabled:opacity-50"
+            className="btn-cta btn-sweep mt-4 h-12 rounded-full bg-white font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-black hover:bg-white disabled:opacity-50"
           >
-            {status === "loading" ? "Transmitting..." : status === "success" ? "Sent" : "Transmit Signal"}
+            {status === "loading" ? "Sending..." : status === "success" ? "Sent" : "Request the Call"}
           </Button>
         </form>
       </DialogContent>

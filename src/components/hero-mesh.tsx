@@ -395,7 +395,10 @@ export function HeroMesh({ className }: { className?: string }) {
       {/* Core bloom behind the mesh */}
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-3/5 w-3/5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(52,211,153,0.18),rgba(52,211,153,0.04)_45%,transparent_70%)] blur-2xl" />
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-1/4 w-1/4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.12),transparent_70%)] blur-xl animate-breathe" />
-      <canvas ref={canvasRef} className="relative h-full w-full" />
+      {/* Absolutely positioned so the inline size written by `resize()` can
+          never feed back into the container's own layout: the box takes its
+          height from `aspect-square` alone. */}
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
     </div>
   );
 }

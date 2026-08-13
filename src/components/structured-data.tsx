@@ -1,4 +1,5 @@
 import { siteConfig } from "@/config/site";
+import { faqItems } from "@/data/faq";
 
 /**
  * JSON-LD for the organisation, the site and the service offered.
@@ -112,8 +113,21 @@ const service = {
   },
 };
 
+// Mirrors the visible FAQ section word for word, which is a requirement for
+// the rich result: the schema may not contain content the page does not show.
+const faq = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": `${siteConfig.url}/#faq`,
+  mainEntity: faqItems.map(({ question, answer }) => ({
+    "@type": "Question",
+    name: question,
+    acceptedAnswer: { "@type": "Answer", text: answer },
+  })),
+};
+
 export function StructuredData() {
-  const payload = [organization, website, service];
+  const payload = [organization, website, service, faq];
 
   return (
     <script

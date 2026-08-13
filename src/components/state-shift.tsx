@@ -164,7 +164,7 @@ export function StateShift() {
               Typical Outcome
             </span>
             <div className="flex items-baseline gap-4">
-              <span className="whitespace-nowrap font-serif text-3xl tracking-tight text-ink tabular-nums md:text-4xl">
+              <span className="whitespace-nowrap font-display text-3xl tracking-tight text-ink tabular-nums md:text-4xl">
                 40–60 hrs
               </span>
               <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-4">

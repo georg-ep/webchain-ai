@@ -130,7 +130,7 @@ export function FeaturedProjectCarousel() {
               {currentProject.category}
             </span>
 
-            <h3 className="mt-4 font-serif text-4xl font-light leading-[1.05] text-ink lg:text-5xl">
+            <h3 className="mt-4 font-display text-4xl leading-[1.05] tracking-[-0.02em] text-ink lg:text-5xl">
               {currentProject.title}
             </h3>
 

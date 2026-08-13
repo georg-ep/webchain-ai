@@ -7,15 +7,27 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-// Order mirrors the order the sections appear in on the page.
+// Order mirrors the order the sections appear in on the page. Hrefs carry
+// the leading `/` so the links also work from /terms and /privacy.
 const NAV_LINKS = [
-  { href: "#projects", label: "Work" },
-  { href: "#principles", label: "Principles" },
-  { href: "#process", label: "Process" },
+  { href: "/#projects", label: "Work" },
+  { href: "/#principles", label: "Principles" },
+  { href: "/#process", label: "Process" },
+  { href: "/#faq", label: "FAQ" },
 ];
 
+/** `/#projects` → `#projects`, for querySelector and id comparisons. */
+const hashOf = (href: string) => href.slice(href.indexOf("#"));
+
 /** Every stop shown on the header progress rail, in scroll order. */
-const PROGRESS_SECTIONS = ["shift", "projects", "principles", "process", "contact"];
+const PROGRESS_SECTIONS = [
+  { id: "shift", label: "The Shift" },
+  { id: "projects", label: "Works" },
+  { id: "principles", label: "Manifesto" },
+  { id: "process", label: "Method" },
+  { id: "faq", label: "FAQ" },
+  { id: "contact", label: "Contact" },
+];
 
 export function SiteNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,7 +43,7 @@ export function SiteNav() {
 
   // Highlight the section currently occupying the middle of the viewport.
   useEffect(() => {
-    const sections = NAV_LINKS.map(({ href }) => document.querySelector(href)).filter(
+    const sections = NAV_LINKS.map(({ href }) => document.querySelector(hashOf(href))).filter(
       (el): el is Element => Boolean(el),
     );
     if (!sections.length) return;
@@ -47,7 +59,7 @@ export function SiteNav() {
           else intersecting.delete(entry.target.id);
         });
 
-        const next = NAV_LINKS.find(({ href }) => intersecting.has(href.slice(1)));
+        const next = NAV_LINKS.find(({ href }) => intersecting.has(hashOf(href).slice(1)));
         setActiveSection(next?.href ?? "");
       },
       { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
@@ -91,10 +103,16 @@ export function SiteNav() {
    * above; this waits for the pin to lift and then moves.
    */
   const followLink = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    const target = document.querySelector(hashOf(href));
+    // Off the home page the section doesn't exist: let the link navigate.
+    if (!target) {
+      setMobileMenuOpen(false);
+      return;
+    }
     event.preventDefault();
     setMobileMenuOpen(false);
     requestAnimationFrame(() => {
-      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+      target.scrollIntoView({ behavior: "smooth" });
     });
   };
 
@@ -122,7 +140,7 @@ export function SiteNav() {
             scrolled ? "h-18" : "h-24",
           )}
         >
-          <Link href="#top" className="flex items-center" aria-label="WebChain Labs, back to top">
+          <Link href="/#top" className="flex items-center" aria-label="WebChain Labs, back to top">
             <img
               src="/brand/large.svg"
               alt="WebChain Labs"
@@ -161,8 +179,8 @@ export function SiteNav() {
 
           <div className="hidden md:block">
             <InquireModal>
-              <button className="shine group relative rounded-full border border-line-strong px-6 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-ink transition-colors duration-300 hover:border-white/40 hover:bg-white/5">
-                Inquire
+              <button className="btn-sweep group relative rounded-full border border-line-strong px-6 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-ink transition-colors duration-300 hover:border-signal/40 hover:bg-signal/5 hover:text-white">
+                Book a Call
               </button>
             </InquireModal>
           </div>
@@ -176,7 +194,7 @@ export function SiteNav() {
           </button>
         </div>
 
-        <HeaderProgress sectionIds={PROGRESS_SECTIONS} />
+        <HeaderProgress sections={PROGRESS_SECTIONS} />
       </header>
 
       {/* Mobile drawer */}
@@ -219,7 +237,7 @@ export function SiteNav() {
                 onClick={(event) => followLink(event, href)}
                 className="group flex items-center justify-between border-b border-line py-5 text-ink-2 transition-colors hover:text-ink"
               >
-                <span className="font-serif text-2xl">{label}</span>
+                <span className="font-display text-2xl">{label}</span>
                 <span className="font-mono text-[10px] text-ink-4">
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -229,8 +247,8 @@ export function SiteNav() {
 
           <div className="mt-auto p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
             <InquireModal>
-              <button className="shine w-full rounded-full bg-white px-6 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-black">
-                Inquire
+              <button className="btn-cta btn-sweep w-full rounded-full bg-white px-6 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-black">
+                Book a Call
               </button>
             </InquireModal>
           </div>
