@@ -10,6 +10,7 @@ import { SectionLabel } from "@/components/section-label";
 import { SiteNav } from "@/components/site-nav";
 import { StateShift } from "@/components/state-shift";
 import { SiteFooter } from "@/components/site-footer";
+import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import {
   ArrowRight,
@@ -446,45 +447,14 @@ export default function Home() {
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-4">
                   No obligation&ensp;·&ensp;Reply within 24 hours
                 </p>
-              </div>
-
-              <div className="flex flex-col md:col-span-4 md:col-start-9 md:items-end">
-                <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-ink-4">
-                  Connect
-                </div>
-                <div className="mt-6 flex items-center gap-2">
-                  {Object.entries(siteConfig.links).map(([name, url]) => (
-                    <Link
-                      key={name}
-                      href={url}
-                      target="_blank"
-                      aria-label={name}
-                      className="group flex h-9 w-9 items-center justify-center rounded-full border border-line bg-white/[0.03] p-2.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-line-strong hover:bg-white/[0.07]"
-                    >
-                      <Image
-                        alt={`Webchain ${name}`}
-                        width={16}
-                        height={16}
-                        className="h-full w-full object-contain opacity-40 transition-opacity group-hover:opacity-100"
-                        src={`/socials/${name}.svg`}
-                      />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-16 flex flex-col items-center justify-between gap-6 border-t border-line pt-8 md:flex-row">
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-4">
-                © 2026 WebChain Labs Inc.
-              </p>
-              <div className="flex gap-8 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-4">
-                <Link href="#" className="transition-colors hover:text-ink">
-                  Privacy Policy
-                </Link>
-                <Link href="#" className="transition-colors hover:text-ink">
-                  Terms &amp; Conditions
-                </Link>
+                {siteConfig.email && (
+                  <Link
+                    className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-3 transition-colors hover:text-ink"
+                    href={`mailto:${siteConfig.email}`}
+                  >
+                    {siteConfig.email}
+                  </Link>
+                )}
               </div>
             </div>
           </Reveal>
