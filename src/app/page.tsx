@@ -47,7 +47,7 @@ export default function Home() {
                 <div className="flex items-center gap-4">
                   <span className="h-px w-10 bg-gradient-to-r from-ink-4 to-transparent" />
                   <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-3">
-                    Est. 2024
+                    AI Systems Studio · Est. 2024
                   </span>
                 </div>
               </Reveal>
@@ -66,8 +66,9 @@ export default function Home() {
 
               <Reveal delay={160}>
                 <p className="mt-9 max-w-xl text-lg font-light leading-relaxed text-ink-2 md:text-xl">
-                  We design autonomous systems that handle the thinking, so your team can focus on
-                  the doing. Custom AI architecture built for real-world impact.
+                  WebChain Studio designs autonomous systems that handle the thinking, so your
+                  team can focus on the doing. Custom AI agents and architecture, engineered for
+                  real-world impact.
                 </p>
               </Reveal>
 

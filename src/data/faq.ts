@@ -12,9 +12,9 @@ export interface FaqItem {
 export const faqItems: FaqItem[] = [
   {
     id: "what-we-build",
-    question: "What does WebChain Labs actually build?",
+    question: "What does WebChain Studio actually build?",
     answer:
-      "Custom AI agents and autonomous systems: workflow automation that routes and executes work on its own, LLM integrations wired into your existing stack, and decision engines with deterministic guardrails. Everything is engineered for production — evaluated, monitored, and owned by you — not a thin wrapper around a chat window.",
+      "WebChain Studio builds custom AI agents and autonomous systems: workflow automation that routes and executes work on its own, LLM integrations wired into your existing stack, and decision engines with deterministic guardrails. Everything is engineered for production — evaluated, monitored, and owned by you — not a thin wrapper around a chat window.",
   },
   {
     id: "intro-call",

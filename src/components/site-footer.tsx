@@ -43,7 +43,8 @@ export function SiteFooter() {
               className="h-7 w-auto object-contain"
             />
             <p className="mt-8 max-w-xs text-xs font-light leading-relaxed text-ink-3">
-              Custom AI agents and autonomous systems, engineered with architectural precision.
+              WebChain Studio: custom AI agents, workflow automation and autonomous software,
+              engineered with architectural precision.
             </p>
             {siteConfig.email && (
               <Link

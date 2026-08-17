@@ -7,7 +7,8 @@ import { ImageResponse } from "next/og";
  * The previous card pointed at the brand SVG, which none of the major
  * crawlers render, so shared links had no image at all.
  */
-export const alt = "WebChain Labs — AI architecture and autonomous systems for business automation";
+export const alt =
+  "WebChain Studio — custom AI agents, workflow automation and autonomous software";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -42,7 +43,7 @@ export default function OpengraphImage() {
               textTransform: "uppercase",
             }}
           >
-            WebChain Labs
+            WebChain Studio
           </div>
         </div>
 

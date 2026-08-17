@@ -1,7 +1,7 @@
 {
-  "name": "WebChain Labs",
+  "name": "WebChain Studio",
   "short_name": "WebChain",
-  "description": "Building the intelligent layer. Custom AI architecture and autonomous systems.",
+  "description": "The AI systems studio. Custom AI agents, workflow automation and autonomous software.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",

@@ -24,29 +24,33 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 // Short enough to survive a browser tab and a search result without
-// truncation: brand first, one plain descriptor after it.
-const TITLE = "WebChain Labs | AI Automation Agency";
+// truncation: brand first, then the service keywords. "Studio" lives in the
+// brand itself, so the descriptor spends its characters on services.
+const TITLE = "WebChain Studio | Custom AI Agents & Autonomous Systems";
 const DESCRIPTION =
-  "We build custom AI agents and autonomous systems that run your operations end to end. Dubai and London. Book a free 30-minute architecture call.";
+  "WebChain Studio engineers custom AI agents, workflow automation and autonomous software for production. Dubai & London. Book a free architecture call.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: TITLE,
-    template: "%s | WebChain Labs",
+    template: "%s | WebChain Studio",
   },
   description: DESCRIPTION,
   applicationName: siteConfig.name,
   category: "technology",
   keywords: [
-    "AI automation agency",
-    "AI automation",
+    "AI systems studio",
+    "AI studio",
     "custom AI agents",
     "AI agents",
     "autonomous systems",
+    "custom software development",
     "LLM integration",
     "workflow automation",
     "AI consulting",
+    "WebChain",
+    "WebChain Studio",
     "WebChain Labs",
   ],
   authors: [{ name: siteConfig.name, url: siteConfig.url }],

@@ -14,8 +14,17 @@ const SITE_URL =
     : "https://webchain.ai");
 
 export const siteConfig = {
-  name: "WebChain Labs",
-  description: "WebChain Labs | Building the intelligent layer.",
+  /** Public-facing brand. The registered company stays `legalName` below. */
+  name: "WebChain Studio",
+  legalName: "WebChain Labs Inc.",
+  /**
+   * Alternate spellings people (and Google's entity graph) use for the brand.
+   * Fed into structured data so the Knowledge Graph can reconcile "WebChain",
+   * "WebChain Labs" and "WebChain Studio" as one organisation.
+   */
+  alternateNames: ["WebChain", "WebChain Labs"],
+  description:
+    "WebChain Studio engineers custom AI agents, workflow automation and autonomous software.",
   url: SITE_URL,
   /** Published in structured data, so it is omitted rather than guessed. */
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL,

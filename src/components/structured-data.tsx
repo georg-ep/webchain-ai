@@ -14,11 +14,15 @@ const organization = {
   "@type": "ProfessionalService",
   "@id": `${siteConfig.url}/#organization`,
   name: siteConfig.name,
+  legalName: siteConfig.legalName,
+  // Disambiguates the brand entity against the unrelated "Webchain" coin,
+  // dataset and agencies that share the name in search results.
+  alternateName: siteConfig.alternateNames,
   url: siteConfig.url,
   logo: `${siteConfig.url}/brand/large.svg`,
   image: `${siteConfig.url}/opengraph-image`,
   description:
-    "WebChain Labs designs and builds custom AI architecture and autonomous systems, so businesses can automate the decisions their teams currently make by hand.",
+    "WebChain Studio is an AI systems studio that designs and builds custom AI agents, workflow automation and autonomous software, so businesses can automate the decisions their teams currently make by hand.",
   slogan: "We build systems that think, not just software that executes.",
   foundingDate: "2024",
   ...(siteConfig.email ? { email: siteConfig.email } : {}),
@@ -34,6 +38,8 @@ const organization = {
     "AI automation",
     "Autonomous systems",
     "AI agents",
+    "Custom software development",
+    "LLM integration",
     "Business process automation",
     "AI architecture",
     "Machine learning engineering",
@@ -53,9 +59,10 @@ const website = {
   "@type": "WebSite",
   "@id": `${siteConfig.url}/#website`,
   name: siteConfig.name,
+  alternateName: siteConfig.alternateNames,
   url: siteConfig.url,
   description:
-    "Custom AI architecture and autonomous systems for businesses integrating automation into their operations.",
+    "The AI systems studio engineering custom AI agents, workflow automation and autonomous software for businesses.",
   inLanguage: "en",
   publisher: { "@id": `${siteConfig.url}/#organization` },
 };
