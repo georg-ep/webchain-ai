@@ -179,8 +179,8 @@ export function FeaturedProjectCarousel() {
         </div>
       </div>
 
-      {/* Index rail */}
-      <div className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-white/[0.06] sm:grid-cols-3 lg:grid-cols-6">
+      {/* Slide indicator: quiet ticks, the active one stretches to a mint dash */}
+      <div className="mt-10 flex items-center justify-center gap-2">
         {selectedWorks.map((project, index) => {
           const isActive = index === currentIndex;
           return (
@@ -188,31 +188,16 @@ export function FeaturedProjectCarousel() {
               key={project.id}
               onClick={() => goTo(index)}
               aria-current={isActive}
-              className={cn(
-                "group relative flex flex-col items-start gap-1.5 px-4 py-4 text-left transition-colors duration-500",
-                isActive ? "bg-surface-2" : "bg-surface-0 hover:bg-surface-1",
-              )}
+              aria-label={`Slide ${index + 1}: ${project.title}`}
+              title={project.title}
+              className="group flex h-6 items-center px-0.5"
             >
               <span
                 className={cn(
-                  "font-mono text-[9px] tracking-[0.2em] tabular-nums transition-colors",
-                  isActive ? "text-signal" : "text-ink-4",
-                )}
-              >
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <span
-                className={cn(
-                  "text-[13px] font-light transition-colors",
-                  isActive ? "text-ink" : "text-ink-3 group-hover:text-ink-2",
-                )}
-              >
-                {project.title}
-              </span>
-              <span
-                className={cn(
-                  "absolute inset-x-0 top-0 h-px origin-left bg-signal transition-transform duration-500 [transition-timing-function:var(--ease-out-expo)]",
-                  isActive ? "scale-x-100" : "scale-x-0",
+                  "h-[3px] rounded-full transition-all duration-500 [transition-timing-function:var(--ease-out-expo)]",
+                  isActive
+                    ? "w-7 bg-signal/80"
+                    : "w-2 bg-white/15 group-hover:bg-white/35",
                 )}
               />
             </button>

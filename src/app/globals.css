@@ -88,7 +88,9 @@
  * masked overlay so it can follow any radius.
  */
 .panel {
-  position: relative;
+  /* No `position` here: this class is unlayered so it would defeat Tailwind's
+     positioning utilities (the booking dialog must stay `fixed`). Consumers
+     declare `relative`/`absolute` themselves. */
   border: 1px solid transparent;
   /* Top two layers are the glass, clipped to the padding box; the last
      layer paints the full border box and shows through the transparent
@@ -212,6 +214,358 @@
   transition-duration: 0.15s;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 4px 18px -6px rgba(255, 255, 255, 0.25),
     0 10px 40px -12px rgba(52, 211, 153, 0.4);
+}
+
+/*
+ * ---------- 3D card system ----------
+ *
+ * `.scene-3d` gives children a shared vanishing point. `.tilt-card` is driven
+ * by pointer position via CSS vars (--rx/--ry for rotation, --gx/--gy for the
+ * glare hotspot) set from React. Content sits on `.tilt-layer`s lifted off
+ * the card face with translateZ(var(--tz)) so the parallax reads as depth.
+ *
+ * NOTE: `backdrop-filter` (used by .panel) flattens its own 3D subtree, so
+ * the glass background lives on an absolutely-positioned sibling layer while
+ * the depth layers stay direct children of the preserve-3d card.
+ */
+.scene-3d {
+  perspective: 1400px;
+}
+
+.tilt-card {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.7s var(--ease-out-expo);
+  will-change: transform;
+}
+
+.tilt-card[data-tilting="true"] {
+  transition-duration: 0.16s;
+  transition-timing-function: ease-out;
+}
+
+.tilt-layer {
+  transform: translateZ(var(--tz, 0px));
+}
+
+/* Mint key-light that follows the cursor across the card face */
+.tilt-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    460px circle at var(--gx, 50%) var(--gy, 50%),
+    rgba(52, 211, 153, 0.09),
+    rgba(255, 255, 255, 0.045) 38%,
+    transparent 64%
+  );
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out-expo);
+}
+
+.tilt-card[data-tilting="true"] .tilt-glare {
+  opacity: 1;
+}
+
+/* ---------- Holographic scenes (Manifesto) ---------- */
+
+.holo-scene {
+  perspective: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Wireframe cube — deterministic lattice */
+.cube3 {
+  position: relative;
+  transform-style: preserve-3d;
+  animation: cube-spin 18s linear infinite;
+}
+
+.cube3 i {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  background: rgba(52, 211, 153, 0.035);
+  box-shadow: inset 0 0 22px -6px rgba(52, 211, 153, 0.25);
+}
+
+.cube3-core {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: cube-spin 9s linear infinite reverse;
+}
+
+.cube3-core i {
+  border-color: rgba(52, 211, 153, 0.75);
+  background: rgba(52, 211, 153, 0.1);
+}
+
+@keyframes cube-spin {
+  from {
+    transform: rotateX(-22deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(-22deg) rotateY(360deg);
+  }
+}
+
+/* Dot field — a probability wave travelling through a tilted plane */
+.wave-plane {
+  display: grid;
+  transform-style: preserve-3d;
+  transform: rotateX(58deg) rotateZ(45deg);
+}
+
+.wave-plane i {
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: rgba(52, 211, 153, 0.85);
+  animation: dot-wave 3.2s ease-in-out infinite;
+}
+
+@keyframes dot-wave {
+  0%,
+  100% {
+    transform: translateZ(2px);
+    opacity: 0.16;
+  }
+  50% {
+    transform: translateZ(30px);
+    opacity: 1;
+  }
+}
+
+/* Gyroscope — human-in-the-loop orbits around a stable core */
+.orbit3 {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(14deg);
+}
+
+.orbit3-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  transform-style: preserve-3d;
+  animation: orbit-spin var(--orbit-t, 10s) linear infinite;
+}
+
+.orbit3-ring b {
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  height: 6px;
+  width: 6px;
+  margin-left: -3px;
+  border-radius: 9999px;
+  background: var(--color-signal);
+  box-shadow: 0 0 12px 2px rgba(52, 211, 153, 0.55);
+}
+
+@keyframes orbit-spin {
+  from {
+    transform: var(--orbit-base, rotateY(-62deg)) rotateZ(0deg);
+  }
+  to {
+    transform: var(--orbit-base, rotateY(-62deg)) rotateZ(360deg);
+  }
+}
+
+.orbit3-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 12px;
+  width: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 9999px;
+  background: var(--color-signal);
+  box-shadow: 0 0 24px 6px rgba(52, 211, 153, 0.35);
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* ---------- Phase glyphs (Methodology) ---------- */
+
+.glyph-scene {
+  position: relative;
+  display: block;
+  perspective: 380px;
+}
+
+.glyph-scene > span {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(56deg);
+}
+
+/* I — radar sweep */
+.glyph-radar i {
+  position: absolute;
+  border-radius: 9999px;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.glyph-radar .r1 {
+  inset: 0;
+}
+
+.glyph-radar .r2 {
+  inset: 24%;
+}
+
+.glyph-radar .sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: conic-gradient(from 0deg, rgba(52, 211, 153, 0.5), transparent 80deg);
+  animation: spin-z 4s linear infinite;
+}
+
+@keyframes spin-z {
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
+/* II — floating plane stack */
+.glyph-scene > .glyph-stack {
+  transform: rotateX(56deg) rotateZ(45deg);
+}
+
+.glyph-stack i {
+  position: absolute;
+  inset: 10%;
+  border-radius: 5px;
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  background: rgba(52, 211, 153, 0.05);
+  animation: plane-float 4s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes plane-float {
+  0%,
+  100% {
+    transform: translateZ(var(--pz, 0px));
+  }
+  50% {
+    transform: translateZ(calc(var(--pz, 0px) + 7px));
+  }
+}
+
+/* III — guardrail pulses expanding out of the core */
+.glyph-scene > .glyph-guard {
+  transform: rotateX(56deg) rotateZ(45deg);
+}
+
+.glyph-guard .core {
+  position: absolute;
+  inset: 34%;
+  border-radius: 3px;
+  border: 1px solid rgba(52, 211, 153, 0.8);
+  background: rgba(52, 211, 153, 0.14);
+}
+
+.glyph-guard i {
+  position: absolute;
+  inset: 6%;
+  border-radius: 5px;
+  border: 1px solid rgba(52, 211, 153, 0.5);
+  opacity: 0;
+  animation: guard-pulse 3s ease-out infinite;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes guard-pulse {
+  0% {
+    transform: translateZ(2px) scale(0.55);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateZ(26px) scale(1.02);
+    opacity: 0;
+  }
+}
+
+/* IV — rings rising off the pad */
+.glyph-rise .pad {
+  position: absolute;
+  inset: 38%;
+  border-radius: 9999px;
+  background: rgba(52, 211, 153, 0.65);
+  box-shadow: 0 0 16px 4px rgba(52, 211, 153, 0.35);
+}
+
+.glyph-rise i {
+  position: absolute;
+  inset: 4%;
+  border-radius: 9999px;
+  border: 1px solid rgba(52, 211, 153, 0.55);
+  opacity: 0;
+  animation: ring-rise 2.8s linear infinite;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes ring-rise {
+  0% {
+    transform: translateZ(0) scale(1);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateZ(32px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* Extruded ghost numeral behind each phase card */
+.numeral-3d {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.12);
+  transition: -webkit-text-stroke-color 0.6s var(--ease-out-expo);
+}
+
+.group:hover .numeral-3d {
+  -webkit-text-stroke-color: rgba(52, 211, 153, 0.38);
+}
+
+/* Scroll entrance: cards stand up from the page plane */
+.rise3 {
+  opacity: 0;
+  transform: perspective(1200px) rotateX(-16deg) translateY(52px);
+  transform-origin: 50% 100%;
+  transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
+  transition-delay: var(--rise-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.rise3[data-visible="true"] {
+  opacity: 1;
+  transform: perspective(1200px) rotateX(0deg) translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise3 {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .tilt-card {
+    transform: none !important;
+  }
 }
 
 /* Scroll reveal */

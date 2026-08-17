@@ -4,6 +4,8 @@ import { HeroMesh } from "@/components/hero-mesh";
 import { InquireModal } from "@/components/inquire-modal";
 import { PageBackdrop } from "@/components/page-backdrop";
 import { Parallax } from "@/components/parallax";
+import { PhaseCards } from "@/components/phase-cards";
+import { PrincipleCards } from "@/components/principle-cards";
 import { Reveal } from "@/components/reveal";
 import { SectionBridge } from "@/components/section-bridge";
 import { SectionLabel } from "@/components/section-label";
@@ -12,16 +14,7 @@ import { StateShift } from "@/components/state-shift";
 import { SiteFooter } from "@/components/site-footer";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-import {
-  ArrowRight,
-  Binary,
-  FlaskConical,
-  Radar,
-  Rocket,
-  ShieldCheck,
-  Waves,
-  UserRoundCheck,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 /**
@@ -35,53 +28,8 @@ const PROOF = [
   { value: "30%", label: "Avg. efficiency reclaimed" },
 ] as const;
 
-const PRINCIPLES = [
-  {
-    index: "001",
-    icon: Binary,
-    title: "Deterministic Core",
-    body: "Foundational logic must be absolute. We engineer 100% reliability for data integrity, reserving AI for higher-order reasoning.",
-  },
-  {
-    index: "002",
-    icon: Waves,
-    title: "Probabilistic Edge",
-    body: "Deployment of models for synthesis and pattern matching. Leveraging ambiguity as a feature, not a bug, in creative workflows.",
-  },
-  {
-    index: "003",
-    icon: UserRoundCheck,
-    title: "Human Agency",
-    body: "Systems designed to augment, not replace. We build rigorous “human-in-the-loop” protocols for high-stakes decision making.",
-  },
-] as const;
-
-const PHASES = [
-  {
-    phase: "PHASE I",
-    icon: Radar,
-    title: "Cognitive Mapping",
-    body: "Defining the boundaries of deterministic logic vs probabilistic reasoning. Establishing the architectural constraints.",
-  },
-  {
-    phase: "PHASE II",
-    icon: FlaskConical,
-    title: "Model Prototyping",
-    body: "Rapid iteration of model selection. Quantifying output quality against golden datasets.",
-  },
-  {
-    phase: "PHASE III",
-    icon: ShieldCheck,
-    title: "Guardrail Engineering",
-    body: "Implementing semantic filters and adversarial testing to ensure system safety and alignment.",
-  },
-  {
-    phase: "PHASE IV",
-    icon: Rocket,
-    title: "High-Availability Scale",
-    body: "Deploying to distributed edge networks with real-time monitoring of token usage and drift.",
-  },
-] as const;
+/** Labels for the methodology phase rail; the cards themselves live in PhaseCards. */
+const PHASE_LABELS = ["PHASE I", "PHASE II", "PHASE III", "PHASE IV"] as const;
 
 export default function Home() {
   return (
@@ -271,31 +219,8 @@ export default function Home() {
               </Reveal>
             </div>
 
-            <div className="mt-20 grid grid-cols-1 gap-4 md:grid-cols-3">
-              {PRINCIPLES.map(({ index, icon: Icon, title, body }, i) => (
-                <Reveal key={index} delay={i * 100}>
-                  <article className="panel panel-hover group relative h-full overflow-hidden rounded-2xl p-8 lg:p-10">
-                    <div
-                      aria-hidden
-                      className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(52,211,153,0.12),transparent_65%)] opacity-0 blur-xl transition-opacity duration-700 group-hover:opacity-100"
-                    />
-
-                    <div className="relative flex items-start justify-between">
-                      <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-ink-2 transition-colors duration-500 group-hover:border-signal/30 group-hover:text-signal">
-                        <Icon className="h-4.5 w-4.5" strokeWidth={1.25} />
-                      </span>
-                      <span className="font-mono text-[10px] tracking-[0.2em] text-ink-4">
-                        {index}
-                      </span>
-                    </div>
-
-                    <h3 className="relative mt-14 font-display text-2xl text-ink">{title}</h3>
-                    <p className="relative mt-4 text-sm font-light leading-relaxed text-ink-3">
-                      {body}
-                    </p>
-                  </article>
-                </Reveal>
-              ))}
+            <div className="mt-20">
+              <PrincipleCards />
             </div>
           </div>
         </section>
@@ -326,18 +251,18 @@ export default function Home() {
 
                   {/* Phase rail: four steps, drawn rather than spelled out */}
                   <ol aria-hidden className="mt-12 hidden lg:block">
-                    {PHASES.map(({ phase }, i) => (
+                    {PHASE_LABELS.map((phase, i) => (
                       <li key={phase} className="group flex items-stretch gap-4">
                         <div className="flex flex-col items-center">
                           <span className="h-2 w-2 rotate-45 border border-signal/50 bg-signal/20" />
-                          {i < PHASES.length - 1 && (
+                          {i < PHASE_LABELS.length - 1 && (
                             <span className="w-px flex-1 bg-gradient-to-b from-signal/25 to-line" />
                           )}
                         </div>
                         <span
                           className={cn(
                             "font-mono text-[10px] uppercase tracking-[0.24em] text-ink-4",
-                            i < PHASES.length - 1 && "pb-8",
+                            i < PHASE_LABELS.length - 1 && "pb-8",
                           )}
                         >
                           {phase}
@@ -349,33 +274,7 @@ export default function Home() {
               </div>
 
               <div className="lg:col-span-8">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  {PHASES.map(({ phase, icon: Icon, title, body }, i) => (
-                    <Reveal key={phase} delay={i * 90}>
-                      <article className="panel panel-hover group relative h-full overflow-hidden rounded-2xl p-8">
-                        <div
-                          aria-hidden
-                          className="pointer-events-none absolute inset-x-0 top-0 h-px scale-x-0 bg-gradient-to-r from-transparent via-signal/60 to-transparent transition-transform duration-700 [transition-timing-function:var(--ease-out-expo)] group-hover:scale-x-100"
-                        />
-
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono text-[10px] tracking-[0.24em] text-ink-4">
-                            {phase}
-                          </span>
-                          <Icon
-                            className="h-4 w-4 text-ink-4 transition-colors duration-500 group-hover:text-signal"
-                            strokeWidth={1.25}
-                          />
-                        </div>
-
-                        <h3 className="mt-10 font-display text-xl text-ink">{title}</h3>
-                        <p className="mt-3 text-[13px] font-light leading-relaxed text-ink-3">
-                          {body}
-                        </p>
-                      </article>
-                    </Reveal>
-                  ))}
-                </div>
+                <PhaseCards />
               </div>
             </div>
           </div>

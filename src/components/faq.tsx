@@ -14,7 +14,7 @@ export function Faq() {
       type="single"
       collapsible
       defaultValue={faqItems[0].id}
-      className="panel divide-y divide-line overflow-hidden rounded-2xl"
+      className="panel relative divide-y divide-line overflow-hidden rounded-2xl"
     >
       {faqItems.map(({ id, question, answer }, i) => (
         <Accordion.Item key={id} value={id} className="group">
