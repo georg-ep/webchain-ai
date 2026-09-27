@@ -94,5 +94,19 @@ export const selectedWorks: Project[] = [
       "Continuous protection aligned with OWASP standards",
     ],
   },
+  {
+    id: "porchlight",
+    category: "07 — Autonomous Data Aggregation",
+    title: "Porchlight",
+    description:
+      "Property search system that queries Rightmove, Zoopla, SpareRoom and OpenRent at once and merges every listing into one normalised feed.",
+    image: "/projects/porchlight.jpg",
+    url: "https://property.webchain.studio",
+    tags: ["Data Aggregation", "Property"],
+    achievements: [
+      "Four UK property portals searched in one query",
+      "Prices normalised across sources for one true sort",
+    ],
+  },
 ];
 
