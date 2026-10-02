@@ -209,7 +209,7 @@ const ACTIVITY: ActivityEntry[] = [
 ];
 
 const PRICING_POINTS = [
-  "One fixed monthly price per task, quoted after the call",
+  "One fixed price for each task, the same every month",
   "No setup project and no hourly billing",
   "Cancel any month",
 ];
@@ -332,8 +332,8 @@ export default function AutomationPage() {
         }
         intro={
           <p>
-            You pay for the work being done, not for a project to build it. We quote after the
-            call, once we&apos;ve seen how the task runs in your business.
+            You pay for the work being done, not for a project to build it. Each task is quoted
+            on its own, once we know how it runs in your business.
           </p>
         }
       >
@@ -341,13 +341,12 @@ export default function AutomationPage() {
           <div className="panel relative grid grid-cols-1 overflow-hidden rounded-2xl lg:grid-cols-12">
             <div className="border-b border-line p-7 lg:col-span-5 lg:border-b-0 lg:border-r lg:p-10">
               <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-ink-4">
-                Per task, per month
+                Fixed quote
               </span>
-              {/* TODO George: price */}
-              <p className="mt-5 font-display text-4xl tracking-[-0.02em] text-ink md:text-5xl">
-                From £___
-                <span className="mt-2 block text-lg text-ink-3 sm:ml-2 sm:mt-0 sm:inline md:text-xl">
-                  / month per task
+              <p className="mt-5 font-display text-3xl tracking-[-0.02em] text-ink md:text-4xl">
+                Quoted after a <span className="whitespace-nowrap">15-minute</span> call.
+                <span className="mt-3 block text-lg text-ink-3 md:text-xl">
+                  Once we know your volumes and the systems you use.
                 </span>
               </p>
             </div>

@@ -267,7 +267,12 @@ export default function PartnersPage() {
             Two ways to work. <span className="text-ink-3">You set your own margin.</span>
           </>
         }
-        intro={<p>We never discuss pricing with your client.</p>}
+        intro={
+          <p>
+            Every project gets a fixed quote within 48 hours of the brief. We never discuss
+            pricing with your client.
+          </p>
+        }
         glow="signal"
       >
         <Reveal>
@@ -283,9 +288,8 @@ export default function PartnersPage() {
               </span>
               <h3 className="mt-5 font-display text-2xl text-ink">Fixed project quotes</h3>
               <FixedScopeScene className="my-6 max-w-[420px]" />
-              {/* TODO George: typical pilot / project starting price */}
               <p className="mt-auto border-t border-line pt-6 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-3">
-                Pilot projects from £___
+                Quoted within 48 hours of the brief
               </p>
             </div>
           </Reveal>
@@ -296,9 +300,8 @@ export default function PartnersPage() {
               </span>
               <h3 className="mt-5 font-display text-2xl text-ink">Reserved monthly capacity</h3>
               <CapacityScene className="my-6 max-w-[420px]" />
-              {/* TODO George: monthly capacity price and what it includes (days / hours) */}
               <p className="mt-auto border-t border-line pt-6 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-3">
-                From £___ / month for ___ days
+                Ongoing work, also on a fixed quote
               </p>
             </div>
           </Reveal>
@@ -373,7 +376,7 @@ export default function PartnersPage() {
       <OfferCta
         title="Got a client asking for AI?"
         muted="Let's quote it together."
-        body="Bring a real brief or just a hunch. In one call we'll tell you what's buildable, roughly what it costs, and how we'd deliver it under your name."
+        body="Bring a real brief or just a hunch. In one call we'll tell you what's buildable and how we'd deliver it under your name, with a fixed quote to follow within 48 hours."
         button="Book a partner call"
         note="NDA as standard · Reply within 24 hours"
       />
