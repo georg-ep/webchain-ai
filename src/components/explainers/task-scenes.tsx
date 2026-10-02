@@ -1,6 +1,7 @@
 "use client";
 
-import { Glyph, type GlyphKind } from "@/components/explainers/glyph";
+import { Glyph } from "@/components/explainers/glyph";
+import { Badge, Bar, C, Caption, Plate as KitPlate, Pill, Sheet } from "@/components/explainers/kit";
 import { Scene, useOn } from "@/components/explainers/scene";
 
 /*
@@ -11,99 +12,10 @@ import { Scene, useOn } from "@/components/explainers/scene";
  * Illustrations only: no real names, amounts or figures appear in them.
  */
 
-const INK = "#0b0b0b";
-const INK_4 = "#9a948c";
-const LINE = "#e7e3de";
-const LINE_STRONG = "#d9d3cc";
-const PAPER = "#fdfcfc";
-const VIOLET = "#0447ff";
-const EMBER = "#ff4704";
-
-function Sheet({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
-  return <rect x={x} y={y} width={w} height={h} rx="8" fill={PAPER} stroke={LINE_STRONG} />;
-}
-
-/** A text line placeholder; `on` turns it from hairline grey to ink. */
-function Bar({
-  x,
-  y,
-  w,
-  tone = LINE,
-  grow = false,
-  on,
-}: {
-  x: number;
-  y: number;
-  w: number;
-  tone?: string;
-  grow?: boolean;
-  on?: boolean;
-}) {
-  return (
-    <rect
-      x={x}
-      y={y}
-      width={w}
-      height="5"
-      rx="2.5"
-      fill={tone}
-      className={grow ? "x-grow-x" : undefined}
-      data-on={on}
-    />
-  );
-}
-
-/** A round badge with an icon, popping in on its beat. */
-function Badge({
-  cx,
-  cy,
-  glyph,
-  tone = VIOLET,
-  on,
-}: {
-  cx: number;
-  cy: number;
-  glyph: GlyphKind;
-  tone?: string;
-  on: boolean;
-}) {
-  return (
-    <g className="x-pop" data-on={on}>
-      <circle cx={cx} cy={cy} r="13" fill={tone} />
-      <Glyph kind={glyph} x={cx - 8} y={cy - 8} stroke={PAPER} />
-    </g>
-  );
-}
-
-function Caption({ x, y, children, anchor = "start", tone = INK_4, on }: {
-  x: number;
-  y: number;
-  children: React.ReactNode;
-  anchor?: "start" | "middle" | "end";
-  tone?: string;
-  on?: boolean;
-}) {
-  return (
-    <text
-      x={x}
-      y={y}
-      fontSize="8"
-      textAnchor={anchor}
-      fill={tone}
-      className={on === undefined ? "x-mono" : "x-mono x-fade"}
-      data-on={on}
-    >
-      {children}
-    </text>
-  );
-}
+const { ink: INK, line: LINE, lineStrong: LINE_STRONG, paper: PAPER, violet: VIOLET, ember: EMBER } = C;
 
 function Plate({ children }: { children: React.ReactNode }) {
-  return (
-    <svg viewBox="0 0 280 140" aria-hidden>
-      {children}
-    </svg>
-  );
+  return <KitPlate w={280} h={140}>{children}</KitPlate>;
 }
 
 /* ---------- Credit control: chase on a schedule, log replies ---------- */
@@ -125,18 +37,8 @@ function ChaseStory() {
       <Bar x={26} y={52} w={62} />
       <Bar x={26} y={64} w={44} />
       {/* Status pill: overdue until the last beat, then paid */}
-      <g className="x-out" {...on(4)}>
-        <rect x={26} y={88} width={64} height={18} rx="9" fill="rgba(255,71,4,0.1)" />
-        <Caption x={58} y={100} anchor="middle" tone={EMBER}>
-          Overdue
-        </Caption>
-      </g>
-      <g className="x-fade" {...on(4)}>
-        <rect x={26} y={88} width={64} height={18} rx="9" fill="rgba(4,71,255,0.1)" />
-        <Caption x={58} y={100} anchor="middle" tone={VIOLET}>
-          Paid
-        </Caption>
-      </g>
+      <Pill x={26} y={88} w={66} label="Overdue" tone="ember" className="x-out" on={on(4)["data-on"]} />
+      <Pill x={26} y={88} w={66} label="Paid" tone="violet" className="x-fade" on={on(4)["data-on"]} />
 
       <path d="M132 76 H266" stroke={LINE_STRONG} strokeDasharray="2 4" />
       {ticks.map(({ x, label }, i) => (
@@ -148,12 +50,7 @@ function ChaseStory() {
           <Badge cx={x} cy={50} glyph="mail" tone={INK} on={on(1 + i)["data-on"]} />
         </g>
       ))}
-      <g className="x-rise" {...on(3)}>
-        <rect x={196} y={106} width={74} height={18} rx="9" fill="rgba(4,71,255,0.1)" />
-        <Caption x={233} y={118} anchor="middle" tone={VIOLET}>
-          Reply logged
-        </Caption>
-      </g>
+      <Pill x={200} y={108} align="middle" label="Reply logged" tone="violet" className="x-rise" on={on(3)["data-on"]} />
     </Plate>
   );
 }
@@ -194,12 +91,7 @@ function MatchStory() {
 
       <Badge cx={140} cy={62} glyph="check" on={on(3)["data-on"]} />
 
-      <g className="x-rise" {...on(4)}>
-        <rect x={72} y={114} width={136} height={20} rx="10" fill={INK} />
-        <text x={140} y={127.5} fontSize="8.5" textAnchor="middle" fill={PAPER} className="x-mono">
-          Posted · ready to approve
-        </text>
-      </g>
+      <Pill x={140} y={114} h={20} align="middle" label="Posted · ready to approve" className="x-rise" on={on(4)["data-on"]} />
     </Plate>
   );
 }
@@ -209,9 +101,9 @@ function MatchStory() {
 function OrderStory() {
   const on = useOn();
   const fields = [
-    { y: 40, label: "Customer", w: 70 },
-    { y: 64, label: "Items", w: 56 },
-    { y: 88, label: "Deliver", w: 46 },
+    { y: 34, label: "Customer", w: 70 },
+    { y: 56, label: "Items", w: 56 },
+    { y: 78, label: "Deliver", w: 46 },
   ];
 
   return (
@@ -232,20 +124,15 @@ function OrderStory() {
       <Sheet x={126} y={22} w={140} h={96} />
       {fields.map(({ y, label, w }, i) => (
         <g key={label}>
-          <Caption x={136} y={y + 6}>
+          <Caption x={136} y={y + 7}>
             {label}
           </Caption>
-          <rect x={186} y={y - 2} width={70} height={12} rx="4" fill="#f5f3f1" stroke={LINE} />
-          <Bar x={190} y={y + 1.5} w={w - 10} tone={INK} grow on={on(1 + i)["data-on"]} />
+          <rect x={190} y={y - 1} width={66} height={12} rx="4" fill={C.taupe} stroke={LINE} />
+          <Bar x={195} y={y + 2.5} w={w - 16} tone={INK} grow on={on(1 + i)["data-on"]} />
         </g>
       ))}
 
-      <g className="x-rise" {...on(4)}>
-        <rect x={136} y={104} width={120} height={20} rx="10" fill={INK} />
-        <text x={196} y={117.5} fontSize="8.5" textAnchor="middle" fill={PAPER} className="x-mono">
-          Confirmation sent
-        </text>
-      </g>
+      <Pill x={196} y={94} h={18} align="middle" label="Confirmation sent" className="x-rise" on={on(4)["data-on"]} />
     </Plate>
   );
 }
@@ -300,14 +187,9 @@ function QuoteStory() {
         <Caption x={200} y={88}>
           Total
         </Caption>
-        <Bar x={228} y={83} w={28} tone={INK} />
+        <Bar x={236} y={83} w={20} tone={INK} />
       </g>
-      <g className="x-rise" {...on(4)}>
-        <rect x={196} y={98} width={64} height={16} rx="8" fill="rgba(255,71,4,0.12)" />
-        <Caption x={228} y={109} anchor="middle" tone={EMBER}>
-          Check
-        </Caption>
-      </g>
+      <Pill x={228} y={98} h={16} w={60} align="middle" label="Check" tone="ember" className="x-rise" on={on(4)["data-on"]} />
     </Plate>
   );
 }
@@ -322,23 +204,23 @@ function BookingStory() {
 
   return (
     <Plate>
-      <Sheet x={14} y={14} w={176} h={112} />
+      <Sheet x={10} y={14} w={168} h={112} />
       {days.map((d, c) => (
-        <Caption key={d} x={38 + c * 33} y={32} anchor="middle">
+        <Caption key={d} x={33 + c * 31} y={32} anchor="middle">
           {d}
         </Caption>
       ))}
       {[0, 1, 2].map((r) =>
         days.map((d, c) => {
           const key = `${c}-${r}`;
-          const x = 24 + c * 33;
+          const x = 20 + c * 31;
           const y = 42 + r * 26;
           if (key === slot) {
             return (
               <g key={key}>
-                <rect x={x} y={y} width="28" height="20" rx="5" fill="none" stroke={LINE} strokeDasharray="2 2" />
-                <rect x={x} y={y} width="28" height="20" rx="5" fill="none" stroke={VIOLET} className="x-fade" {...on(1)} />
-                <rect x={x} y={y} width="28" height="20" rx="5" fill={VIOLET} className="x-pop" {...on(2)} />
+                <rect x={x} y={y} width="26" height="20" rx="5" fill="none" stroke={LINE} strokeDasharray="2 2" />
+                <rect x={x} y={y} width="26" height="20" rx="5" fill="none" stroke={VIOLET} className="x-fade" {...on(1)} />
+                <rect x={x} y={y} width="26" height="20" rx="5" fill={VIOLET} className="x-pop" {...on(2)} />
               </g>
             );
           }
@@ -357,18 +239,14 @@ function BookingStory() {
         }),
       )}
 
-      <g className="x-rise" {...on(3)}>
-        <Badge cx={226} cy={46} glyph="mail" tone={INK} on={on(3)["data-on"]} />
-        <Caption x={244} y={49}>
-          Booked
-        </Caption>
-      </g>
-      <g className="x-rise" {...on(4)}>
-        <Badge cx={226} cy={94} glyph="bell" tone={EMBER} on={on(4)["data-on"]} />
-        <Caption x={244} y={97}>
-          Remind
-        </Caption>
-      </g>
+      <Badge cx={204} cy={50} glyph="mail" tone={INK} on={on(3)["data-on"]} />
+      <Caption x={222} y={53} on={on(3)["data-on"]}>
+        Confirmed
+      </Caption>
+      <Badge cx={204} cy={92} glyph="bell" tone={EMBER} on={on(4)["data-on"]} />
+      <Caption x={222} y={95} on={on(4)["data-on"]}>
+        Reminder
+      </Caption>
     </Plate>
   );
 }
@@ -378,10 +256,10 @@ function BookingStory() {
 function ReportStory() {
   const on = useOn();
   const bars = [
-    { h: 34, at: 3 },
+    { h: 26, at: 3 },
+    { h: 40, at: 3 },
+    { h: 22, at: 3 },
     { h: 52, at: 3 },
-    { h: 28, at: 3 },
-    { h: 64, at: 3 },
   ];
 
   return (
@@ -401,12 +279,12 @@ function ReportStory() {
       </Caption>
 
       <Sheet x={146} y={18} w={120} h={104} />
-      <path d="M158 104 H254" stroke={LINE_STRONG} />
+      <path d="M158 110 H254" stroke={LINE_STRONG} />
       {bars.map(({ h }, i) => (
         <rect
           key={i}
           x={164 + i * 22}
-          y={104 - h}
+          y={110 - h}
           width="14"
           height={h}
           rx="3"
@@ -415,12 +293,7 @@ function ReportStory() {
           {...on(3)}
         />
       ))}
-      <g className="x-rise" {...on(4)}>
-        <rect x={156} y={26} width={100} height={18} rx="9" fill={INK} />
-        <text x={206} y={38} fontSize="8" textAnchor="middle" fill={PAPER} className="x-mono">
-          Sent Monday
-        </text>
-      </g>
+      <Pill x={206} y={28} align="middle" label="Sent Monday" className="x-rise" on={on(4)["data-on"]} />
     </Plate>
   );
 }

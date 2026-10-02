@@ -122,16 +122,16 @@ function Horizontal({
         <Connector key={d} d={d} on={on(3 + i)["data-on"]} />
       ))}
 
-      {inPaths.map((d, i) => (
-        <Packet key={d} path={d} phase={i * 0.8} />
-      ))}
+      {/* Work only moves along a connector once its beat has lit it */}
+      <g className="x-fade" {...on(1)}>
+        {inPaths.map((d, i) => (
+          <Packet key={d} path={d} phase={i * 0.8} />
+        ))}
+      </g>
       {outPaths.map((d, i) => (
-        <Packet
-          key={d}
-          path={d}
-          phase={0.6 + i * 0.8}
-          tone={outputs[i]?.tone === "review" ? "#ff4704" : "#0447ff"}
-        />
+        <g key={d} className="x-fade" {...on(3 + i)}>
+          <Packet path={d} phase={0.6 + i * 0.8} tone={outputs[i]?.tone === "review" ? "#ff4704" : "#0447ff"} />
+        </g>
       ))}
 
       <SparkOrb cx={ox} cy={oy} r={r} label={center} />
@@ -166,36 +166,26 @@ function Vertical({
   center: string;
 }) {
   const on = useOn();
-  const inYs = [46, 108, 170];
-  const outYs = [420, 482, 544];
-  const [ox, oy, r] = [180, 286, 46];
-  const inPaths = inYs.map(
-    (y) => `M330 ${y} H346 V${oy - 40} C346 ${oy - 20}, ${ox + 20} ${oy - r - 22}, ${ox} ${oy - r - 4}`,
-  );
-  const outPaths = outYs.map(
-    (y) => `M${ox} ${oy + r + 4} C${ox} ${oy + r + 40}, 14 ${oy + r + 20}, 14 ${oy + r + 56} V${y} H30`,
-  );
+  const inYs = [30, 90, 150];
+  const outYs = [398, 458, 518];
+  const [ox, oy, r] = [180, 274, 46];
+  // Phones: the inputs stack above a single trunk into the orb, and one
+  // trunk leaves it for the stacked results.
+  const inPaths = [`M${ox} ${inYs[2] + CHIP_H / 2} V${oy - r - 6}`];
+  const outPaths = [`M${ox} ${oy + r + 6} V${outYs[0] - CHIP_H / 2}`];
 
   return (
-    <svg viewBox="0 0 360 580" aria-hidden>
-      {inPaths.map((d) => (
-        <Connector key={d} d={d} on={on(1)["data-on"]} />
-      ))}
-      {outPaths.map((d, i) => (
-        <Connector key={d} d={d} on={on(3 + i)["data-on"]} />
-      ))}
-      {inPaths.map((d, i) => (
-        <Packet key={d} path={d} phase={i * 0.8} dur={2.8} />
-      ))}
-      {outPaths.map((d, i) => (
-        <Packet
-          key={d}
-          path={d}
-          phase={0.6 + i * 0.8}
-          dur={2.8}
-          tone={outputs[i]?.tone === "review" ? "#ff4704" : "#0447ff"}
-        />
-      ))}
+    <svg viewBox="0 0 360 548" aria-hidden>
+      <Connector d={inPaths[0]} on={on(1)["data-on"]} />
+      <Connector d={outPaths[0]} on={on(3)["data-on"]} />
+      <g className="x-fade" {...on(1)}>
+        <Packet path={inPaths[0]} dur={1.6} />
+        <Packet path={inPaths[0]} dur={1.6} phase={0.8} />
+      </g>
+      <g className="x-fade" {...on(3)}>
+        <Packet path={outPaths[0]} dur={1.6} />
+        <Packet path={outPaths[0]} dur={1.6} phase={0.8} tone="#ff4704" />
+      </g>
 
       <SparkOrb cx={ox} cy={oy} r={r} />
       <text x={ox + r + 18} y={oy + 4} fontSize="10" className="x-mono fill-ink-3">
@@ -203,14 +193,14 @@ function Vertical({
       </text>
 
       {inputs.slice(0, 3).map((input, i) => (
-        <Chip key={input.label} x={30} cy={inYs[i]} w={300} {...input} on={on(1)["data-on"]} />
+        <Chip key={input.label} x={10} cy={inYs[i]} w={340} {...input} on={on(1)["data-on"]} />
       ))}
       {outputs.slice(0, 3).map((output, i) => (
         <Chip
           key={output.label}
-          x={30}
+          x={10}
           cy={outYs[i]}
-          w={300}
+          w={340}
           label={output.label}
           meta={output.meta}
           status={output.tone}

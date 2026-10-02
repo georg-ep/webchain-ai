@@ -210,7 +210,7 @@ export default function PartnersPage() {
               aria-hidden
               className="grid-fine absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_70%_90%_at_100%_0%,#000,transparent_70%)]"
             />
-            <div className="relative grid grid-cols-1 items-center gap-10 p-7 lg:grid-cols-12 lg:gap-12 lg:p-12">
+            <div className="relative grid grid-cols-1 items-center gap-10 p-4 sm:p-7 lg:grid-cols-12 lg:gap-12 lg:p-12">
               <div className="lg:col-span-5">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-line-strong bg-surface-0 text-ink">
                   <MonitorPlay className="h-4 w-4" strokeWidth={1.5} />
@@ -224,7 +224,7 @@ export default function PartnersPage() {
                   happens before the sign-off meeting, not after launch.
                 </p>
               </div>
-              <div className="rounded-xl border border-line bg-surface-0 p-5 sm:p-8 lg:col-span-7">
+              <div className="rounded-xl border border-line bg-surface-0 p-2 sm:p-8 lg:col-span-7">
                 <PreviewScene />
               </div>
             </div>
@@ -272,7 +272,7 @@ export default function PartnersPage() {
       >
         <Reveal>
           <div className="mb-4 rounded-2xl border border-line bg-surface-0 p-3 sm:p-10">
-            <MarginScene className="mx-auto max-w-[540px]" />
+            <MarginScene className="mx-auto max-w-[460px]" />
           </div>
         </Reveal>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -282,7 +282,7 @@ export default function PartnersPage() {
                 Per project
               </span>
               <h3 className="mt-5 font-display text-2xl text-ink">Fixed project quotes</h3>
-              <FixedScopeScene className="my-6" />
+              <FixedScopeScene className="my-6 max-w-[420px]" />
               {/* TODO George: typical pilot / project starting price */}
               <p className="mt-auto border-t border-line pt-6 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-3">
                 Pilot projects from £___
@@ -295,7 +295,7 @@ export default function PartnersPage() {
                 Per month
               </span>
               <h3 className="mt-5 font-display text-2xl text-ink">Reserved monthly capacity</h3>
-              <CapacityScene className="my-6" />
+              <CapacityScene className="my-6 max-w-[420px]" />
               {/* TODO George: monthly capacity price and what it includes (days / hours) */}
               <p className="mt-auto border-t border-line pt-6 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-3">
                 From £___ / month for ___ days

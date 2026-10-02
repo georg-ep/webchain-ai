@@ -1,8 +1,8 @@
 "use client";
 
 import { Glyph } from "@/components/explainers/glyph";
-import { Badge, Bar, C, Caption, Packet, Pill, Plate, Sheet, Wire } from "@/components/explainers/kit";
-import { story, useOn } from "@/components/explainers/scene";
+import { Badge, Bar, C, Caption, Packet, Pill, Plate, Sheet, Token, Wire } from "@/components/explainers/kit";
+import { story, useOn, useStep } from "@/components/explainers/scene";
 import { SparkOrb } from "@/components/explainers/spark-orb";
 
 /*
@@ -25,12 +25,14 @@ function Person({ cx, cy, r = 14, tone = C.ember }: { cx: number; cy: number; r?
 
 function RulesDrawing() {
   const on = useOn();
+  const step = useStep();
   const gates = [96, 150, 204];
   const lane = "M20 75 H262";
   return (
     <Plate w={300} h={150}>
       <Wire d={lane} on />
-      <Packet path={lane} dur={3.2} />
+      {/* The input steps through each gate on the beat its rule ticks */}
+      <Token points={[[40, 75], [123, 75], [177, 75], [231, 75], [270, 75]]} step={step} />
       <Sheet x={8} y={58} w={28} h={34} rx={5} />
       <Bar x={14} y={68} w={16} h={3} />
       <Bar x={14} y={76} w={12} h={3} />
@@ -45,7 +47,7 @@ function RulesDrawing() {
       ))}
       <rect x={250} y={56} width={40} height={38} rx={8} fill={C.ink} />
       <Glyph kind="ledger" x={262} y={67} stroke={C.paper} />
-      <Pill x={78} y={118} w={144} label="Same input · same answer" className="x-rise" on={on(4)["data-on"]} />
+      <Pill x={150} y={116} align="middle" label="Same input · same answer" className="x-rise" on={on(4)["data-on"]} />
     </Plate>
   );
 }
@@ -86,11 +88,11 @@ function ModelDrawing() {
           <Caption x={188} y={y + 3}>
             {label}
           </Caption>
-          <rect x={226} y={y - 3} width={64} height={6} rx={3} fill={C.line} />
-          <Bar x={226} y={y - 3} w={w * 0.9} h={6} tone={best ? C.violet : C.lineStrong} grow on={on(2)["data-on"]} />
+          <rect x={236} y={y - 3} width={56} height={6} rx={3} fill={C.line} />
+          <Bar x={236} y={y - 3} w={w * 0.78} h={6} tone={best ? C.violet : C.lineStrong} grow on={on(2)["data-on"]} />
         </g>
       ))}
-      <Pill x={186} y={124} w={104} label="Best reading" tone="violet" className="x-rise" on={on(3)["data-on"]} />
+      <Pill x={292} y={122} align="end" label="Best reading" tone="violet" className="x-rise" on={on(3)["data-on"]} />
     </Plate>
   );
 }
@@ -110,25 +112,35 @@ function HumanDrawing() {
       <Caption x={14} y={22}>
         Confidence
       </Caption>
+      <defs>
+        <clipPath id="human-meter">
+          <rect x={14} y={32} width={18} height={96} rx={9} />
+        </clipPath>
+      </defs>
       <rect x={14} y={32} width={18} height={96} rx={9} fill={C.line} />
       {/* Rises, but only to just under the bar */}
-      <rect
-        x={14}
-        y={32}
-        width={18}
-        height={96}
-        rx={9}
-        fill={C.ember}
-        className="x-grow-y"
-        style={{ transform: `scaleY(${on(1)["data-on"] ? 0.62 : 0.04})` }}
-      />
+      <g clipPath="url(#human-meter)">
+        <rect
+          x={14}
+          y={32}
+          width={18}
+          height={96}
+          rx={9}
+          fill={C.ember}
+          data-on={on(1)["data-on"]}
+          style={{
+            transform: `translateY(${on(1)["data-on"] ? 38 : 88}px)`,
+            transition: "transform 1.2s var(--ease-out-expo)",
+          }}
+        />
+      </g>
       <path d="M8 66 H40" stroke={C.ink} strokeDasharray="3 3" />
       <Caption x={44} y={69}>
         Bar
       </Caption>
 
       {/* Below the bar: it goes to a person instead of acting */}
-      <Wire d="M70 100 C 110 100, 110 75, 150 75" on={on(2)["data-on"]} tone={C.ember} />
+      <Wire d="M40 104 C 100 104, 104 75, 148 75" on={on(2)["data-on"]} tone={C.ember} />
       <g className="x-pop" {...on(2)}>
         <Person cx={166} cy={75} />
       </g>
@@ -137,7 +149,7 @@ function HumanDrawing() {
       </Caption>
       <Wire d="M184 75 H226" on={on(3)["data-on"]} />
       <Badge cx={244} cy={75} glyph="check" on={on(3)["data-on"]} />
-      <Pill x={208} y={118} w={76} label="Then acts" className="x-rise" on={on(4)["data-on"]} />
+      <Pill x={244} y={116} align="middle" label="Then acts" className="x-rise" on={on(4)["data-on"]} />
     </Plate>
   );
 }
@@ -178,6 +190,7 @@ function MapDrawing() {
             height={16}
             rx={5}
             fill={lane ? C.violet : C.ink}
+            data-on={sorted}
             style={{
               transform: sorted ? `translateY(${lane ? 30 : -24}px)` : "none",
               transition: "transform 0.8s var(--ease-out-expo)",
@@ -215,9 +228,9 @@ function PrototypeDrawing() {
           <Bar x={26} y={y - 4} w={w} h={8} tone={best ? C.violet : C.lineStrong} grow on={on(1)["data-on"]} />
         </g>
       ))}
-      <path d="M190 14 V92" stroke={C.ink} strokeDasharray="2 3" />
-      <Caption x={190} y={104} anchor="middle">
-        Golden set
+      <path d="M160 14 V92" stroke={C.ink} strokeDasharray="2 3" />
+      <Caption x={160} y={104} anchor="middle">
+        Pass mark
       </Caption>
       <Badge cx={232} cy={52} glyph="check" r={11} on={on(2)["data-on"]} />
     </Plate>
@@ -242,20 +255,22 @@ function GuardDrawing() {
       <Packet path={lane} dur={2.6} phase={1.3} />
       {/* The gate */}
       <rect x={118} y={20} width={24} height={72} rx={8} fill={C.paper} stroke={C.ink} />
-      <path d="M130 34 v12 M124 40 h12" stroke={C.ink} strokeWidth="1.25" />
+      {/* Shield */}
+      <path d="M130 31 l6 2.5 v5 c0 4.5 -2.6 7.2 -6 8.8 c-3.4 -1.6 -6 -4.3 -6 -8.8 v-5z" fill="none" stroke={C.ink} strokeWidth="1.2" strokeLinejoin="round" />
       <Caption x={130} y={104} anchor="middle">
         Guardrail
       </Caption>
       {/* A bad input, bounced back */}
       <g
+        data-on
         style={{
-          transform: on(1)["data-on"] ? (on(2)["data-on"] ? "translate(30px, -26px)" : "translate(96px, 0)") : "none",
+          transform: on(1)["data-on"] ? (on(2)["data-on"] ? "translate(28px, -22px)" : "translate(96px, 0)") : "none",
           transition: "transform 0.9s var(--ease-out-expo)",
         }}
       >
         <circle cx={14} cy={56} r={6} fill={C.ember} />
       </g>
-      <Pill x={14} y={10} w={64} label="Blocked" tone="ember" className="x-rise" on={on(2)["data-on"]} />
+      <Pill x={12} y={6} label="Blocked" tone="ember" className="x-rise" on={on(2)["data-on"]} />
     </Plate>
   );
 }
@@ -292,7 +307,7 @@ function ScaleDrawing() {
         <circle cx={160} cy={30} r={9} fill={C.ember} opacity="0.2" className="x-ping" />
         <circle cx={160} cy={30} r={4} fill={C.ember} />
       </g>
-      <Pill x={170} y={78} w={80} label="Caught" tone="ember" className="x-rise" on={on(2)["data-on"]} />
+      <Pill x={250} y={78} align="end" label="Caught" tone="ember" className="x-rise" on={on(2)["data-on"]} />
     </Plate>
   );
 }

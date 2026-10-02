@@ -116,12 +116,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      // The font variables live on <html> because Tailwind's theme tokens
+      // (--font-sans, --font-mono) are declared on :root and resolve there;
+      // set on <body>, they resolve to nothing and every face falls back.
+      className={`${inter.variable} ${interTight.variable} ${geistMono.variable}`}
+    >
       <head>
         <script src="https://analytics.ahrefs.com/analytics.js" data-key="5ttpepYQZEEqGz2PfKyLCg" async></script>
       </head>
       <body
-        className={`${inter.variable} ${interTight.variable} ${geistMono.variable} antialiased bg-surface-0 text-ink-2 selection:bg-ink selection:text-surface-0 font-sans`}
+        className={`antialiased bg-surface-0 text-ink-2 selection:bg-ink selection:text-surface-0 font-sans`}
       >
         <StructuredData />
         <GoogleAnalyticsProvider />

@@ -17,6 +17,9 @@
 
 .x-scene text {
   font-family: var(--font-sans);
+  /* Scaled SVG text otherwise snaps glyph advances to whole pixels, which
+     crushes words together at small sizes ("The jobad"). */
+  text-rendering: geometricPrecision;
 }
 
 .x-scene .x-mono {
@@ -192,11 +195,29 @@
   }
 }
 
-/* Loop seam: the whole scene dims while it resets to its first beat. */
-.x-scene > * {
-  transition: opacity 0.6s var(--ease-out-expo);
+/*
+ * Loop seam, driven by <Scene>'s data-phase:
+ *   out  - every animated piece (anything carrying data-on) fades out
+ *          together; the static frame of the diagram stays put.
+ *   snap - back to the first beat with transitions off, so nothing is
+ *          seen flying back to where it started.
+ *   in   - the first beat fades up, then the story plays again.
+ */
+.x-scene[data-phase="out"] [data-on] {
+  opacity: 0 !important;
+  transition: opacity 0.45s ease !important;
 }
 
-.x-scene[data-resetting="true"] > * {
-  opacity: 0.18;
+.x-scene[data-phase="snap"] [data-on] {
+  opacity: 0 !important;
+}
+
+.x-scene[data-phase="snap"] *,
+.x-scene[data-phase="snap"] *::before,
+.x-scene[data-phase="snap"] *::after {
+  transition: none !important;
+}
+
+.x-scene[data-phase="in"] [data-on] {
+  transition: opacity 0.5s ease !important;
 }

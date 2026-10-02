@@ -162,7 +162,18 @@ export function Caption({
   );
 }
 
-/** A filled pill with a mono label: statuses like "Posted" or "Live". */
+/**
+ * Width of a mono caption in diagram units. Geist Mono advances 0.6em per
+ * character and captions add 0.08em tracking, so labels can be measured
+ * exactly and pills sized to fit them rather than guessed.
+ */
+export const monoWidth = (text: string, size: number) => text.length * size * 0.68;
+
+/**
+ * A filled pill with a mono label: statuses like "Posted" or "Live". Sized
+ * to its label unless a width is given; `align` says which edge (or the
+ * centre) `x` refers to.
+ */
 export function Pill({
   x,
   y,
@@ -171,31 +182,38 @@ export function Pill({
   tone = "ink",
   h = 18,
   size = 8,
+  align = "start",
   className,
   on,
 }: {
   x: number;
   y: number;
-  w: number;
+  w?: number;
   label: string;
-  tone?: "ink" | "violet" | "ember";
+  tone?: "ink" | "violet" | "ember" | "paper";
   h?: number;
   /** Label font size, in diagram units. */
   size?: number;
+  align?: "start" | "middle" | "end";
   className?: string;
   on?: boolean;
 }) {
-  const [bg, fg] =
+  const width = Math.max(w ?? 0, monoWidth(label, size) + Math.max(h, size * 2.6));
+  const left = align === "start" ? x : align === "middle" ? x - width / 2 : x - width;
+  const [bg, fg, stroke] =
     tone === "ink"
-      ? [C.ink, C.paper]
+      ? [C.ink, C.paper, undefined]
       : tone === "violet"
-        ? [C.violetSoft, C.violet]
-        : [C.emberSoft, C.ember];
+        ? [C.violetSoft, C.violet, undefined]
+        : tone === "ember"
+          ? [C.emberSoft, C.ember, undefined]
+          : [C.paper, C.ink2, C.lineStrong];
   return (
     <g className={className} data-on={on}>
-      <rect x={x} y={y} width={w} height={h} rx={h / 2} fill={bg} />
+      <rect x={left} y={y} width={width} height={h} rx={h / 2} fill={bg} stroke={stroke} />
       <text
-        x={x + w / 2}
+        // Tracking trails the last letter too; nudge right to stay centred.
+        x={left + width / 2 + size * 0.04}
         y={y + h / 2 + size * 0.36}
         fontSize={size}
         textAnchor="middle"
@@ -204,6 +222,39 @@ export function Pill({
       >
         {label}
       </text>
+    </g>
+  );
+}
+
+/**
+ * A dot that steps along with the story: it sits at `points[step]` and
+ * glides to the next point on each beat, so moving work stays in time with
+ * whatever lights up, unlike a free-running animation.
+ */
+export function Token({
+  points,
+  step,
+  tone = C.violet,
+  r = 4,
+  duration = 0.8,
+}: {
+  points: [number, number][];
+  step: number;
+  tone?: string;
+  r?: number;
+  duration?: number;
+}) {
+  const [x, y] = points[Math.max(0, Math.min(step, points.length - 1))];
+  return (
+    <g
+      data-on
+      style={{
+        transform: `translate(${x}px, ${y}px)`,
+        transition: `transform ${duration}s var(--ease-out-expo)`,
+      }}
+    >
+      <circle r={r * 2.2} fill={tone} opacity="0.14" />
+      <circle r={r} fill={tone} />
     </g>
   );
 }

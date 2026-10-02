@@ -5,6 +5,11 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 const StepContext = createContext(Infinity);
 
+type Phase = "still" | "snap" | "in" | "play" | "out";
+
+/** Matches the fade-out in explainers.css. */
+const FADE_OUT_MS = 460;
+
 /** The current beat of the enclosing scene. */
 export const useStep = () => useContext(StepContext);
 
@@ -52,16 +57,13 @@ export function Scene({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [tick, setTick] = useState(0);
-  // Starts dimmed so the first pass, too, fades up from the reset rather
-  // than snapping from the finished frame back to beat 0.
-  const [dim, setDim] = useState(true);
+  // Server renders, reduced-motion visitors and old browsers stay "still" on
+  // the final, complete frame. Once hydrated with motion allowed, the scene
+  // is primed: snapped to its first beat with the animated parts hidden,
+  // ready to build up when it scrolls into view.
+  const [phase, setPhase] = useState<Phase>("still");
   const [running, setRunning] = useState(false);
-  // Off screen (and before hydration) the scene rests on its final, complete
-  // frame, so a still screenshot or a no-JS render is never half drawn.
-  const step = running ? Math.min(tick, steps - 1) : steps - 1;
-  // Between passes the scene dips briefly, resets to beat 0 while dimmed and
-  // fades back up, so the loop reads as a breath rather than a jump.
-  const resetting = running && dim;
+  const step = phase === "still" ? steps - 1 : Math.min(tick, steps - 1);
 
   useEffect(() => {
     const node = ref.current;
@@ -73,9 +75,18 @@ export function Scene({
       return;
     }
 
-    const observer = new IntersectionObserver(([entry]) => setRunning(entry.isIntersecting), {
-      threshold: 0.2,
-    });
+    // Prime before the first paint (a microtask, not a frame), so a scene
+    // already on screen never flashes its finished frame first.
+    queueMicrotask(() => setPhase("snap"));
+    // Starts once a quarter of it is showing; stops only once it has fully
+    // left, so it never blanks out while still partly on screen.
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.intersectionRatio >= 0.25) setRunning(true);
+        else if (!entry.isIntersecting) setRunning(false);
+      },
+      { threshold: [0, 0.25] },
+    );
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
@@ -88,39 +99,50 @@ export function Scene({
     );
     if (!running) return;
 
-    // One pass: beats 1..steps-1, the hold, then a short dip around the
-    // reset. Timeouts rather than an interval, because the dip is shorter
-    // than a beat.
     let timer = 0;
+    let frame = 0;
     let t = 0;
-    const DIP_OUT = 500;
-    const DIP_IN = 500;
-    const next = () => {
+    const wait = (ms: number, fn: () => void) => {
+      timer = window.setTimeout(fn, ms);
+    };
+    // Two frames, so the snapped first beat is painted before the
+    // transitions come back on.
+    const afterPaint = (fn: () => void) => {
+      frame = requestAnimationFrame(() => {
+        frame = requestAnimationFrame(fn);
+      });
+    };
+
+    const fadeIn = () => {
+      setPhase("in");
+      wait(interval, advance);
+    };
+    // One pass: beats 1..steps-1, then `hold` beats on the finished frame,
+    // then the seam.
+    const advance = () => {
       if (t < steps + hold - 1) {
         t += 1;
+        setPhase("play");
         setTick(t);
-        timer = window.setTimeout(next, interval);
+        wait(interval, advance);
         return;
       }
-      setDim(true);
-      timer = window.setTimeout(() => {
+      setPhase("out");
+      wait(FADE_OUT_MS, () => {
         t = 0;
+        setPhase("snap");
         setTick(0);
-        timer = window.setTimeout(() => {
-          setDim(false);
-          timer = window.setTimeout(next, interval);
-        }, DIP_IN);
-      }, DIP_OUT);
+        afterPaint(fadeIn);
+      });
     };
-    timer = window.setTimeout(() => {
-      setDim(false);
-      timer = window.setTimeout(next, interval);
-    }, DIP_IN);
+
+    afterPaint(fadeIn);
     return () => {
       window.clearTimeout(timer);
-      // Resume from the top, dimmed, next time it scrolls into view.
+      cancelAnimationFrame(frame);
+      // Off screen now: rewind silently, ready for next time.
+      setPhase("snap");
       setTick(0);
-      setDim(true);
     };
   }, [running, steps, hold, interval]);
 
@@ -130,14 +152,13 @@ export function Scene({
       role={label ? "img" : undefined}
       aria-label={label}
       data-step={step}
-      data-resetting={resetting}
+      data-phase={phase}
       className={cn("x-scene relative", className)}
     >
       <StepContext.Provider value={step}>{children}</StepContext.Provider>
     </div>
   );
 }
-
 
 /**
  * Wraps a drawing (which reads its beat with `useOn`) in its own Scene, so

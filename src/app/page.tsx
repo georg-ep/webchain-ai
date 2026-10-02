@@ -122,9 +122,7 @@ export default function Home() {
             {/* What "a system that thinks" means, drawn as the agent's loop.
                 Follows the copy on phones. */}
             <Reveal delay={200} className="lg:col-span-6">
-              <Parallax distance={-24}>
-                <AgentLoop />
-              </Parallax>
+              <AgentLoop />
             </Reveal>
           </div>
         </section>

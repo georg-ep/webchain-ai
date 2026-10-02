@@ -1,8 +1,8 @@
 "use client";
 
 import { Glyph } from "@/components/explainers/glyph";
-import { Bar, C, Caption, Packet, Pill, Plate, Sheet, Wire } from "@/components/explainers/kit";
-import { story, useOn } from "@/components/explainers/scene";
+import { Bar, C, Caption, Pill, Plate, Sheet, Token, Wire } from "@/components/explainers/kit";
+import { story, useOn, useStep } from "@/components/explainers/scene";
 import { SparkOrb } from "@/components/explainers/spark-orb";
 
 /* =========================================================================
@@ -54,6 +54,7 @@ export const AgentScene = story(AgentDrawing, {
 /* Workflow automation: trigger → filter → action → action, lighting in order. */
 function WorkflowDrawing() {
   const on = useOn();
+  const step = useStep();
   const nodes = [
     { x: 34, glyph: "mail" as const, label: "Trigger" },
     { x: 104, glyph: "check" as const, label: "Filter" },
@@ -64,12 +65,16 @@ function WorkflowDrawing() {
   return (
     <Plate w={280} h={130}>
       <Wire d={lane} on={on(1)["data-on"]} />
-      <Packet path={lane} dur={2.8} />
+      {/* The run steps from node to node, in time with each one lighting */}
+      <Token points={[[6, 58], ...nodes.map(({ x }) => [x, 58] as [number, number])]} step={step} />
       {nodes.map(({ x, glyph, label }, i) => (
         <g key={label}>
           <rect x={x - 22} y={36} width={44} height={44} rx={12} fill={C.paper} stroke={C.lineStrong} />
-          <rect x={x - 22} y={36} width={44} height={44} rx={12} fill={C.ink} className="x-fade" {...on(i + 1)} />
-          <Glyph kind={glyph} x={x - 8} y={50} stroke={on(i + 1)["data-on"] ? C.paper : undefined} />
+          <Glyph kind={glyph} x={x - 8} y={50} />
+          <g className="x-fade" {...on(i + 1)}>
+            <rect x={x - 22} y={36} width={44} height={44} rx={12} fill={C.ink} />
+            <Glyph kind={glyph} x={x - 8} y={50} stroke={C.paper} />
+          </g>
           <Caption x={x} y={100} anchor="middle">
             {label}
           </Caption>
@@ -99,19 +104,16 @@ function IntegrationDrawing() {
       <Caption x={24} y={28}>
         CRM record
       </Caption>
-      <circle cx={252} cy={24} r={6} fill={C.lineStrong} />
+      <Pill x={256} y={15} align="end" label="AI filled" tone="violet" className="x-rise" on={on(2)["data-on"]} />
       {fields.map(({ y, label, w, ai }, i) => (
         <g key={label}>
           <Caption x={24} y={y + 4}>
             {label}
           </Caption>
-          <rect x={92} y={y - 7} width={160} height={14} rx={5} fill={C.taupe} />
+          <rect x={92} y={y - 7} width={164} height={14} rx={5} fill={C.taupe} />
           <Bar x={98} y={y - 2} w={w} h={4} tone={ai ? C.violet : C.ink} grow={ai} on={ai ? on(i)["data-on"] : undefined} />
         </g>
       ))}
-      <g className="x-pop" {...on(2)}>
-        <SparkOrb cx={252} cy={70} r={7} />
-      </g>
     </Plate>
   );
 }
@@ -136,8 +138,18 @@ function AppDrawing() {
       {[48, 60, 72].map((y) => (
         <rect key={y} x={26} y={y} width={30} height={4} rx={2} fill={C.lineStrong} className="x-fade" {...on(1)} />
       ))}
-      <rect x={72} y={36} width={86} height={36} rx={6} fill={C.ink} className="x-pop" {...on(2)} />
-      <rect x={166} y={36} width={96} height={36} rx={6} fill={C.taupe} className="x-pop" {...on(2)} />
+      <g className="x-pop" {...on(2)}>
+        <rect x={72} y={36} width={86} height={36} rx={6} fill={C.ink} />
+        <rect x={80} y={44} width={30} height={4} rx={2} fill="#6f6962" />
+        <rect x={80} y={55} width={52} height={8} rx={4} fill={C.paper} />
+      </g>
+      <g className="x-pop" {...on(2)}>
+        <rect x={166} y={36} width={96} height={36} rx={6} fill={C.taupe} />
+        <circle cx={186} cy={54} r={9} fill="none" stroke={C.line} strokeWidth="3" />
+        <circle cx={186} cy={54} r={9} fill="none" stroke={C.violet} strokeWidth="3" strokeDasharray="40 100" transform="rotate(-90 186 54)" />
+        <rect x={202} y={46} width={44} height={4} rx={2} fill={C.lineStrong} />
+        <rect x={202} y={56} width={30} height={4} rx={2} fill={C.lineStrong} />
+      </g>
       <g className="x-fade" {...on(3)}>
         <rect x={72} y={80} width={190} height={34} rx={6} fill={C.taupe} />
         <path
@@ -189,6 +201,7 @@ function BoardDrawing() {
         return (
           <g
             key={row}
+            data-on
             style={{
               transform: `translate(${col * 88}px, 0)`,
               transition: "transform 0.8s var(--ease-out-expo)",
@@ -264,18 +277,17 @@ function QuoteClockDrawing() {
       <text x={52} y={60} fontSize="13" textAnchor="middle" fill={C.ink}>
         48h
       </text>
-      <Wire d="M96 55 H134" on={on(2)["data-on"]} />
+      <Wire d="M96 55 H124" on={on(2)["data-on"]} />
       <g className="x-rise" {...on(2)}>
-        <Sheet x={140} y={14} w={86} h={82} rx={8} />
-        <Bar x={152} y={30} w={50} h={4} tone={C.ink} />
-        <Bar x={152} y={42} w={40} h={4} />
-        <Bar x={152} y={54} w={60} h={4} />
+        <Sheet x={130} y={14} w={90} h={82} rx={8} />
+        <Bar x={142} y={30} w={50} h={4} tone={C.ink} />
+        <Bar x={142} y={42} w={40} h={4} />
+        <Bar x={142} y={54} w={60} h={4} />
       </g>
-      <g className="x-pop" {...on(3)} style={{ transformOrigin: "236px 78px" }}>
-        <rect x={198} y={66} width={72} height={24} rx={12} fill={C.ink} transform="rotate(-8 234 78)" />
-        <text x={234} y={81.5} fontSize="9" textAnchor="middle" fill={C.paper} className="x-mono" transform="rotate(-8 234 78)">
-          Fixed
-        </text>
+      <g className="x-pop" {...on(3)}>
+        <g transform="rotate(-8 214 78)">
+          <Pill x={214} y={66} h={24} size={9} w={70} align="middle" label="Fixed" />
+        </g>
       </g>
     </Plate>
   );
@@ -336,7 +348,7 @@ function MarginDrawing() {
   return (
     <Plate w={360} h={110}>
       <rect x={10} y={38} width={180} height={34} rx={8} fill={C.ink} />
-      <text x={22} y={60} fontSize="12" fill={C.paper} className="x-mono">
+      <text x={22} y={58.5} fontSize="10" fill={C.paper} className="x-mono">
         Our price
       </text>
       <rect
@@ -346,6 +358,7 @@ function MarginDrawing() {
         height={34}
         rx={8}
         fill={C.violet}
+        data-on={grown}
         style={{
           transformBox: "fill-box",
           transformOrigin: "left center",
@@ -353,15 +366,18 @@ function MarginDrawing() {
           transition: "transform 1.1s var(--ease-out-expo)",
         }}
       />
-      <text x={204} y={60} fontSize="12" fill={C.paper} className="x-mono x-fade" {...on(1)}>
+      <text x={204} y={58.5} fontSize="10" fill={C.paper} className="x-mono x-fade" {...on(1)}>
         Your margin
       </text>
-      <path d="M10 84 v8 H342 v-8" fill="none" stroke={C.ink4} className="x-fade" {...on(2)} />
-      <Caption x={176} y={108} anchor="middle" size={11} on={on(2)["data-on"]}>
+      <path d="M10 82 v8 H342 v-8" fill="none" stroke={C.ink4} className="x-fade" {...on(2)} />
+      <Caption x={176} y={106} anchor="middle" size={9.5} on={on(2)["data-on"]}>
         Your client pays · you set it
       </Caption>
-      <Caption x={10} y={26} size={11}>
+      <Caption x={10} y={26} size={9.5}>
         We invoice you
+      </Caption>
+      <Caption x={192} y={26} size={9.5} on={on(1)["data-on"]}>
+        You add
       </Caption>
     </Plate>
   );

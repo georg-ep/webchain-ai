@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 
 /**
@@ -44,7 +43,9 @@ export function Parallax({
       // -1 when the element sits a screen below the fold, 1 when a screen above.
       const centre = rect.top + rect.height / 2;
       const offset = (centre - window.innerHeight / 2) / window.innerHeight;
-      node.style.transform = `translate3d(0, ${(offset * distance).toFixed(2)}px, 0)`;
+      // Whole pixels, and a 2D translate: a sub-pixel or 3D offset puts the
+      // content on its own GPU layer, which blurs text and fine lines.
+      node.style.transform = `translateY(${Math.round(offset * distance)}px)`;
     };
 
     const onScroll = () => {
@@ -74,7 +75,7 @@ export function Parallax({
   }, [distance]);
 
   return (
-    <div ref={ref} className={cn("will-change-transform", className)}>
+    <div ref={ref} className={className}>
       {children}
     </div>
   );

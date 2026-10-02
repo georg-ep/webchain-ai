@@ -14,8 +14,38 @@ const PAPER = "#fdfcfc";
 const TAUPE = "#f5f3f1";
 const VIOLET = "#0447ff";
 
-/** Left-hand caption for one layer of the stack. */
-function LayerLabel({ y, index, title, sub }: { y: number; index: string; title: string; sub: string }) {
+/**
+ * Caption for one layer of the stack: a column on the left when wide, a
+ * single line above the layer on phones.
+ */
+function LayerLabel({
+  y,
+  index,
+  title,
+  sub,
+  narrow,
+}: {
+  y: number;
+  index: string;
+  title: string;
+  sub: string;
+  narrow?: boolean;
+}) {
+  if (narrow) {
+    return (
+      <text x="0" y={y}>
+        <tspan fontSize="10" fill={INK_4} className="x-mono">
+          {index}
+        </tspan>
+        <tspan dx="8" fontSize="14" fill={INK}>
+          {title}
+        </tspan>
+        <tspan dx="6" fontSize="12" fill={INK_3}>
+          {sub}
+        </tspan>
+      </text>
+    );
+  }
   return (
     <g>
       <text x="0" y={y} fontSize="11" fill={INK_4} className="x-mono">
@@ -31,12 +61,17 @@ function LayerLabel({ y, index, title, sub }: { y: number; index: string; title:
   );
 }
 
-function Stack() {
+function Stack({ narrow = false }: { narrow?: boolean }) {
   const on = useOn();
-  const spine = "M300 334 V112";
+  // Phones drop the label column: layers shift left and apart, with their
+  // captions on a line above each one.
+  const sx = narrow ? -160 : 0;
+  const [dyClient, dyAgency, dyBench] = narrow ? [28, 58, 88] : [0, 0, 0];
+  const spine = narrow ? "M262 400 V100" : "M300 334 V112";
+  const layer = (dy: number) => `translate(${sx} ${dy})`;
 
   return (
-    <svg viewBox="0 0 450 440" aria-hidden>
+    <svg viewBox={narrow ? "0 0 280 520" : "0 0 450 440"} aria-hidden>
       {/* The spine work travels up, from our bench to the client's screen */}
       <path d={spine} stroke={LINE_STRONG} strokeWidth="1.25" fill="none" />
       <path d={spine} stroke={INK_4} strokeWidth="1.25" fill="none" className="x-flow" />
@@ -45,8 +80,14 @@ function Stack() {
       ))}
 
       {/* 03 — what the client sees */}
-      <LayerLabel y={26} index="03" title="Your client" sub="Sees your work" />
-      <g>
+      <LayerLabel
+        y={narrow ? 22 : 26}
+        index="03"
+        title="Your client"
+        sub={narrow ? "· sees your work" : "Sees your work"}
+        narrow={narrow}
+      />
+      <g transform={layer(dyClient)}>
         <rect x="160" y="8" width="280" height="122" rx="14" fill={PAPER} stroke={LINE_STRONG} />
         <path d="M160 34 H440" stroke={LINE} />
         {[176, 188, 200].map((cx) => (
@@ -73,8 +114,14 @@ function Stack() {
       </g>
 
       {/* 02 — the agency layer: the work takes on your brand */}
-      <LayerLabel y={176} index="02" title="Your agency" sub="Presents it as yours" />
-      <g className="x-chip" {...on(2)}>
+      <LayerLabel
+        y={narrow ? 204 : 176}
+        index="02"
+        title="Your agency"
+        sub={narrow ? "· presents it" : "Presents it as yours"}
+        narrow={narrow}
+      />
+      <g className="x-chip" {...on(2)} transform={layer(dyAgency)}>
         <rect className="x-chip-bg" x="160" y="160" width="280" height="80" rx="14" fill={PAPER} stroke={LINE_STRONG} />
         <circle cx="196" cy="200" r="16" fill={INK} />
         <text x="196" y="204" fontSize="11" fill={PAPER} textAnchor="middle" className="x-mono">
@@ -93,8 +140,14 @@ function Stack() {
       </g>
 
       {/* 01 — our bench, out of sight */}
-      <LayerLabel y={292} index="01" title="WebChain" sub="Builds and tests it" />
-      <g>
+      <LayerLabel
+        y={narrow ? 346 : 292}
+        index="01"
+        title="WebChain"
+        sub={narrow ? "· builds and tests" : "Builds and tests it"}
+        narrow={narrow}
+      />
+      <g transform={layer(dyBench)}>
         <rect
           x="160"
           y="272"
@@ -122,8 +175,8 @@ function Stack() {
         </g>
       </g>
 
-      <text x="0" y="432" fontSize="10.5" fill={INK_4} className="x-mono">
-        Behind the scenes: we never contact your client
+      <text x="0" y={narrow ? 512 : 432} fontSize="10.5" fill={INK_4} className="x-mono">
+        {narrow ? "We never contact your client" : "Behind the scenes: we never contact your client"}
       </text>
     </svg>
   );
@@ -142,7 +195,12 @@ export function WhiteLabelScene({ className }: { className?: string }) {
       className={className}
       label="Diagram: WebChain builds and tests the work behind the scenes, your agency presents it under your brand, and your client sees it on their site as your agency's work."
     >
-      <Stack />
+      <div className="hidden sm:block">
+        <Stack />
+      </div>
+      <div className="mx-auto max-w-[400px] sm:hidden">
+        <Stack narrow />
+      </div>
     </Scene>
   );
 }

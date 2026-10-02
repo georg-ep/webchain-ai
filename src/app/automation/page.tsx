@@ -297,7 +297,7 @@ export default function AutomationPage() {
                 </p>
               </div>
               <div className="rounded-xl border border-line bg-surface-0 p-2 sm:p-8 lg:col-span-7">
-                <HireSplitScene className="mx-auto max-w-[560px]" />
+                <HireSplitScene className="mx-auto max-w-[480px]" />
               </div>
             </div>
           </div>
