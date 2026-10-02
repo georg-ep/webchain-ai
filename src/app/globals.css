@@ -231,16 +231,26 @@
   transform-style: preserve-3d;
   transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
   transition: transform 0.7s var(--ease-out-expo);
-  will-change: transform;
 }
 
 .tilt-card[data-tilting="true"] {
   transition-duration: 0.16s;
   transition-timing-function: ease-out;
+  will-change: transform;
 }
 
+/*
+ * Depth only while the card is being tilted. Lifted towards the viewer at
+ * rest, a layer is drawn as a bitmap and scaled up a few percent by the
+ * perspective, which leaves its text and diagrams permanently soft.
+ */
 .tilt-layer {
+  transition: transform 0.7s var(--ease-out-expo);
+}
+
+.tilt-card[data-tilting="true"] .tilt-layer {
   transform: translateZ(var(--tz, 0px));
+  transition-duration: 0.3s;
 }
 
 /* Soft key-light that follows the cursor across the card face */
@@ -274,18 +284,32 @@
   -webkit-text-stroke-color: rgba(4, 71, 255, 0.38);
 }
 
-/* Scroll entrance: cards stand up from the page plane */
+/*
+ * Scroll entrances. Both drive a typed custom property (--enter, 0 to 1)
+ * and compute opacity and position from it, instead of transitioning
+ * opacity/transform directly: a direct transition is handed to the GPU,
+ * which shows a stretched snapshot of the content (soft text, soft
+ * diagrams) until it lands. Driven this way the content is redrawn crisp
+ * on every frame. Plain 2D moves only, for the same reason: a 3D tilt
+ * would put the card on its own layer for good.
+ */
+@property --enter {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+/* Cards rise a little further than other content */
 .rise3 {
-  opacity: 0;
-  transform: perspective(1200px) rotateX(-16deg) translateY(52px);
-  transform-origin: 50% 100%;
-  transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
+  --enter: 0;
+  opacity: var(--enter);
+  transform: translateY(calc((1 - var(--enter)) * 40px));
+  transition: --enter 0.9s var(--ease-out-expo);
   transition-delay: var(--rise-delay, 0ms);
 }
 
 .rise3[data-visible="true"] {
-  opacity: 1;
-  transform: perspective(1200px) rotateX(0deg) translateY(0);
+  --enter: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -300,21 +324,22 @@
   }
 }
 
-/* Scroll reveal */
+/* Scroll reveal (see the note on --enter above). */
 .reveal {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
+  --enter: 0;
+  opacity: var(--enter);
+  transform: translateY(calc((1 - var(--enter)) * 18px));
+  transition: --enter 0.9s var(--ease-out-expo);
   transition-delay: var(--reveal-delay, 0ms);
 }
 
-/*
- * No will-change here: a promoted layer is rasterised once and then moved,
- * so text and hairlines inside it stay soft at fractional offsets. Plain
- * transitions are re-rasterised crisp when they land.
- */
 .reveal[data-visible="true"] {
-  opacity: 1;
+  --enter: 1;
+}
+
+/* Landed: no transform left behind (see Reveal). */
+.reveal[data-entered="true"],
+.rise3[data-entered="true"] {
   transform: none;
 }
 

@@ -20,6 +20,9 @@ type RevealProps = {
 export function Reveal({ children, className, delay = 0, as = "div" }: RevealProps) {
   const ref = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
+  // Once the entrance has landed the transform is dropped entirely, so the
+  // wrapper stops being a containing block or stacking context.
+  const [entered, setEntered] = useState(false);
   const Tag = as;
 
   useEffect(() => {
@@ -68,6 +71,10 @@ export function Reveal({ children, className, delay = 0, as = "div" }: RevealPro
       ref={ref as React.Ref<never>}
       className={cn("reveal", className)}
       data-visible={visible}
+      data-entered={entered}
+      onTransitionEnd={(event: React.TransitionEvent) => {
+        if (event.target === event.currentTarget && visible) setEntered(true);
+      }}
       style={{ "--reveal-delay": `${delay}ms` } as React.CSSProperties}
     >
       {children}

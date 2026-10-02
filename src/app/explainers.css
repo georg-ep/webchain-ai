@@ -28,69 +28,154 @@
   text-transform: uppercase;
 }
 
-/* Everything transforms around its own box unless told otherwise. */
-.x-fade,
-.x-rise,
-.x-pop,
-.x-grow-x,
-.x-grow-y,
-.x-slide,
-.x-out {
+/*
+ * Crisp motion. Every animated value below is a typed custom property
+ * (--xp, --tx …) that the transform or opacity is computed from, rather
+ * than a transition on transform/opacity themselves. Browsers hand
+ * transform/opacity animations to the GPU, which renders an SVG piece once
+ * (at its starting size, often) and stretches that image until the
+ * animation ends, so ticks and labels look soft mid-flight and only sharpen
+ * at the end. A custom property can't be offloaded: the vector is redrawn
+ * at full resolution on every frame.
+ */
+@property --xp {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --xv {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --tx {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --ty {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --rot {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --sx {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --ps {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --po {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+/*
+ * --xv is visibility for the loop seam (see the end of this file); every
+ * piece that carries data-on fades with it.
+ */
+.x-scene [data-on] {
+  --xv: 1;
+  opacity: var(--xv);
+  transition: --xv 0.45s ease;
+}
+
+/* --xp is a piece's progress: 0 before its beat, 1 from its beat on. */
+.x-scene .x-fade,
+.x-scene .x-rise,
+.x-scene .x-pop,
+.x-scene .x-grow-x,
+.x-scene .x-grow-y,
+.x-scene .x-slide,
+.x-scene .x-out {
+  --xp: 1;
   transform-box: fill-box;
   transform-origin: center;
-  transition: opacity 0.6s var(--ease-out-expo), transform 0.7s var(--ease-out-expo),
-    fill 0.5s ease, stroke 0.5s ease;
+  opacity: calc(var(--xp) * var(--xv));
+  transition:
+    --xp 0.7s var(--ease-out-expo),
+    --xv 0.45s ease,
+    fill 0.5s ease,
+    stroke 0.5s ease;
 }
 
-.x-fade[data-on="false"] {
-  opacity: 0;
+.x-scene .x-fade[data-on="false"],
+.x-scene .x-rise[data-on="false"],
+.x-scene .x-pop[data-on="false"],
+.x-scene .x-grow-x[data-on="false"],
+.x-scene .x-grow-y[data-on="false"],
+.x-scene .x-slide[data-on="false"],
+.x-scene .x-out[data-on="true"] {
+  --xp: 0;
 }
 
-.x-rise[data-on="false"] {
-  opacity: 0;
-  transform: translateY(8px);
+.x-scene .x-rise {
+  transform: translateY(calc((1 - var(--xp)) * 8px));
 }
 
-.x-pop[data-on="false"] {
-  opacity: 0;
-  transform: scale(0.4);
+.x-scene .x-pop {
+  transform: scale(calc(0.4 + 0.6 * var(--xp)));
 }
 
-.x-grow-x {
+/* Grows keep their opacity; only the length changes. */
+.x-scene .x-grow-x {
+  opacity: var(--xv);
   transform-origin: left center;
+  transform: scaleX(var(--xp));
 }
 
-.x-grow-x[data-on="false"] {
-  transform: scaleX(0);
-}
-
-.x-grow-y {
+.x-scene .x-grow-y {
+  opacity: var(--xv);
   transform-origin: center bottom;
-}
-
-.x-grow-y[data-on="false"] {
-  transform: scaleY(0.04);
+  transform: scaleY(calc(0.04 + 0.96 * var(--xp)));
 }
 
 /* Slides in from the left by --dx (defaults to 24 user units). */
-.x-slide[data-on="false"] {
-  opacity: 0;
-  transform: translateX(calc(var(--dx, 24px) * -1));
+.x-scene .x-slide {
+  transform: translateX(calc((var(--xp) - 1) * var(--dx, 24px)));
 }
 
-/* The inverse: visible until its beat, then gone. */
-.x-out[data-on="true"] {
-  opacity: 0;
+/*
+ * Free movement set inline by a drawing: --tx/--ty to move, --rot to turn,
+ * --sx to stretch. Durations and easing can be tuned per piece with --dur
+ * and --ease.
+ */
+.x-scene .x-move {
+  transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scaleX(var(--sx));
+  transition:
+    --tx var(--dur, 0.9s) var(--ease, var(--ease-out-expo)),
+    --ty var(--dur, 0.9s) var(--ease, var(--ease-out-expo)),
+    --rot var(--dur, 0.9s) var(--ease, var(--ease-out-expo)),
+    --sx var(--dur, 0.9s) var(--ease, var(--ease-out-expo)),
+    --xv 0.45s ease;
 }
 
 /* Strokes that draw themselves. Paths need pathLength="1". */
-.x-draw {
+.x-scene .x-draw {
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
-  transition: stroke-dashoffset 1.1s var(--ease-out-expo);
+  transition:
+    stroke-dashoffset 1.1s var(--ease-out-expo),
+    --xv 0.45s ease;
 }
 
-.x-draw[data-on="false"] {
+.x-scene .x-draw[data-on="false"] {
   stroke-dashoffset: 1;
 }
 
@@ -120,31 +205,37 @@
 /* The spark orb's colour fields turning slowly inside the sphere. */
 .x-spin {
   transform-box: view-box;
+  transform: rotate(var(--rot));
   animation: x-spin 16s linear infinite;
 }
 
 .x-spin-rev {
   transform-box: view-box;
+  transform: rotate(var(--rot));
   animation: x-spin 24s linear infinite reverse;
 }
 
 @keyframes x-spin {
+  from {
+    --rot: 0deg;
+  }
   to {
-    transform: rotate(360deg);
+    --rot: 360deg;
   }
 }
 
 .x-breathe {
+  opacity: var(--po);
   animation: x-breathe 3.2s ease-in-out infinite;
 }
 
 @keyframes x-breathe {
   0%,
   100% {
-    opacity: 0.45;
+    --po: 0.45;
   }
   50% {
-    opacity: 1;
+    --po: 1;
   }
 }
 
@@ -152,38 +243,47 @@
 .x-ping {
   transform-box: fill-box;
   transform-origin: center;
+  transform: scale(var(--ps));
+  opacity: var(--po);
   animation: x-ping 2.2s var(--ease-out-expo) infinite;
 }
 
 @keyframes x-ping {
   0% {
-    transform: scale(0.6);
-    opacity: 0.7;
+    --ps: 0.6;
+    --po: 0.7;
   }
   100% {
-    transform: scale(2.2);
-    opacity: 0;
+    --ps: 2.2;
+    --po: 0;
   }
 }
 
 /* HTML pieces of an explainer (the activity log, the preview browser). */
-.x-row {
-  transition: opacity 0.6s var(--ease-out-expo), transform 0.7s var(--ease-out-expo),
-    background-color 0.5s ease;
+.x-scene .x-row {
+  --xp: 1;
+  opacity: calc(var(--xp) * var(--xv));
+  transform: translateY(calc((1 - var(--xp)) * 10px));
+  transition:
+    --xp 0.7s var(--ease-out-expo),
+    --xv 0.45s ease;
 }
 
-.x-row[data-on="false"] {
-  opacity: 0;
-  transform: translateY(10px);
+.x-scene .x-row[data-on="false"] {
+  --xp: 0;
 }
 
-.x-bar {
+.x-scene .x-bar {
+  --xp: 1;
   transform-origin: left center;
-  transition: transform 1.2s var(--ease-out-expo);
+  transform: scaleX(var(--xp));
+  transition:
+    --xp 1.2s var(--ease-out-expo),
+    --xv 0.45s ease;
 }
 
-.x-bar[data-on="false"] {
-  transform: scaleX(0);
+.x-scene .x-bar[data-on="false"] {
+  --xp: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -193,6 +293,11 @@
     animation: none !important;
     transition: none !important;
   }
+
+  /* A ripple frozen mid-pulse just reads as a blot. */
+  .x-scene .x-ping {
+    display: none;
+  }
 }
 
 /*
@@ -201,23 +306,16 @@
  *          together; the static frame of the diagram stays put.
  *   snap - back to the first beat with transitions off, so nothing is
  *          seen flying back to where it started.
- *   in   - the first beat fades up, then the story plays again.
+ *   in   - the first beat fades up (the --xv transition), then the story
+ *          plays again.
  */
-.x-scene[data-phase="out"] [data-on] {
-  opacity: 0 !important;
-  transition: opacity 0.45s ease !important;
-}
-
+.x-scene[data-phase="out"] [data-on],
 .x-scene[data-phase="snap"] [data-on] {
-  opacity: 0 !important;
+  --xv: 0;
 }
 
 .x-scene[data-phase="snap"] *,
 .x-scene[data-phase="snap"] *::before,
 .x-scene[data-phase="snap"] *::after {
   transition: none !important;
-}
-
-.x-scene[data-phase="in"] [data-on] {
-  transition: opacity 0.5s ease !important;
 }

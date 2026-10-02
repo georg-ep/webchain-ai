@@ -128,10 +128,8 @@ function HumanDrawing() {
           rx={9}
           fill={C.ember}
           data-on={on(1)["data-on"]}
-          style={{
-            transform: `translateY(${on(1)["data-on"] ? 38 : 88}px)`,
-            transition: "transform 1.2s var(--ease-out-expo)",
-          }}
+          className="x-move"
+          style={{ "--ty": `${on(1)["data-on"] ? 38 : 88}px`, "--dur": "1.2s" } as React.CSSProperties}
         />
       </g>
       <path d="M8 66 H40" stroke={C.ink} strokeDasharray="3 3" />
@@ -191,10 +189,8 @@ function MapDrawing() {
             rx={5}
             fill={lane ? C.violet : C.ink}
             data-on={sorted}
-            style={{
-              transform: sorted ? `translateY(${lane ? 30 : -24}px)` : "none",
-              transition: "transform 0.8s var(--ease-out-expo)",
-            }}
+            className="x-move"
+            style={{ "--ty": `${sorted ? (lane ? 30 : -24) : 0}px`, "--dur": "0.8s" } as React.CSSProperties}
           />
         );
       })}
@@ -263,10 +259,13 @@ function GuardDrawing() {
       {/* A bad input, bounced back */}
       <g
         data-on
-        style={{
-          transform: on(1)["data-on"] ? (on(2)["data-on"] ? "translate(28px, -22px)" : "translate(96px, 0)") : "none",
-          transition: "transform 0.9s var(--ease-out-expo)",
-        }}
+        className="x-move"
+        style={
+          {
+            "--tx": on(2)["data-on"] ? "28px" : on(1)["data-on"] ? "96px" : "0px",
+            "--ty": on(2)["data-on"] ? "-22px" : "0px",
+          } as React.CSSProperties
+        }
       >
         <circle cx={14} cy={56} r={6} fill={C.ember} />
       </g>

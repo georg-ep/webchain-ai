@@ -202,10 +202,8 @@ function BoardDrawing() {
           <g
             key={row}
             data-on
-            style={{
-              transform: `translate(${col * 88}px, 0)`,
-              transition: "transform 0.8s var(--ease-out-expo)",
-            }}
+            className="x-move"
+            style={{ "--tx": `${col * 88}px`, "--dur": "0.8s" } as React.CSSProperties}
           >
             <rect x={20} y={36 + row * 28} width={64} height={22} rx={6} fill={done ? C.ink : C.paper} stroke={C.lineStrong} style={{ transition: "fill 0.5s ease" }} />
             <rect x={28} y={45 + row * 28} width={34} height={4} rx={2} fill={done ? "#5b5752" : C.lineStrong} />
@@ -359,12 +357,15 @@ function MarginDrawing() {
         rx={8}
         fill={C.violet}
         data-on={grown}
-        style={{
-          transformBox: "fill-box",
-          transformOrigin: "left center",
-          transform: grown ? "scaleX(1)" : "scaleX(0.15)",
-          transition: "transform 1.1s var(--ease-out-expo)",
-        }}
+        className="x-move"
+        style={
+          {
+            transformBox: "fill-box",
+            transformOrigin: "left center",
+            "--sx": grown ? 1 : 0.15,
+            "--dur": "1.1s",
+          } as React.CSSProperties
+        }
       />
       <text x={204} y={58.5} fontSize="10" fill={C.paper} className="x-mono x-fade" {...on(1)}>
         Your margin

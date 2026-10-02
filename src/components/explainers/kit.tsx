@@ -248,10 +248,8 @@ export function Token({
   return (
     <g
       data-on
-      style={{
-        transform: `translate(${x}px, ${y}px)`,
-        transition: `transform ${duration}s var(--ease-out-expo)`,
-      }}
+      className="x-move"
+      style={{ "--tx": `${x}px`, "--ty": `${y}px`, "--dur": `${duration}s` } as React.CSSProperties}
     >
       <circle r={r * 2.2} fill={tone} opacity="0.14" />
       <circle r={r} fill={tone} />

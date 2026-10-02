@@ -76,8 +76,8 @@ function MatchStory() {
         <g key={y}>
           <Bar x={24} y={y} w={64} />
           <Bar x={190} y={y} w={64} />
-          <rect x={24} y={y} width={64} height="5" rx="2.5" fill={VIOLET} className="x-fade" {...on(1 + i)} opacity="0.55" />
-          <rect x={190} y={y} width={64} height="5" rx="2.5" fill={VIOLET} className="x-fade" {...on(1 + i)} opacity="0.55" />
+          <rect x={24} y={y} width={64} height="5" rx="2.5" fill={VIOLET} className="x-fade" {...on(1 + i)} fillOpacity="0.55" />
+          <rect x={190} y={y} width={64} height="5" rx="2.5" fill={VIOLET} className="x-fade" {...on(1 + i)} fillOpacity="0.55" />
           <path
             d={`M92 ${y + 2.5} H186`}
             stroke={VIOLET}

@@ -49,10 +49,8 @@ function TaskChip({
   return (
     <g
       data-on={moved}
-      style={{
-        transform: moved ? `translate(${dx}px, ${dy}px)` : "none",
-        transition: "transform 0.9s var(--ease-out-expo)",
-      }}
+      className="x-move"
+      style={{ "--tx": `${moved ? dx : 0}px`, "--ty": `${moved ? dy : 0}px` } as React.CSSProperties}
     >
       <rect
         x={x - w / 2}
@@ -322,7 +320,8 @@ function ApproveDrawing() {
         cy={57}
         r={5}
         fill={C.paper}
-        style={{ transform: approved ? "translateX(16px)" : "none", transition: "transform 0.6s var(--ease-out-expo)" }}
+        className="x-move"
+        style={{ "--tx": approved ? "16px" : "0px", "--dur": "0.6s" } as React.CSSProperties}
       />
       <Caption x={54} y={60} on={!approved}>
         Approve?

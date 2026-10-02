@@ -75,6 +75,9 @@ export function PhaseCards() {
           key={phase}
           className="rise3 scene-3d"
           data-visible={visible}
+          onTransitionEnd={(event) => {
+            if (event.target === event.currentTarget && visible) event.currentTarget.dataset.entered = "true";
+          }}
           style={{ "--rise-delay": `${i * 120}ms` } as React.CSSProperties}
         >
           <TiltCard maxTilt={6} className="group h-full rounded-2xl">

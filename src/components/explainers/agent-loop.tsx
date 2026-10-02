@@ -126,12 +126,16 @@ function RingToken({ cx, cy, r, step }: { cx: number; cy: number; r: number; ste
   return (
     <g
       data-on
-      style={{
-        transformBox: "view-box",
-        transformOrigin: `${cx}px ${cy}px`,
-        transform: `rotate(${ANGLE[step]}deg)`,
-        transition: "transform 0.95s cubic-bezier(0.65, 0, 0.35, 1)",
-      }}
+      className="x-move"
+      style={
+        {
+          transformBox: "view-box",
+          transformOrigin: `${cx}px ${cy}px`,
+          "--rot": `${ANGLE[step]}deg`,
+          "--dur": "0.95s",
+          "--ease": "cubic-bezier(0.65, 0, 0.35, 1)",
+        } as React.CSSProperties
+      }
     >
       <circle cx={cx} cy={cy - r} r="11" fill={step === 5 ? C.ember : C.violet} opacity="0.14" />
       <circle cx={cx} cy={cy - r} r="5" fill={step === 5 ? C.ember : C.violet} style={{ transition: "fill 0.5s ease" }} />
