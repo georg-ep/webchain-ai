@@ -25,14 +25,14 @@ const WORK_WITH_US_LINKS = [
  */
 export function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-b from-transparent to-black px-6 pt-20 pb-[calc(2.5rem+env(safe-area-inset-bottom))] lg:px-12">
+    <footer className="relative overflow-hidden bg-gradient-to-b from-transparent to-surface-1 px-6 pt-20 pb-[calc(2.5rem+env(safe-area-inset-bottom))] lg:px-12">
       {/* Watermark wordmark: painted behind the whole footer, bleeding off
           the bottom edge, so it adds depth without taking any space. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 -bottom-4 select-none overflow-hidden leading-none md:-bottom-8"
       >
-        <span className="block translate-y-[12%] bg-gradient-to-b from-white/[0.05] to-white/[0.01] bg-clip-text text-center font-display text-[16vw] font-medium tracking-[-0.04em] text-transparent whitespace-nowrap md:text-[12.5rem]">
+        <span className="block translate-y-[12%] bg-gradient-to-b from-ink/[0.06] to-ink/[0.015] bg-clip-text text-center font-display text-[16vw] font-medium tracking-[-0.04em] text-transparent whitespace-nowrap md:text-[12.5rem]">
           WEBCHAIN
         </span>
       </div>
@@ -42,7 +42,7 @@ export function SiteFooter() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-4">
             <img
-              src="/brand/large.svg"
+              src="/brand/large-ink.svg"
               alt="WebChain Labs"
               width={127}
               height={17}
@@ -119,7 +119,7 @@ export function SiteFooter() {
                       aria-hidden
                       width={12}
                       height={12}
-                      className="h-3 w-3 object-contain opacity-40 transition-opacity group-hover:opacity-100"
+                      className="h-3 w-3 object-contain opacity-50 invert transition-opacity group-hover:opacity-100"
                       src={`/socials/${name}.svg`}
                     />
                     {name}

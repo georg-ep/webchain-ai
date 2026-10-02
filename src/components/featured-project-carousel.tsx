@@ -117,7 +117,7 @@ export function FeaturedProjectCarousel() {
             >
               <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
             </button>
-            <div className="relative h-px flex-1 overflow-hidden bg-white/10">
+            <div className="relative h-px flex-1 overflow-hidden bg-line-strong">
               <div
                 className="absolute inset-y-0 left-0 bg-gradient-to-r from-signal/60 to-signal transition-[width] duration-100 ease-linear"
                 style={{ width: `${progress}%` }}
@@ -142,7 +142,7 @@ export function FeaturedProjectCarousel() {
               {currentProject.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-line bg-white/[0.03] px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-ink-3"
+                  className="rounded-full border border-line bg-surface-0 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-ink-3"
                 >
                   {tag}
                 </span>
@@ -166,7 +166,7 @@ export function FeaturedProjectCarousel() {
               <Link
                 href={currentProject.url}
                 target="_blank"
-                className="group/link mt-8 inline-flex items-center gap-2 border-b border-line pb-1 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-2 transition-colors hover:border-white/40 hover:text-ink"
+                className="group/link mt-8 inline-flex items-center gap-2 border-b border-line pb-1 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-2 transition-colors hover:border-ink/40 hover:text-ink"
               >
                 View Site
                 <ArrowUpRight
@@ -197,7 +197,7 @@ export function FeaturedProjectCarousel() {
                   "h-[3px] rounded-full transition-all duration-500 [transition-timing-function:var(--ease-out-expo)]",
                   isActive
                     ? "w-7 bg-signal/80"
-                    : "w-2 bg-white/15 group-hover:bg-white/35",
+                    : "w-2 bg-ink/15 group-hover:bg-ink/35",
                 )}
               />
             </button>

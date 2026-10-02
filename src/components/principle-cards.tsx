@@ -1,141 +1,34 @@
 "use client";
 
+import { HumanScene, ModelScene, RulesScene } from "@/components/explainers/home-scenes";
 import { Reveal } from "@/components/reveal";
 import { TiltCard } from "@/components/tilt-card";
-
-const CUBE = 76;
-const CUBE_CORE = 30;
-
-/** Six faces of a wireframe cube of the given edge length. */
-function CubeFaces({ size }: { size: number }) {
-  const z = size / 2;
-  const faces = [
-    `rotateY(0deg) translateZ(${z}px)`,
-    `rotateY(90deg) translateZ(${z}px)`,
-    `rotateY(180deg) translateZ(${z}px)`,
-    `rotateY(270deg) translateZ(${z}px)`,
-    `rotateX(90deg) translateZ(${z}px)`,
-    `rotateX(-90deg) translateZ(${z}px)`,
-  ];
-  return (
-    <>
-      {faces.map((transform) => (
-        <i key={transform} style={{ transform }} />
-      ))}
-    </>
-  );
-}
-
-/** 001 — nested wireframe cubes turning in lockstep. */
-function DeterministicScene() {
-  return (
-    <div className="holo-scene h-full w-full">
-      <div className="cube3" style={{ width: CUBE, height: CUBE }}>
-        <CubeFaces size={CUBE} />
-        <div
-          className="cube3-core"
-          style={{ margin: (CUBE - CUBE_CORE) / 2, width: CUBE_CORE, height: CUBE_CORE }}
-        >
-          <CubeFaces size={CUBE_CORE} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const WAVE_GRID = 6;
-
-/** 002 — probability wave rolling through a tilted dot field. */
-function ProbabilisticScene() {
-  return (
-    <div className="holo-scene h-full w-full">
-      <div
-        className="wave-plane"
-        style={{
-          gridTemplateColumns: `repeat(${WAVE_GRID}, 1fr)`,
-          gap: 16,
-          width: 128,
-          height: 128,
-        }}
-      >
-        {Array.from({ length: WAVE_GRID * WAVE_GRID }, (_, i) => {
-          const row = Math.floor(i / WAVE_GRID);
-          const col = i % WAVE_GRID;
-          return <i key={i} style={{ animationDelay: `${-(row + col) * 0.22}s` }} />;
-        })}
-      </div>
-    </div>
-  );
-}
-
-/** 003 — gyroscope: satellites orbiting a stable human core. */
-function AgencyScene() {
-  return (
-    <div className="holo-scene h-full w-full">
-      <div className="orbit3" style={{ width: 116, height: 116 }}>
-        <div
-          className="orbit3-ring"
-          style={
-            { "--orbit-base": "rotateY(-64deg)", "--orbit-t": "9s" } as React.CSSProperties
-          }
-        >
-          <b />
-        </div>
-        <div
-          className="orbit3-ring"
-          style={
-            {
-              inset: "14%",
-              "--orbit-base": "rotateX(72deg)",
-              "--orbit-t": "6s",
-            } as React.CSSProperties
-          }
-        >
-          <b />
-        </div>
-        <div
-          className="orbit3-ring"
-          style={
-            {
-              inset: "28%",
-              "--orbit-base": "rotateY(58deg) rotateX(24deg)",
-              "--orbit-t": "12s",
-            } as React.CSSProperties
-          }
-        >
-          <b />
-        </div>
-        <span className="orbit3-core" />
-      </div>
-    </div>
-  );
-}
 
 const PRINCIPLES = [
   {
     index: "001",
     title: "Deterministic Core",
-    body: "Foundational logic must be absolute. We engineer 100% reliability for data integrity, reserving AI for higher-order reasoning.",
-    Scene: DeterministicScene,
+    body: "Fixed rules for anything that must be exact. Same input, same answer, every time.",
+    Scene: RulesScene,
   },
   {
     index: "002",
     title: "Probabilistic Edge",
-    body: "Deployment of models for synthesis and pattern matching. Leveraging ambiguity as a feature, not a bug, in creative workflows.",
-    Scene: ProbabilisticScene,
+    body: "Models for the messy parts rules can't handle: reading, sorting, drafting.",
+    Scene: ModelScene,
   },
   {
     index: "003",
     title: "Human Agency",
-    body: "Systems designed to augment, not replace. We build rigorous “human-in-the-loop” protocols for high-stakes decision making.",
-    Scene: AgencyScene,
+    body: "Below the confidence bar, it asks a person. You keep the calls that matter.",
+    Scene: HumanScene,
   },
 ] as const;
 
 /**
- * Manifesto cards: glass panels on a pointer-tracked 3D tilt, each crowned by
- * a live holographic scene that floats off the card face. The glass backdrop
- * is an absolute sibling layer because backdrop-filter flattens 3D subtrees.
+ * Manifesto cards on a pointer-tracked 3D tilt, each crowned by an animated
+ * explainer that floats off the card face, so the principle is shown first
+ * and the sentence underneath only has to confirm it.
  */
 export function PrincipleCards() {
   return (
@@ -145,12 +38,12 @@ export function PrincipleCards() {
           <TiltCard className="group h-full rounded-2xl">
             {/* Glass backdrop */}
             <div aria-hidden className="panel absolute inset-0 overflow-hidden rounded-2xl">
-              <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(52,211,153,0.12),transparent_65%)] opacity-0 blur-xl transition-opacity duration-700 group-hover:opacity-100" />
+              <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(4,71,255,0.12),transparent_65%)] opacity-0 blur-xl transition-opacity duration-700 group-hover:opacity-100" />
             </div>
 
-            {/* Holographic scene, floating above the glass */}
+            {/* The principle, drawn, floating above the card */}
             <div
-              className="tilt-layer relative h-44 lg:h-48"
+              className="tilt-layer relative px-6 pb-2 pt-12 lg:px-8"
               style={{ "--tz": "46px" } as React.CSSProperties}
             >
               <Scene />

@@ -20,7 +20,7 @@ export function Faq() {
         <Accordion.Item key={id} value={id} className="group">
           <Accordion.Header asChild>
             <h3 className="font-sans">
-              <Accordion.Trigger className="flex w-full items-center justify-between gap-6 px-7 py-6 text-left transition-colors duration-300 hover:bg-white/[0.02] lg:px-9">
+              <Accordion.Trigger className="flex w-full items-center justify-between gap-6 px-7 py-6 text-left transition-colors duration-300 hover:bg-surface-2/60 lg:px-9">
                 <span className="flex items-baseline gap-5">
                   <span className="font-mono text-[10px] tracking-[0.2em] text-ink-4">
                     {String(i + 1).padStart(2, "0")}

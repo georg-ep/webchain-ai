@@ -1,101 +1,45 @@
 "use client";
 
+import { GuardScene, MapScene, PrototypeScene, ScaleScene } from "@/components/explainers/home-scenes";
 import { TiltCard } from "@/components/tilt-card";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
-
-/** I — radar sweeping the problem space. */
-function RadarGlyph() {
-  return (
-    <span className="glyph-scene h-14 w-14">
-      <span className="glyph-radar">
-        <i className="r1" />
-        <i className="r2" />
-        <i className="sweep" />
-      </span>
-    </span>
-  );
-}
-
-/** II — candidate model planes shuffling in a stack. */
-function StackGlyph() {
-  return (
-    <span className="glyph-scene h-14 w-14">
-      <span className="glyph-stack">
-        {[0, 1, 2].map((n) => (
-          <i
-            key={n}
-            style={{ "--pz": `${n * 11}px`, "--d": `${n * 0.45}s` } as React.CSSProperties}
-          />
-        ))}
-      </span>
-    </span>
-  );
-}
-
-/** III — guardrail pulses radiating from a protected core. */
-function GuardGlyph() {
-  return (
-    <span className="glyph-scene h-14 w-14">
-      <span className="glyph-guard">
-        <i style={{ "--d": "0s" } as React.CSSProperties} />
-        <i style={{ "--d": "1s" } as React.CSSProperties} />
-        <i style={{ "--d": "2s" } as React.CSSProperties} />
-        <span className="core" />
-      </span>
-    </span>
-  );
-}
-
-/** IV — rings lifting off the launch pad. */
-function RiseGlyph() {
-  return (
-    <span className="glyph-scene h-14 w-14">
-      <span className="glyph-rise">
-        <i style={{ "--d": "0s" } as React.CSSProperties} />
-        <i style={{ "--d": "0.9s" } as React.CSSProperties} />
-        <i style={{ "--d": "1.8s" } as React.CSSProperties} />
-        <span className="pad" />
-      </span>
-    </span>
-  );
-}
 
 const PHASES = [
   {
     phase: "PHASE I",
     numeral: "01",
     title: "Cognitive Mapping",
-    body: "Defining the boundaries of deterministic logic vs probabilistic reasoning. Establishing the architectural constraints.",
-    Glyph: RadarGlyph,
+    body: "Every step sorted: fixed rules, or model judgement.",
+    Visual: MapScene,
   },
   {
     phase: "PHASE II",
     numeral: "02",
     title: "Model Prototyping",
-    body: "Rapid iteration of model selection. Quantifying output quality against golden datasets.",
-    Glyph: StackGlyph,
+    body: "Candidate models scored against known answers. The best one wins.",
+    Visual: PrototypeScene,
   },
   {
     phase: "PHASE III",
     numeral: "03",
     title: "Guardrail Engineering",
-    body: "Implementing semantic filters and adversarial testing to ensure system safety and alignment.",
-    Glyph: GuardGlyph,
+    body: "Filters and adversarial tests, so bad inputs never get through.",
+    Visual: GuardScene,
   },
   {
     phase: "PHASE IV",
     numeral: "04",
     title: "High-Availability Scale",
-    body: "Deploying to distributed edge networks with real-time monitoring of token usage and drift.",
-    Glyph: RiseGlyph,
+    body: "Monitored live in production, with drift caught early.",
+    Visual: ScaleScene,
   },
 ] as const;
 
 /**
  * Methodology cards: they stand up out of the page plane as they scroll into
- * view, then track the pointer in 3D. Each phase carries a live 3D glyph and
- * an extruded ghost numeral floating on its own depth layer.
+ * view, then track the pointer in 3D. Each phase is shown as a small animated
+ * explainer, with an extruded ghost numeral floating on its own depth layer.
  */
 export function PhaseCards() {
   const gridRef = useRef<HTMLDivElement>(null);
@@ -126,7 +70,7 @@ export function PhaseCards() {
 
   return (
     <div ref={gridRef} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      {PHASES.map(({ phase, numeral, title, body, Glyph }, i) => (
+      {PHASES.map(({ phase, numeral, title, body, Visual }, i) => (
         <div
           key={phase}
           className="rise3 scene-3d"
@@ -156,14 +100,12 @@ export function PhaseCards() {
               className={cn("tilt-layer relative flex h-full flex-col p-8 pb-14")}
               style={{ "--tz": "20px" } as React.CSSProperties}
             >
-              <div className="flex items-start justify-between">
-                <span className="pt-1 font-mono text-[10px] tracking-[0.24em] text-ink-4 transition-colors duration-500 group-hover:text-signal/80">
-                  {phase}
-                </span>
-                <Glyph />
-              </div>
+              <span className="font-mono text-[10px] tracking-[0.24em] text-ink-4 transition-colors duration-500 group-hover:text-signal/80">
+                {phase}
+              </span>
+              <Visual className="mt-6" />
 
-              <h3 className="mt-8 font-display text-xl text-ink">{title}</h3>
+              <h3 className="mt-6 font-display text-xl text-ink">{title}</h3>
               <p className="mt-3 max-w-[36ch] text-[13px] font-light leading-relaxed text-ink-3">
                 {body}
               </p>

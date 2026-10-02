@@ -24,7 +24,7 @@ function NodeShape({
   tone: "fault" | "flow";
   dim?: boolean;
 }) {
-  const stroke = tone === "fault" ? "#f87171" : "#34d399";
+  const stroke = tone === "fault" ? "#d93d1a" : "#0447ff";
 
   return (
     <g opacity={dim ? 0.3 : 1}>
@@ -45,7 +45,7 @@ function NodeShape({
         width="20"
         height="20"
         rx="6"
-        fill={tone === "fault" ? "#1c0e11" : "#05261f"}
+        fill={tone === "fault" ? "#fbeee9" : "#eef1ff"}
         stroke={stroke}
         strokeWidth="1"
         strokeOpacity={dim ? 0.7 : 0.9}
@@ -90,20 +90,20 @@ export function FaultDiagram() {
         {/* userSpaceOnUse: a horizontal line has a zero-height bbox, which
             makes objectBoundingBox gradients collapse. */}
         <linearGradient id="faultEdge" gradientUnits="userSpaceOnUse" x1="2" y1="0" x2="140" y2="0">
-          <stop offset="0%" stopColor="#f87171" stopOpacity="0.15" />
-          <stop offset="100%" stopColor="#f87171" stopOpacity="0.75" />
+          <stop offset="0%" stopColor="#d93d1a" stopOpacity="0.15" />
+          <stop offset="100%" stopColor="#d93d1a" stopOpacity="0.75" />
         </linearGradient>
       </defs>
 
       {/* Intake edge, still carrying work */}
       <path d={intake} stroke="url(#faultEdge)" strokeWidth="1.25" />
-      <circle r="2.5" fill="#f87171">
+      <circle r="2.5" fill="#d93d1a">
         <animateMotion dur="1.6s" repeatCount="indefinite" path={intake} calcMode="linear" />
       </circle>
 
       {/* Backlog piling up in front of the break */}
       {[0, 1, 2].map((i) => (
-        <circle key={i} cx={130 + i * 9} cy={BASELINE} r="2.5" fill="#f87171" opacity="0.5">
+        <circle key={i} cx={130 + i * 9} cy={BASELINE} r="2.5" fill="#d93d1a" opacity="0.5">
           <animate
             attributeName="opacity"
             values="0.2;0.8;0.2"
@@ -116,26 +116,26 @@ export function FaultDiagram() {
 
       {/* The break */}
       <g>
-        <path d={`M162 ${BASELINE - 14} V${BASELINE + 14}`} stroke="#f87171" strokeWidth="1.5" />
-        <path d={`M162 ${BASELINE - 14} V${BASELINE + 14}`} stroke="#f87171" strokeWidth="7" opacity="0.16">
+        <path d={`M162 ${BASELINE - 14} V${BASELINE + 14}`} stroke="#d93d1a" strokeWidth="1.5" />
+        <path d={`M162 ${BASELINE - 14} V${BASELINE + 14}`} stroke="#d93d1a" strokeWidth="7" opacity="0.16">
           <animate attributeName="opacity" values="0.04;0.28;0.04" dur="1.6s" repeatCount="indefinite" />
         </path>
-        <path d={`M169 ${BASELINE - 6} L177 ${BASELINE + 2}`} stroke="#f87171" strokeWidth="1.25" opacity="0.7" />
-        <path d={`M177 ${BASELINE - 6} L169 ${BASELINE + 2}`} stroke="#f87171" strokeWidth="1.25" opacity="0.7" />
+        <path d={`M169 ${BASELINE - 6} L177 ${BASELINE + 2}`} stroke="#d93d1a" strokeWidth="1.25" opacity="0.7" />
+        <path d={`M177 ${BASELINE - 6} L169 ${BASELINE + 2}`} stroke="#d93d1a" strokeWidth="1.25" opacity="0.7" />
       </g>
 
       {/* Starved downstream edge */}
       <path
         d={`M${NODE_X[2] + 10} ${BASELINE} H${NODE_X[3] - 10}`}
-        stroke="#f87171"
+        stroke="#d93d1a"
         strokeOpacity="0.22"
         strokeWidth="1.25"
         strokeDasharray="3 4"
       />
 
       {/* Retry loop: work cycling on itself instead of moving on */}
-      <path d={retry} stroke="#f87171" strokeWidth="1" strokeDasharray="3 3" strokeOpacity="0.5" fill="none" />
-      <circle r="2" fill="#fbbf24">
+      <path d={retry} stroke="#d93d1a" strokeWidth="1" strokeDasharray="3 3" strokeOpacity="0.5" fill="none" />
+      <circle r="2" fill="#ff4704">
         <animateMotion dur="2.4s" repeatCount="indefinite" path={retry} calcMode="linear" />
       </circle>
 
@@ -146,7 +146,7 @@ export function FaultDiagram() {
 
       {/* Flatlined throughput */}
       <g opacity="0.45">
-        <path d="M4 80 H316" stroke="#f87171" strokeOpacity="0.18" strokeWidth="1" strokeDasharray="2 5" />
+        <path d="M4 80 H316" stroke="#d93d1a" strokeOpacity="0.18" strokeWidth="1" strokeDasharray="2 5" />
       </g>
     </svg>
   );
@@ -167,13 +167,13 @@ export function FlowDiagram() {
     >
       <defs>
         <linearGradient id="flowEdge" gradientUnits="userSpaceOnUse" x1="2" y1="0" x2="318" y2="0">
-          <stop offset="0%" stopColor="#34d399" stopOpacity="0.25" />
-          <stop offset="50%" stopColor="#34d399" stopOpacity="0.8" />
-          <stop offset="100%" stopColor="#34d399" stopOpacity="0.25" />
+          <stop offset="0%" stopColor="#0447ff" stopOpacity="0.25" />
+          <stop offset="50%" stopColor="#0447ff" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="#0447ff" stopOpacity="0.25" />
         </linearGradient>
         <radialGradient id="flowPulse">
-          <stop offset="0%" stopColor="#34d399" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#34d399" stopOpacity="0" />
+          <stop offset="0%" stopColor="#0447ff" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#0447ff" stopOpacity="0" />
         </radialGradient>
       </defs>
 
@@ -187,16 +187,16 @@ export function FlowDiagram() {
       <path d={mainPath} stroke="url(#flowEdge)" strokeWidth="1.25" />
 
       {/* Bypass route for the outlier, landing back on the final node */}
-      <path d={bypassPath} stroke="#34d399" strokeWidth="1" strokeOpacity="0.4" strokeDasharray="3 3" fill="none" />
+      <path d={bypassPath} stroke="#0447ff" strokeWidth="1" strokeOpacity="0.4" strokeDasharray="3 3" fill="none" />
 
       {/* Tokens: a steady main stream plus the rerouted outlier */}
       {[0, 1.1, 2.2].map((begin, i) => (
-        <circle key={i} r={i === 0 ? 2.75 : 2} fill="#6ee7b7" opacity={i === 0 ? 1 : 0.65}>
-          <animateMotion dur="3.3s" begin={`${begin}s`} repeatCount="indefinite" path={mainPath} calcMode="linear" />
+        <circle key={i} r={i === 0 ? 2.75 : 2} fill="#7b4dff" opacity={i === 0 ? 1 : 0.65}>
+          <animateMotion dur="3.3s" begin={`${-begin}s`} repeatCount="indefinite" path={mainPath} calcMode="linear" />
         </circle>
       ))}
-      <circle r="2.25" fill="#34d399">
-        <animateMotion dur="3.3s" begin="0.7s" repeatCount="indefinite" path={bypassPath} />
+      <circle r="2.25" fill="#0447ff">
+        <animateMotion dur="3.3s" begin="-0.7s" repeatCount="indefinite" path={bypassPath} />
       </circle>
 
       <NodeShape x={NODE_X[0]} tone="flow" />
@@ -214,7 +214,7 @@ export function FlowDiagram() {
             width="2"
             height={i % 4 === 0 ? 10 : 6}
             rx="1"
-            fill="#34d399"
+            fill="#0447ff"
             fillOpacity="0.25"
           >
             <animate

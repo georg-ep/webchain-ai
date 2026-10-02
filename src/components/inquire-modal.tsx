@@ -66,7 +66,7 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
       <DialogContent className="panel overflow-hidden rounded-2xl text-ink sm:max-w-[440px]">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgba(52,211,153,0.10),transparent_70%)]"
+          className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgba(4,71,255,0.06),transparent_70%)]"
         />
         <DialogHeader className="relative">
           <DialogTitle className="font-display text-2xl text-ink">
@@ -89,7 +89,7 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
               onChange={handleChange}
               required
               disabled={status === "loading" || status === "success"}
-              className="h-11 rounded-lg border-line bg-white/[0.03] font-mono text-xs text-ink transition-colors placeholder:text-ink-4 focus-visible:border-signal/40 focus-visible:ring-2 focus-visible:ring-signal/15"
+              className="h-11 rounded-lg border-line bg-surface-0 text-sm text-ink transition-colors placeholder:text-ink-4 focus-visible:border-signal/40 focus-visible:ring-2 focus-visible:ring-signal/15"
             />
           </div>
           <div className="grid gap-2">
@@ -104,7 +104,7 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
               onChange={handleChange}
               required
               disabled={status === "loading" || status === "success"}
-              className="h-11 rounded-lg border-line bg-white/[0.03] font-mono text-xs text-ink transition-colors placeholder:text-ink-4 focus-visible:border-signal/40 focus-visible:ring-2 focus-visible:ring-signal/15"
+              className="h-11 rounded-lg border-line bg-surface-0 text-sm text-ink transition-colors placeholder:text-ink-4 focus-visible:border-signal/40 focus-visible:ring-2 focus-visible:ring-signal/15"
             />
           </div>
           <div className="grid gap-2">
@@ -118,7 +118,7 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
               onChange={handleChange}
               required
               disabled={status === "loading" || status === "success"}
-              className="min-h-[110px] rounded-lg border-line bg-white/[0.03] font-mono text-xs text-ink transition-colors placeholder:text-ink-4 focus-visible:border-signal/40 focus-visible:ring-2 focus-visible:ring-signal/15"
+              className="min-h-[110px] rounded-lg border-line bg-surface-0 text-sm text-ink transition-colors placeholder:text-ink-4 focus-visible:border-signal/40 focus-visible:ring-2 focus-visible:ring-signal/15"
             />
           </div>
 
@@ -138,7 +138,7 @@ export function InquireModal({ children }: { children: React.ReactNode }) {
           <Button 
             type="submit" 
             disabled={status === "loading" || status === "success"}
-            className="btn-cta btn-sweep mt-4 h-12 rounded-full bg-white font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-black hover:bg-white disabled:opacity-50"
+            className="btn-cta btn-sweep mt-4 h-12 rounded-full bg-ink text-sm font-medium text-surface-0 hover:bg-ink disabled:opacity-50"
           >
             {status === "loading" ? "Sending..." : status === "success" ? "Sent" : "Request the Call"}
           </Button>

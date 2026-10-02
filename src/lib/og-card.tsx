@@ -31,22 +31,37 @@ export function ogCard({
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "linear-gradient(140deg, #070708 0%, #0b0f0e 55%, #06231c 100%)",
+          background: "#fdfcfc",
           padding: 80,
+          position: "relative",
         }}
       >
+        {/* The spark orb from the site's diagrams, bleeding off the corner */}
+        <div
+          style={{
+            position: "absolute",
+            right: -80,
+            top: -80,
+            width: 300,
+            height: 300,
+            borderRadius: 999,
+            background:
+              "radial-gradient(circle at 32% 30%, #ffffff 0%, #b9a6ff 18%, #0447ff 45%, #ff4704 80%, #ffb38a 100%)",
+            opacity: 0.9,
+          }}
+        />
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div
             style={{
               width: 12,
               height: 12,
               borderRadius: 999,
-              background: "#34d399",
+              background: "#0447ff",
             }}
           />
           <div
             style={{
-              color: "#a5a5b0",
+              color: "#6f6962",
               fontSize: 24,
               letterSpacing: 6,
               textTransform: "uppercase",
@@ -60,14 +75,15 @@ export function ogCard({
           style={{
             display: "flex",
             flexDirection: "column",
-            color: "#f6f6f8",
+            color: "#0b0b0b",
             fontSize: 76,
+            fontWeight: 300,
             lineHeight: 1.1,
             letterSpacing: -2,
           }}
         >
           <div style={{ display: "flex" }}>{headline}</div>
-          <div style={{ display: "flex", color: "#a5a5b0" }}>{muted}</div>
+          <div style={{ display: "flex", color: "#9a948c" }}>{muted}</div>
         </div>
 
         <div
@@ -75,12 +91,12 @@ export function ogCard({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "flex-end",
-            color: "#74747f",
+            color: "#6f6962",
             fontSize: 24,
           }}
         >
           <div style={{ display: "flex", maxWidth: 720, lineHeight: 1.4 }}>{blurb}</div>
-          <div style={{ display: "flex", color: "#34d399" }}>{new URL(siteConfig.url).host}</div>
+          <div style={{ display: "flex", color: "#0b0b0b" }}>{new URL(siteConfig.url).host}</div>
         </div>
       </div>
     ),

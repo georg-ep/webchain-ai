@@ -129,7 +129,7 @@ export function SiteNav() {
           // Top padding keeps the logo clear of the status bar / notch now
           // that the page paints edge to edge.
           "fixed top-0 z-50 w-full px-6 pt-[env(safe-area-inset-top)] transition-all duration-500 [transition-timing-function:var(--ease-out-expo)] lg:px-12",
-          scrolled ? "bg-surface-0/70 backdrop-blur-xl" : "bg-transparent",
+          scrolled ? "bg-surface-0/80 shadow-[0_1px_0_0_var(--color-line)] backdrop-blur-xl" : "bg-transparent",
         )}
       >
         {/* Padding lives on the header and the max-width on the inner row, so
@@ -142,7 +142,7 @@ export function SiteNav() {
         >
           <Link href="/#top" className="flex items-center" aria-label="WebChain Labs, back to top">
             <img
-              src="/brand/large.svg"
+              src="/brand/large-ink.svg"
               alt="WebChain Labs"
               width={127}
               height={17}
@@ -161,14 +161,14 @@ export function SiteNav() {
                   key={href}
                   href={href}
                   className={cn(
-                    "group relative px-4 py-2 font-mono text-[10px] font-medium uppercase tracking-[0.22em] transition-colors duration-300",
-                    isActive ? "text-ink" : "text-ink-3 hover:text-ink",
+                    "group relative px-4 py-2 text-sm transition-colors duration-300",
+                    isActive ? "text-ink" : "text-ink-2 hover:text-ink",
                   )}
                 >
                   {label}
                   <span
                     className={cn(
-                      "absolute inset-x-4 -bottom-px h-px origin-left bg-gradient-to-r from-signal/70 to-transparent transition-transform duration-500 [transition-timing-function:var(--ease-out-expo)]",
+                      "absolute inset-x-4 -bottom-px h-px origin-left bg-ink transition-transform duration-500 [transition-timing-function:var(--ease-out-expo)]",
                       isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
                     )}
                   />
@@ -179,7 +179,7 @@ export function SiteNav() {
 
           <div className="hidden md:block">
             <InquireModal>
-              <button className="btn-sweep group relative rounded-full border border-line-strong px-6 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-ink transition-colors duration-300 hover:border-signal/40 hover:bg-signal/5 hover:text-white">
+              <button className="btn-cta btn-sweep group relative rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-surface-0">
                 Book a Call
               </button>
             </InquireModal>
@@ -207,7 +207,7 @@ export function SiteNav() {
       >
         <div
           className={cn(
-            "absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-500",
+            "absolute inset-0 bg-ink/20 backdrop-blur-sm transition-opacity duration-500",
             mobileMenuOpen ? "opacity-100" : "opacity-0",
           )}
           onClick={() => setMobileMenuOpen(false)}
@@ -247,7 +247,7 @@ export function SiteNav() {
 
           <div className="mt-auto p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
             <InquireModal>
-              <button className="btn-cta btn-sweep w-full rounded-full bg-white px-6 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-black">
+              <button className="btn-cta btn-sweep w-full rounded-full bg-ink px-6 py-4 text-sm font-medium text-surface-0">
                 Book a Call
               </button>
             </InquireModal>

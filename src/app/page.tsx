@@ -1,6 +1,7 @@
 import { Faq } from "@/components/faq";
 import { FeaturedProjectCarousel } from "@/components/featured-project-carousel";
-import { HeroMesh } from "@/components/hero-mesh";
+import { AgentLoop } from "@/components/explainers/agent-loop";
+import { OrbMark } from "@/components/explainers/spark-orb";
 import { InquireModal } from "@/components/inquire-modal";
 import { PageBackdrop } from "@/components/page-backdrop";
 import { Parallax } from "@/components/parallax";
@@ -41,8 +42,8 @@ export default function Home() {
       <main id="top" className="relative overflow-x-clip">
         {/* ---------------- Hero ---------------- */}
         <section className="relative flex min-h-svh items-center px-6 pb-20 pt-28 lg:px-12">
-          <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-5 sm:gap-8 lg:grid-cols-12 lg:gap-8">
-            <div className="order-2 lg:order-none lg:col-span-7 xl:col-span-8">
+          <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-14 lg:grid-cols-12 lg:gap-12">
+            <div className="lg:col-span-6">
               <Reveal>
                 <div className="flex items-center gap-4">
                   <span className="h-px w-10 bg-gradient-to-r from-ink-4 to-transparent" />
@@ -53,9 +54,9 @@ export default function Home() {
               </Reveal>
 
               <Reveal delay={80}>
-                <h1 className="mt-8 max-w-[15ch] text-balance font-display text-[2.5rem] leading-[1.08] tracking-[-0.03em] text-ink sm:text-5xl lg:max-w-none lg:text-[2.75rem] xl:text-[3.25rem]">
+                <h1 className="mt-8 text-balance font-display text-[2.5rem] leading-[1.06] tracking-[-0.03em] text-ink sm:text-5xl lg:text-[3.25rem] xl:text-[3.75rem]">
                   <span className="text-gradient">We build systems that </span>
-                  <span className="bg-gradient-to-br from-signal via-signal to-emerald-200 bg-clip-text text-transparent">
+                  <span className="text-spark">
                     think
                   </span>
                   <span className="text-gradient">,</span>
@@ -75,7 +76,7 @@ export default function Home() {
               <Reveal delay={240}>
                 <div className="mt-12 flex flex-wrap items-center gap-4">
                   <InquireModal>
-                    <button className="btn-cta btn-sweep group inline-flex items-center gap-3 rounded-full bg-white px-6 py-4 font-mono sm:px-8 text-[10px] font-bold uppercase tracking-[0.22em] text-black">
+                    <button className="btn-cta btn-sweep group inline-flex items-center gap-2.5 rounded-full bg-ink px-6 py-3.5 text-sm font-medium text-surface-0">
                       Book a Call
                       <ArrowRight
                         className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1"
@@ -85,7 +86,7 @@ export default function Home() {
                   </InquireModal>
 
                   <Link
-                    className="group inline-flex items-center gap-3 rounded-full border border-line px-6 py-4 font-mono sm:px-8 text-[10px] font-bold uppercase tracking-[0.22em] text-ink-2 transition-all duration-500 [transition-timing-function:var(--ease-out-expo)] hover:-translate-y-0.5 hover:border-line-strong hover:text-ink"
+                    className="group inline-flex items-center gap-2.5 rounded-full border border-line-strong bg-surface-0 px-6 py-3.5 text-sm font-medium text-ink transition-all duration-500 [transition-timing-function:var(--ease-out-expo)] hover:-translate-y-0.5 hover:border-ink/30"
                     href="#projects"
                   >
                     Explore Works
@@ -118,10 +119,11 @@ export default function Home() {
               </Reveal>
             </div>
 
-            {/* Leads on phones, sits beside the copy from lg up. */}
-            <Reveal delay={200} className="order-1 lg:order-none lg:col-span-5 xl:col-span-4">
-              <Parallax distance={-52}>
-                <HeroMesh className="mx-auto aspect-square w-full max-w-[210px] sm:max-w-[380px] lg:max-w-none" />
+            {/* What "a system that thinks" means, drawn as the agent's loop.
+                Follows the copy on phones. */}
+            <Reveal delay={200} className="lg:col-span-6">
+              <Parallax distance={-24}>
+                <AgentLoop />
               </Parallax>
             </Reveal>
           </div>
@@ -133,7 +135,7 @@ export default function Home() {
         <section className="relative px-6 py-24 lg:px-12 lg:py-28" id="shift">
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(255,255,255,0.035),transparent_70%)]"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(68,64,59,0.035),transparent_70%)]"
           />
           <div className="relative mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
@@ -169,7 +171,7 @@ export default function Home() {
         >
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_80%_10%,rgba(52,211,153,0.05),transparent_65%)]"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_80%_10%,rgba(4,71,255,0.05),transparent_65%)]"
           />
           <div className="relative mx-auto max-w-[1400px]">
             <Reveal>
@@ -205,7 +207,7 @@ export default function Home() {
         >
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_15%_0%,rgba(255,255,255,0.03),transparent_65%)]"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_15%_0%,rgba(68,64,59,0.03),transparent_65%)]"
           />
           <div className="relative mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
@@ -235,7 +237,7 @@ export default function Home() {
         >
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_60%_at_25%_20%,rgba(99,102,241,0.05),transparent_65%)]"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_60%_at_25%_20%,rgba(255,71,4,0.05),transparent_65%)]"
           />
           <div className="relative mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-16">
@@ -287,7 +289,7 @@ export default function Home() {
         <section className="relative px-6 py-24 lg:px-12 lg:py-32" id="faq">
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_85%_30%,rgba(52,211,153,0.04),transparent_65%)]"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_85%_30%,rgba(4,71,255,0.04),transparent_65%)]"
           />
           <div className="relative mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
@@ -317,10 +319,11 @@ export default function Home() {
         <section className="relative overflow-hidden px-6 py-32 text-center lg:px-12 lg:py-40" id="contact">
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <div className="absolute inset-0 grid-lines opacity-60" />
-            <div className="absolute left-1/2 top-1/2 h-[560px] w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(52,211,153,0.10),transparent_65%)] blur-3xl animate-drift" />
+            <div className="absolute left-1/2 top-1/2 h-[560px] w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(4,71,255,0.10),transparent_65%)] blur-3xl animate-drift" />
           </div>
 
           <Reveal className="relative mx-auto max-w-4xl">
+            <OrbMark className="mx-auto mb-8" />
             <h2 className="font-display text-4xl leading-[1.08] tracking-[-0.03em] text-ink md:text-6xl lg:text-7xl">
               <span className="text-gradient">Ready to architect the</span>
               <br />
@@ -334,7 +337,7 @@ export default function Home() {
 
             <div className="mt-12 flex flex-col items-center gap-8">
               <InquireModal>
-                <button className="btn-cta btn-sweep group inline-flex items-center gap-3 rounded-full bg-white px-10 py-5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-black">
+                <button className="btn-cta btn-sweep group inline-flex items-center gap-2.5 rounded-full bg-ink px-8 py-4 text-[15px] font-medium text-surface-0">
                   Book Your Call
                   <ArrowRight
                     className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1"

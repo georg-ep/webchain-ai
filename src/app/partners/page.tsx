@@ -1,6 +1,20 @@
 import {
+  AgentScene,
+  AppScene,
+  BoardScene,
+  CapacityScene,
+  FixedScopeScene,
+  IntegrationScene,
+  MarginScene,
+  NdaScene,
+  QuoteClockScene,
+  TestsScene,
+  WorkflowScene,
+} from "@/components/explainers/partner-scenes";
+import { PreviewScene } from "@/components/explainers/preview-scene";
+import { WhiteLabelScene } from "@/components/explainers/white-label-scene";
+import {
   BookButton,
-  ChecklistPanel,
   GhostLink,
   OfferCards,
   OfferCta,
@@ -14,18 +28,7 @@ import { Reveal } from "@/components/reveal";
 import { SectionBridge } from "@/components/section-bridge";
 import { siteConfig } from "@/config/site";
 import { selectedWorks } from "@/data/projects";
-import {
-  AppWindow,
-  ArrowUpRight,
-  Bot,
-  Clock,
-  Code2,
-  FileLock2,
-  FlaskConical,
-  MonitorPlay,
-  Plug,
-  Workflow,
-} from "lucide-react";
+import { ArrowUpRight, MonitorPlay } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -55,28 +58,28 @@ export const metadata: Metadata = {
 const SERVICES: OfferCardItem[] = [
   {
     title: "AI agents and assistants",
-    Icon: Bot,
-    body: "Customer-facing assistants and internal agents that answer from your client's own content and take real actions in their tools.",
+    visual: <AgentScene />,
+    body: "They answer from your client's own content, then take the action.",
   },
   {
     title: "Workflow automation",
-    Icon: Workflow,
-    body: "Enquiry triage, lead routing, document handling and the glue between the systems your client already pays for.",
+    visual: <WorkflowScene />,
+    body: "The glue between the tools your client already pays for.",
   },
   {
     title: "LLM integrations",
-    Icon: Plug,
-    body: "AI added to existing sites and CRMs, HubSpot included: enrichment, summaries, drafting and search, inside the tools the team already uses.",
+    visual: <IntegrationScene />,
+    body: "AI inside existing sites and CRMs, HubSpot included.",
   },
   {
     title: "Custom web apps and internal tools",
-    Icon: AppWindow,
-    body: "Portals, dashboards and internal tools, built properly and handed over documented.",
+    visual: <AppScene />,
+    body: "Portals, dashboards and tools, handed over documented.",
   },
   {
     title: "Overflow development",
-    Icon: Code2,
-    body: "Extra engineering on builds you already run, when your own team is at capacity.",
+    visual: <BoardScene />,
+    body: "Extra hands on builds you already run, when your team is full.",
   },
 ];
 
@@ -84,18 +87,18 @@ const SERVICES: OfferCardItem[] = [
 const REASONS: OfferCardItem[] = [
   {
     title: "Tested before handover",
-    Icon: FlaskConical,
-    body: "We test against real examples from the brief before anything reaches you, and again whenever something changes.",
+    visual: <TestsScene />,
+    body: "Against real examples from the brief, and again on every change.",
   },
   {
     title: "Fixed quotes within 48 hours",
-    Icon: Clock,
-    body: "Send the brief and get a fixed price back within 48 hours. No open-ended day rates to explain to your client.",
+    visual: <QuoteClockScene />,
+    body: "No open-ended day rates to explain to your client.",
   },
   {
     title: "NDA as standard",
-    Icon: FileLock2,
-    body: "We sign your NDA before the first brief. We never contact your client unless you ask us to, and nothing we deliver carries our name.",
+    visual: <NdaScene />,
+    body: "Signed before the first brief. We never contact your client unless you ask.",
   },
 ];
 
@@ -137,7 +140,7 @@ export default function PartnersPage() {
         title={
           <>
             <span className="text-gradient">Your clients want AI. </span>
-            <span className="bg-gradient-to-br from-signal via-signal to-emerald-200 bg-clip-text text-transparent">
+            <span className="text-spark">
               We build it
             </span>
             <span className="text-gradient">, under your brand.</span>
@@ -157,26 +160,7 @@ export default function PartnersPage() {
           </>
         }
         note="Fixed quotes within 48 hours · NDA as standard · Paid pilot to start"
-        aside={
-          <ChecklistPanel
-            label="Every partner project"
-            items={[
-              <>
-                <span className="text-ink">A live preview of every change</span>, for you and
-                your client to click through
-              </>,
-              <>
-                <span className="text-ink">Tested before handover</span>, against real examples
-                from the brief
-              </>,
-              <>
-                <span className="text-ink">Delivered under your brand</span>. We never contact
-                your client unless you ask
-              </>,
-            ]}
-            footer="Your brand · Your client · Your margin"
-          />
-        }
+        aside={<WhiteLabelScene className="mx-auto max-w-[520px]" />}
       />
 
       <SectionBridge />
@@ -226,21 +210,23 @@ export default function PartnersPage() {
               aria-hidden
               className="grid-fine absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_70%_90%_at_100%_0%,#000,transparent_70%)]"
             />
-            <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(52,211,153,0.12),transparent_65%)] blur-xl" />
-            <div className="relative grid grid-cols-1 gap-8 p-7 lg:grid-cols-12 lg:gap-12 lg:p-12">
-              <div className="lg:col-span-6">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-signal/40 text-signal">
+            <div className="relative grid grid-cols-1 items-center gap-10 p-7 lg:grid-cols-12 lg:gap-12 lg:p-12">
+              <div className="lg:col-span-5">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-line-strong bg-surface-0 text-ink">
                   <MonitorPlay className="h-4 w-4" strokeWidth={1.5} />
                 </span>
                 <h3 className="mt-6 font-display text-2xl leading-snug text-ink md:text-3xl">
                   A live preview environment for every change.
                 </h3>
+                <p className="mt-5 text-[15px] font-light leading-relaxed text-ink-2">
+                  Each change ships with its own working preview. You, and your client if you
+                  choose, click through the real thing before anything goes live. Testing
+                  happens before the sign-off meeting, not after launch.
+                </p>
               </div>
-              <p className="text-[15px] font-light leading-relaxed text-ink-2 lg:col-span-6 lg:self-end">
-                Each change ships with its own working preview. You, and your client if you
-                choose, click through the real thing before anything goes live. Testing happens
-                before the sign-off meeting, not after launch.
-              </p>
+              <div className="rounded-xl border border-line bg-surface-0 p-5 sm:p-8 lg:col-span-7">
+                <PreviewScene />
+              </div>
             </div>
           </div>
         </Reveal>
@@ -281,25 +267,22 @@ export default function PartnersPage() {
             Two ways to work. <span className="text-ink-3">You set your own margin.</span>
           </>
         }
-        intro={
-          <p>
-            We price to you, the agency. What you charge your client is your decision, and we
-            never discuss pricing with them.
-          </p>
-        }
+        intro={<p>We never discuss pricing with your client.</p>}
         glow="signal"
       >
+        <Reveal>
+          <div className="mb-4 rounded-2xl border border-line bg-surface-0 p-3 sm:p-10">
+            <MarginScene className="mx-auto max-w-[540px]" />
+          </div>
+        </Reveal>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Reveal className="h-full">
-            <div className="panel flex h-full flex-col rounded-2xl p-7 lg:p-10">
+            <div className="panel flex h-full flex-col rounded-2xl p-5 sm:p-7 lg:p-10">
               <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-ink-4">
                 Per project
               </span>
               <h3 className="mt-5 font-display text-2xl text-ink">Fixed project quotes</h3>
-              <p className="mt-3 text-[15px] font-light leading-relaxed text-ink-2">
-                A fixed price per project, from your brief, within 48 hours. Changes to scope
-                are quoted before any work starts.
-              </p>
+              <FixedScopeScene className="my-6" />
               {/* TODO George: typical pilot / project starting price */}
               <p className="mt-auto border-t border-line pt-6 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-3">
                 Pilot projects from £___
@@ -307,15 +290,12 @@ export default function PartnersPage() {
             </div>
           </Reveal>
           <Reveal delay={90} className="h-full">
-            <div className="panel flex h-full flex-col rounded-2xl p-7 lg:p-10">
+            <div className="panel flex h-full flex-col rounded-2xl p-5 sm:p-7 lg:p-10">
               <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-ink-4">
                 Per month
               </span>
               <h3 className="mt-5 font-display text-2xl text-ink">Reserved monthly capacity</h3>
-              <p className="mt-3 text-[15px] font-light leading-relaxed text-ink-2">
-                A set amount of engineering time held for your agency each month, for a steady
-                flow of client work and support.
-              </p>
+              <CapacityScene className="my-6" />
               {/* TODO George: monthly capacity price and what it includes (days / hours) */}
               <p className="mt-auto border-t border-line pt-6 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-3">
                 From £___ / month for ___ days

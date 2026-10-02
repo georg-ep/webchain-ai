@@ -118,7 +118,7 @@ export function HeaderProgress({ sections }: { sections: ProgressSection[] }) {
 
   return (
     <div ref={rootRef} aria-hidden className="absolute inset-x-0 bottom-0 h-px">
-      <div className="absolute inset-0 bg-white/[0.06]" />
+      <div className="absolute inset-0 bg-line" />
 
       <div
         ref={fillRef}
@@ -135,7 +135,7 @@ export function HeaderProgress({ sections }: { sections: ProgressSection[] }) {
           data-reached="false"
           className="group absolute top-1/2 h-1 w-1 -translate-x-1/2 -translate-y-1/2 rotate-45"
         >
-          <span className="absolute inset-0 bg-white/20 transition-all duration-500 group-data-[reached=true]:scale-150 group-data-[reached=true]:bg-signal group-data-[reached=true]:shadow-[0_0_8px_1px_rgba(52,211,153,0.6)]" />
+          <span className="absolute inset-0 bg-ink/20 transition-all duration-500 group-data-[reached=true]:scale-150 group-data-[reached=true]:bg-signal group-data-[reached=true]:shadow-[0_0_8px_1px_rgba(4,71,255,0.6)]" />
         </div>
       ))}
 
@@ -145,7 +145,7 @@ export function HeaderProgress({ sections }: { sections: ProgressSection[] }) {
         className="absolute top-1/2 h-px w-0 opacity-0 transition-opacity duration-500"
       >
         <span className="absolute right-0 top-1/2 h-px w-14 -translate-y-1/2 bg-gradient-to-l from-signal/80 via-signal/25 to-transparent blur-[0.5px]" />
-        <span className="absolute right-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 translate-x-1/2 rounded-full bg-signal shadow-[0_0_12px_3px_rgba(52,211,153,0.7)]" />
+        <span className="absolute right-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 translate-x-1/2 rounded-full bg-signal shadow-[0_0_12px_3px_rgba(4,71,255,0.7)]" />
       </div>
 
       {/* Chapter readout: a flag hanging just below the rail, riding with

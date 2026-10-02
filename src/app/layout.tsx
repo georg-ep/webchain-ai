@@ -2,24 +2,26 @@ import GoogleAnalyticsProvider from "@/components/google-analytics-provider";
 import { StructuredData } from "@/components/structured-data";
 import { siteConfig } from "@/config/site";
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Manrope, Space_Grotesk } from "next/font/google";
+import { Geist_Mono, Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+// Body and UI face. Calm and neutral, so the display type and the animated
+// diagrams carry the personality.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-// Display face. Derived from Space Mono, so it shares terminal DNA with the
-// JetBrains Mono HUD labels. It ships no italic — emphasis inside headings
-// is done with colour and weight, never `italic`, to avoid a faux oblique.
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+// Display face, set at a whisper weight (300) with tight tracking. Authority
+// comes from restraint rather than bold: never set headlines heavier.
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono-jet",
+// Technical micro-copy: eyebrows, step numbers, captions inside diagrams.
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -103,9 +105,9 @@ export const viewport: Viewport = {
   // indicator instead of the browser filling that strip with a flat colour.
   // Elements that reach an edge pad themselves with env(safe-area-inset-*).
   viewportFit: "cover",
-  // The site is dark in both schemes, so matching the page surface keeps the
+  // The site is light in both schemes, so matching the page surface keeps the
   // browser chrome from banding against it.
-  themeColor: "#070708",
+  themeColor: "#fdfcfc",
 };
 
 export default function RootLayout({
@@ -114,12 +116,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <script src="https://analytics.ahrefs.com/analytics.js" data-key="5ttpepYQZEEqGz2PfKyLCg" async></script>
       </head>
       <body
-        className={`${manrope.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased bg-surface-0 text-ink-2 selection:bg-white selection:text-black font-sans`}
+        className={`${inter.variable} ${interTight.variable} ${geistMono.variable} antialiased bg-surface-0 text-ink-2 selection:bg-ink selection:text-surface-0 font-sans`}
       >
         <StructuredData />
         <GoogleAnalyticsProvider />

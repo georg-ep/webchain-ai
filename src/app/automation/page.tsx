@@ -1,10 +1,24 @@
+import { ActivityLog, type ActivityEntry } from "@/components/explainers/activity-log";
+import {
+  ApproveScene,
+  CallScene,
+  HireSplitScene,
+  MapPriceScene,
+  PlugInScene,
+} from "@/components/explainers/automation-scenes";
+import {
+  FlowExplainer,
+  type FlowInput,
+  type FlowOutput,
+} from "@/components/explainers/flow-explainer";
+import { TaskStory } from "@/components/explainers/task-scenes";
 import {
   BookButton,
-  ChecklistPanel,
   GhostLink,
   OfferCards,
   OfferCta,
   OfferHero,
+  OfferList,
   OfferPage,
   OfferSection,
   OfferSteps,
@@ -13,18 +27,7 @@ import {
 import { Reveal } from "@/components/reveal";
 import { SectionBridge } from "@/components/section-bridge";
 import { siteConfig } from "@/config/site";
-import {
-  CalendarCheck,
-  ClipboardList,
-  Eye,
-  FileSpreadsheet,
-  FileText,
-  Inbox,
-  MapPin,
-  Receipt,
-  ShieldCheck,
-  Sheet,
-} from "lucide-react";
+import { Eye, MapPin, ShieldCheck, Sheet } from "lucide-react";
 import type { Metadata } from "next";
 
 const TITLE = "Admin and finance tasks, done for you";
@@ -58,7 +61,7 @@ const TASKS: OfferCardItem[] = [
   {
     kicker: "Credit control",
     title: "Chasing overdue invoices",
-    Icon: Receipt,
+    visual: <TaskStory kind="chase" />,
     points: [
       "Reminders sent on a set schedule, from your own email address",
       "Every customer reply logged against their account",
@@ -68,7 +71,7 @@ const TASKS: OfferCardItem[] = [
   {
     kicker: "Purchase ledger",
     title: "Processing supplier invoices",
-    Icon: Inbox,
+    visual: <TaskStory kind="match" />,
     points: [
       "Invoices picked up from your accounts inbox",
       "Matched to the purchase order",
@@ -79,7 +82,7 @@ const TASKS: OfferCardItem[] = [
   {
     kicker: "Order processing",
     title: "Entering customer orders",
-    Icon: ClipboardList,
+    visual: <TaskStory kind="order" />,
     points: [
       "Orders that arrive by email or PDF entered into your system",
       "Order confirmation sent to the customer",
@@ -89,7 +92,7 @@ const TASKS: OfferCardItem[] = [
   {
     kicker: "Sales admin",
     title: "Preparing quotes",
-    Icon: FileText,
+    visual: <TaskStory kind="quote" />,
     points: [
       "Customer enquiry read and the request worked out",
       "Priced from your own price list",
@@ -99,7 +102,7 @@ const TASKS: OfferCardItem[] = [
   {
     kicker: "Scheduling",
     title: "Booking engineers and site visits",
-    Icon: CalendarCheck,
+    visual: <TaskStory kind="booking" />,
     points: [
       "Visits booked into the right diary",
       "Confirmation sent to the customer",
@@ -109,7 +112,7 @@ const TASKS: OfferCardItem[] = [
   {
     kicker: "Office admin",
     title: "Data entry and reporting",
-    Icon: FileSpreadsheet,
+    visual: <TaskStory kind="report" />,
     points: [
       "Spreadsheets and records kept up to date",
       "A weekly report sent to you, in the format you already use",
@@ -120,19 +123,23 @@ const TASKS: OfferCardItem[] = [
 const STEPS = [
   {
     title: "A 15-minute call",
-    body: "Tell us which task from your job ad you want handled and which tools you use. Nothing to prepare.",
+    body: "Which task, and which tools. Nothing to prepare.",
+    visual: <CallScene />,
   },
   {
     title: "We map it and fix the price",
-    body: "We write the task down step by step, exactly as you do it today, and quote one fixed monthly price.",
+    body: "Written down step by step, as you do it today. One monthly price.",
+    visual: <MapPriceScene />,
   },
   {
     title: "Running within about two weeks",
-    body: "Set up inside the systems you already use. No new software for you or your team to learn.",
+    body: "Inside the systems you already use. Nothing new to learn.",
+    visual: <PlugInScene />,
   },
   {
     title: "You approve what matters",
-    body: "Nothing goes out unchecked until you say so. You decide what needs your sign-off, and for how long.",
+    body: "Nothing goes out unchecked until you say so.",
+    visual: <ApproveScene />,
   },
 ];
 
@@ -140,17 +147,64 @@ const TRUST: OfferCardItem[] = [
   {
     title: "Your data stays in your systems",
     Icon: ShieldCheck,
-    body: "We work inside your accounting package, inbox and spreadsheets. Your records stay where they are; nothing moves to a new platform you'd have to leave later.",
+    body: "We work inside your accounting package, inbox and spreadsheets. Nothing moves.",
   },
   {
     title: "You see every action",
     Icon: Eye,
-    body: "Every email sent and every entry posted is logged, so you can see what was done, when, and why, at any time.",
+    body: "Every email sent and every entry posted is logged, like the day shown here.",
   },
   {
     title: "UK-based",
     Icon: MapPin,
-    body: "We're a UK-based team working with UK businesses, on UK invoicing and the accounting packages you already use.",
+    body: "A UK team, working on UK invoicing in the packages you already use.",
+  },
+];
+
+/** The hero diagram: the job-ad work arriving, and where it ends up. */
+const HERO_INPUTS: FlowInput[] = [
+  { label: "Supplier invoice", meta: "Accounts inbox", glyph: "doc" },
+  { label: "Customer order", meta: "Email · PDF", glyph: "mail" },
+  { label: "Overdue invoice", meta: "Aged debt", glyph: "ledger" },
+];
+
+const HERO_OUTPUTS: FlowOutput[] = [
+  { label: "Posted to Xero", meta: "Ready to approve", tone: "done" },
+  { label: "Order confirmed", meta: "From your address", tone: "done" },
+  { label: "Chaser drafted", meta: "Waiting for your OK", tone: "review" },
+];
+
+/**
+ * A morning's log, as the customer would see it. Illustrative: the
+ * references are made up and no customer is named.
+ */
+const ACTIVITY: ActivityEntry[] = [
+  {
+    time: "08:02",
+    title: "Reminder sent",
+    detail: "INV-1042, day 7 reminder, sent from your own accounts address",
+  },
+  {
+    time: "08:15",
+    title: "Supplier invoice matched",
+    detail: "Matched to PO-311 and posted as a draft bill",
+    tone: "review",
+  },
+  {
+    time: "08:41",
+    title: "Order entered",
+    detail: "Order from a PDF attachment, confirmation sent to the customer",
+  },
+  {
+    time: "09:03",
+    title: "Reply logged",
+    detail: "Customer on INV-1042 promised payment Friday, noted on the account",
+  },
+  {
+    time: "09:20",
+    title: "Draft bill approved by you",
+    detail: "PO-311 bill released for payment",
+    tone: "approved",
   },
 ];
 
@@ -168,7 +222,7 @@ export default function AutomationPage() {
         title={
           <>
             <span className="text-gradient">The repetitive admin in your job ad, </span>
-            <span className="bg-gradient-to-br from-signal via-signal to-emerald-200 bg-clip-text text-transparent">
+            <span className="text-spark">
               done every day
             </span>
             <span className="text-gradient"> from next week, in your own systems.</span>
@@ -189,23 +243,10 @@ export default function AutomationPage() {
         }
         note="Fixed monthly price · Cancel any month · Nothing sent without your say-so"
         aside={
-          <ChecklistPanel
-            label="Works inside"
-            items={[
-              <>
-                <span className="text-ink">Xero, Sage or QuickBooks</span>: bills, invoices and
-                customer accounts
-              </>,
-              <>
-                <span className="text-ink">Excel</span>: the spreadsheets your team already
-                keeps
-              </>,
-              <>
-                <span className="text-ink">Your email inbox</span>: sent from your address, in
-                your tone
-              </>,
-            ]}
-            footer="No new software · Your logins · Your records"
+          <FlowExplainer
+            label="Diagram: supplier invoices, customer orders and overdue invoices arrive in your inbox. WebChain posts the bill to Xero ready to approve, confirms the order from your address, and drafts the chaser for your OK."
+            inputs={HERO_INPUTS}
+            outputs={HERO_OUTPUTS}
           />
         }
       />
@@ -244,21 +285,20 @@ export default function AutomationPage() {
       {/* Beside the hire, never instead of it. */}
       <section className="relative px-6 pb-16 lg:px-12">
         <Reveal className="relative mx-auto max-w-[1400px]">
-          <div className="panel relative overflow-hidden rounded-2xl px-7 py-10 lg:px-12 lg:py-12">
-            <div
-              aria-hidden
-              className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(52,211,153,0.10),transparent_65%)] blur-xl"
-            />
-            <div className="relative grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-center lg:gap-12">
-              <h2 className="font-display text-2xl leading-snug tracking-[-0.01em] text-ink md:text-3xl lg:col-span-5">
-                Still make the hire.{" "}
-                <span className="text-ink-3">Give them the work that needs a person.</span>
-              </h2>
-              <p className="text-[15px] font-light leading-relaxed text-ink-2 lg:col-span-6 lg:col-start-7">
-                We sit beside your team, not in place of it. While you recruit, the routine work
-                keeps moving. Once your new starter arrives, they spend their days on customers,
-                judgement calls and the things that go wrong, not on keying, chasing and matching.
-              </p>
+          <div className="panel relative overflow-hidden rounded-2xl px-4 py-8 sm:px-7 sm:py-10 lg:px-12 lg:py-12">
+            <div className="relative grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
+              <div className="lg:col-span-5">
+                <h2 className="font-display text-2xl leading-snug tracking-[-0.01em] text-ink md:text-3xl">
+                  Still make the hire.{" "}
+                  <span className="text-ink-3">Give them the work that needs a person.</span>
+                </h2>
+                <p className="mt-5 max-w-md text-[15px] font-light leading-relaxed text-ink-2">
+                  We sit beside your team, not in place of it.
+                </p>
+              </div>
+              <div className="rounded-xl border border-line bg-surface-0 p-2 sm:p-8 lg:col-span-7">
+                <HireSplitScene className="mx-auto max-w-[560px]" />
+              </div>
             </div>
           </div>
         </Reveal>
@@ -335,7 +375,14 @@ export default function AutomationPage() {
         }
         glow="signal"
       >
-        <OfferCards items={TRUST} />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+          <Reveal className="lg:col-span-7">
+            <ActivityLog entries={ACTIVITY} />
+          </Reveal>
+          <div className="lg:col-span-5">
+            <OfferList items={TRUST} />
+          </div>
+        </div>
       </OfferSection>
 
       <OfferCta

@@ -1,46 +1,61 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "./explainers.css";
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Brand system: warm cream editorial.
+ *
+ * Eggshell paper, black ink, whisper-weight display type. Colour is rationed:
+ * the two sparks (violet and ember) live inside the animated diagrams and
+ * small marks, never as large UI fills. Surfaces step eggshell → taupe →
+ * stone; there is no pure white and no cold grey anywhere.
+ *
+ * The token names (surface, ink, line, signal) are unchanged from the old
+ * dark theme, so components pick up the new palette without edits.
+ */
 @theme {
-  --color-primary: #333333;
-  --color-accent: #ffffff;
-  --color-background-light: #f4f4f5;
-  --color-background-dark: #070708;
-  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-primary: #0b0b0b;
+  --color-accent: #0b0b0b;
+  --color-background-light: #fdfcfc;
+  --color-background-dark: #0b0b0b;
+  --color-border-subtle: #ebe8e4;
 
   /* Layered surfaces */
-  --color-surface-0: #070708;
-  --color-surface-1: #0b0b0e;
-  --color-surface-2: #101014;
-  --color-surface-3: #17171c;
+  --color-surface-0: #fdfcfc; /* eggshell: page canvas */
+  --color-surface-1: #f5f3f1; /* taupe: cards, bands */
+  --color-surface-2: #efece8; /* nested fills */
+  --color-surface-3: #e7e3de; /* stone: plates, pressed */
 
   /* Hairlines */
-  --color-line: rgba(255, 255, 255, 0.07);
-  --color-line-strong: rgba(255, 255, 255, 0.14);
+  --color-line: #ebe8e4;
+  --color-line-strong: #d9d3cc;
 
-  /* Ink scale */
-  --color-ink: #f6f6f8;
-  --color-ink-2: #a5a5b0;
-  --color-ink-3: #74747f;
-  --color-ink-4: #4c4c56;
+  /* Ink scale, all slightly warm */
+  --color-ink: #0b0b0b;
+  --color-ink-2: #44403b;
+  --color-ink-3: #6f6962;
+  --color-ink-4: #9a948c;
 
-  /* Signal / fault */
-  --color-signal: #34d399;
-  --color-signal-soft: rgba(52, 211, 153, 0.16);
-  --color-fault: #f87171;
-  --color-fault-soft: rgba(248, 113, 113, 0.14);
+  /* Sparks. Signal keeps its old name so every check, dot and rail
+     recolours at once; ember is the second spark for diagrams. */
+  --color-signal: #0447ff;
+  --color-signal-soft: rgba(4, 71, 255, 0.08);
+  --color-ember: #ff4704;
+  --color-ember-soft: rgba(255, 71, 4, 0.08);
+  --color-fault: #d93d1a;
+  --color-fault-soft: rgba(217, 61, 26, 0.08);
 
-  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-space-grotesk), var(--font-manrope), ui-sans-serif, system-ui,
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-inter), ui-sans-serif, system-ui,
     sans-serif;
-  --font-mono: var(--font-mono-jet), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --radius-DEFAULT: 0.125rem;
+  --radius-DEFAULT: 0.25rem;
   --radius-lg: 0.25rem;
-  --radius-xl: 0.375rem;
+  --radius-xl: 0.625rem;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -55,70 +70,53 @@
 
 /* ---------- Custom Utilities ---------- */
 
+/* Faint ruled paper: a notebook grid that fades out towards the edges. */
 .grid-lines {
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-image: linear-gradient(to right, rgba(68, 64, 59, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(68, 64, 59, 0.05) 1px, transparent 1px);
   background-size: 88px 88px;
   mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 20%, transparent 78%);
 }
 
 .grid-fine {
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-image: linear-gradient(to right, rgba(68, 64, 59, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(68, 64, 59, 0.06) 1px, transparent 1px);
   background-size: 22px 22px;
 }
 
+/* Paper grain */
 .noise::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.035;
+  opacity: 0.045;
+  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /*
- * Card surface: frosted glass over the fixed aurora backdrop.
- *
- * The base is translucent cool graphite (a step towards teal, never flat
- * grey) so the drifting colour fields behind the page bleed through the
- * blur. A radial key light with a whisper of signal green falls from the
- * top, and the border is a gradient hairline — bright where the light
- * catches the top edge, cooling to a faint green at the base — drawn by a
- * masked overlay so it can follow any radius.
+ * Card surface: a taupe sheet on eggshell paper, edged by a stone hairline.
+ * Flat by design; the only lift is a barely-there contact shadow.
  */
 .panel {
   /* No `position` here: this class is unlayered so it would defeat Tailwind's
      positioning utilities (the booking dialog must stay `fixed`). Consumers
      declare `relative`/`absolute` themselves. */
-  border: 1px solid transparent;
-  /* Top two layers are the glass, clipped to the padding box; the last
-     layer paints the full border box and shows through the transparent
-     border as the gradient rim. Painted as background, it survives
-     `overflow: hidden` and follows any border radius. */
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.008) 45%, transparent 100%) padding-box,
-    linear-gradient(165deg, rgba(12, 13, 16, 0.94) 0%, rgba(8, 9, 11, 0.96) 55%, rgba(5, 6, 7, 0.97) 100%) padding-box,
-    linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.16) 0%,
-        rgba(255, 255, 255, 0.05) 35%,
-        rgba(255, 255, 255, 0.03) 70%,
-        rgba(255, 255, 255, 0.07) 100%
-      )
-      border-box;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5), 0 24px 60px -28px rgba(0, 0, 0, 0.85);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface-1);
+  box-shadow: 0 1px 2px 0 rgba(68, 64, 59, 0.04);
 }
 
 .panel-hover {
-  transition: box-shadow 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
+  transition: box-shadow 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo),
+    border-color 0.5s var(--ease-out-expo);
 }
 
 .panel-hover:hover {
   transform: translateY(-3px);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.55), 0 32px 80px -28px rgba(0, 0, 0, 0.95);
+  border-color: var(--color-line-strong);
+  box-shadow: 0 1px 2px 0 rgba(68, 64, 59, 0.05), 0 24px 48px -28px rgba(68, 64, 59, 0.28);
 }
 
 /* Soft radial bloom used behind headlines and CTAs */
@@ -127,12 +125,11 @@
   position: absolute;
   inset: -30% -10%;
   pointer-events: none;
-  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(52, 211, 153, 0.09), transparent 70%);
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(4, 71, 255, 0.06), transparent 70%);
   filter: blur(20px);
 }
 
-/* Section divider that fades out at both ends, so sections melt together
-   instead of being cut apart by a hard full-bleed rule. */
+/* Section divider that fades out at both ends. */
 .seam {
   position: absolute;
   left: 0;
@@ -140,18 +137,20 @@
   top: 0;
   height: 1px;
   pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.03) 15%,
-    rgba(255, 255, 255, 0.11) 50%,
-    rgba(255, 255, 255, 0.03) 85%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg, transparent 0%, var(--color-line-strong) 50%, transparent 100%);
 }
 
+/* Headlines are plain ink now; the class stays so markup needn't change. */
 .text-gradient {
-  background: linear-gradient(180deg, #ffffff 0%, #ffffff 40%, rgba(255, 255, 255, 0.55) 100%);
+  color: var(--color-ink);
+}
+
+/*
+ * The one place a spark touches type: the key phrase of a headline, washed
+ * violet to ember like the orbs in the diagrams.
+ */
+.text-spark {
+  background: linear-gradient(100deg, #0447ff 0%, #7b4dff 45%, #ff4704 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -162,13 +161,11 @@
 }
 
 /*
- * Booking CTA system.
+ * Booking CTA system: black pills on paper.
  *
- * `.btn-sweep` throws a skewed mint glint across the face on hover — visible
- * on white and dark surfaces alike, unlike a white glare on a white pill.
- * `.btn-cta` is the full primary treatment on top of it: key-light halo with
- * a signal cast, a lift on hover and a press on activation. All motion lives
- * here, so markup carries no per-button transform utilities.
+ * `.btn-sweep` throws a faint warm glint across the face on hover. `.btn-cta`
+ * adds the lift and press. All motion lives here, so markup carries no
+ * per-button transform utilities.
  */
 .btn-sweep {
   position: relative;
@@ -185,9 +182,9 @@
   background: linear-gradient(
     105deg,
     transparent 30%,
-    rgba(52, 211, 153, 0.16) 45%,
-    rgba(52, 211, 153, 0.34) 50%,
-    rgba(52, 211, 153, 0.16) 55%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0.08) 55%,
     transparent 70%
   );
   transition: transform 0.8s var(--ease-out-expo);
@@ -198,22 +195,19 @@
 }
 
 .btn-cta {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 6px 28px -6px rgba(255, 255, 255, 0.28),
-    0 14px 60px -12px rgba(52, 211, 153, 0.35);
+  box-shadow: 0 1px 2px 0 rgba(11, 11, 11, 0.12), 0 8px 24px -12px rgba(11, 11, 11, 0.4);
   transition: box-shadow 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
 }
 
 .btn-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18), 0 10px 40px -8px rgba(255, 255, 255, 0.45),
-    0 20px 90px -12px rgba(52, 211, 153, 0.6);
+  box-shadow: 0 1px 2px 0 rgba(11, 11, 11, 0.12), 0 14px 32px -12px rgba(11, 11, 11, 0.45);
 }
 
 .btn-cta:active {
   transform: translateY(0) scale(0.98);
   transition-duration: 0.15s;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 4px 18px -6px rgba(255, 255, 255, 0.25),
-    0 10px 40px -12px rgba(52, 211, 153, 0.4);
+  box-shadow: 0 1px 2px 0 rgba(11, 11, 11, 0.12), 0 4px 12px -6px rgba(11, 11, 11, 0.35);
 }
 
 /*
@@ -249,7 +243,7 @@
   transform: translateZ(var(--tz, 0px));
 }
 
-/* Mint key-light that follows the cursor across the card face */
+/* Soft key-light that follows the cursor across the card face */
 .tilt-glare {
   position: absolute;
   inset: 0;
@@ -257,8 +251,8 @@
   pointer-events: none;
   background: radial-gradient(
     460px circle at var(--gx, 50%) var(--gy, 50%),
-    rgba(52, 211, 153, 0.09),
-    rgba(255, 255, 255, 0.045) 38%,
+    rgba(4, 71, 255, 0.05),
+    rgba(255, 255, 255, 0.55) 38%,
     transparent 64%
   );
   opacity: 0;
@@ -269,276 +263,15 @@
   opacity: 1;
 }
 
-/* ---------- Holographic scenes (Manifesto) ---------- */
-
-.holo-scene {
-  perspective: 700px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Wireframe cube — deterministic lattice */
-.cube3 {
-  position: relative;
-  transform-style: preserve-3d;
-  animation: cube-spin 18s linear infinite;
-}
-
-.cube3 i {
-  position: absolute;
-  inset: 0;
-  border: 1px solid rgba(52, 211, 153, 0.4);
-  background: rgba(52, 211, 153, 0.035);
-  box-shadow: inset 0 0 22px -6px rgba(52, 211, 153, 0.25);
-}
-
-.cube3-core {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-  animation: cube-spin 9s linear infinite reverse;
-}
-
-.cube3-core i {
-  border-color: rgba(52, 211, 153, 0.75);
-  background: rgba(52, 211, 153, 0.1);
-}
-
-@keyframes cube-spin {
-  from {
-    transform: rotateX(-22deg) rotateY(0deg);
-  }
-  to {
-    transform: rotateX(-22deg) rotateY(360deg);
-  }
-}
-
-/* Dot field — a probability wave travelling through a tilted plane */
-.wave-plane {
-  display: grid;
-  transform-style: preserve-3d;
-  transform: rotateX(58deg) rotateZ(45deg);
-}
-
-.wave-plane i {
-  width: 4px;
-  height: 4px;
-  border-radius: 9999px;
-  background: rgba(52, 211, 153, 0.85);
-  animation: dot-wave 3.2s ease-in-out infinite;
-}
-
-@keyframes dot-wave {
-  0%,
-  100% {
-    transform: translateZ(2px);
-    opacity: 0.16;
-  }
-  50% {
-    transform: translateZ(30px);
-    opacity: 1;
-  }
-}
-
-/* Gyroscope — human-in-the-loop orbits around a stable core */
-.orbit3 {
-  position: relative;
-  transform-style: preserve-3d;
-  transform: rotateX(14deg);
-}
-
-.orbit3-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  transform-style: preserve-3d;
-  animation: orbit-spin var(--orbit-t, 10s) linear infinite;
-}
-
-.orbit3-ring b {
-  position: absolute;
-  top: -3px;
-  left: 50%;
-  height: 6px;
-  width: 6px;
-  margin-left: -3px;
-  border-radius: 9999px;
-  background: var(--color-signal);
-  box-shadow: 0 0 12px 2px rgba(52, 211, 153, 0.55);
-}
-
-@keyframes orbit-spin {
-  from {
-    transform: var(--orbit-base, rotateY(-62deg)) rotateZ(0deg);
-  }
-  to {
-    transform: var(--orbit-base, rotateY(-62deg)) rotateZ(360deg);
-  }
-}
-
-.orbit3-core {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  height: 12px;
-  width: 12px;
-  margin: -6px 0 0 -6px;
-  border-radius: 9999px;
-  background: var(--color-signal);
-  box-shadow: 0 0 24px 6px rgba(52, 211, 153, 0.35);
-  animation: breathe 4s ease-in-out infinite;
-}
-
-/* ---------- Phase glyphs (Methodology) ---------- */
-
-.glyph-scene {
-  position: relative;
-  display: block;
-  perspective: 380px;
-}
-
-.glyph-scene > span {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-  transform: rotateX(56deg);
-}
-
-/* I — radar sweep */
-.glyph-radar i {
-  position: absolute;
-  border-radius: 9999px;
-  border: 1px solid rgba(52, 211, 153, 0.3);
-}
-
-.glyph-radar .r1 {
-  inset: 0;
-}
-
-.glyph-radar .r2 {
-  inset: 24%;
-}
-
-.glyph-radar .sweep {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  background: conic-gradient(from 0deg, rgba(52, 211, 153, 0.5), transparent 80deg);
-  animation: spin-z 4s linear infinite;
-}
-
-@keyframes spin-z {
-  to {
-    transform: rotateZ(360deg);
-  }
-}
-
-/* II — floating plane stack */
-.glyph-scene > .glyph-stack {
-  transform: rotateX(56deg) rotateZ(45deg);
-}
-
-.glyph-stack i {
-  position: absolute;
-  inset: 10%;
-  border-radius: 5px;
-  border: 1px solid rgba(52, 211, 153, 0.45);
-  background: rgba(52, 211, 153, 0.05);
-  animation: plane-float 4s ease-in-out infinite;
-  animation-delay: var(--d, 0s);
-}
-
-@keyframes plane-float {
-  0%,
-  100% {
-    transform: translateZ(var(--pz, 0px));
-  }
-  50% {
-    transform: translateZ(calc(var(--pz, 0px) + 7px));
-  }
-}
-
-/* III — guardrail pulses expanding out of the core */
-.glyph-scene > .glyph-guard {
-  transform: rotateX(56deg) rotateZ(45deg);
-}
-
-.glyph-guard .core {
-  position: absolute;
-  inset: 34%;
-  border-radius: 3px;
-  border: 1px solid rgba(52, 211, 153, 0.8);
-  background: rgba(52, 211, 153, 0.14);
-}
-
-.glyph-guard i {
-  position: absolute;
-  inset: 6%;
-  border-radius: 5px;
-  border: 1px solid rgba(52, 211, 153, 0.5);
-  opacity: 0;
-  animation: guard-pulse 3s ease-out infinite;
-  animation-delay: var(--d, 0s);
-}
-
-@keyframes guard-pulse {
-  0% {
-    transform: translateZ(2px) scale(0.55);
-    opacity: 0;
-  }
-  30% {
-    opacity: 0.85;
-  }
-  100% {
-    transform: translateZ(26px) scale(1.02);
-    opacity: 0;
-  }
-}
-
-/* IV — rings rising off the pad */
-.glyph-rise .pad {
-  position: absolute;
-  inset: 38%;
-  border-radius: 9999px;
-  background: rgba(52, 211, 153, 0.65);
-  box-shadow: 0 0 16px 4px rgba(52, 211, 153, 0.35);
-}
-
-.glyph-rise i {
-  position: absolute;
-  inset: 4%;
-  border-radius: 9999px;
-  border: 1px solid rgba(52, 211, 153, 0.55);
-  opacity: 0;
-  animation: ring-rise 2.8s linear infinite;
-  animation-delay: var(--d, 0s);
-}
-
-@keyframes ring-rise {
-  0% {
-    transform: translateZ(0) scale(1);
-    opacity: 0;
-  }
-  25% {
-    opacity: 0.8;
-  }
-  100% {
-    transform: translateZ(32px) scale(0.5);
-    opacity: 0;
-  }
-}
-
 /* Extruded ghost numeral behind each phase card */
 .numeral-3d {
   color: transparent;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.12);
+  -webkit-text-stroke: 1px rgba(68, 64, 59, 0.16);
   transition: -webkit-text-stroke-color 0.6s var(--ease-out-expo);
 }
 
 .group:hover .numeral-3d {
-  -webkit-text-stroke-color: rgba(52, 211, 153, 0.38);
+  -webkit-text-stroke-color: rgba(4, 71, 255, 0.38);
 }
 
 /* Scroll entrance: cards stand up from the page plane */
@@ -689,7 +422,7 @@
 body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 h1,
@@ -698,10 +431,15 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-space-grotesk), var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 500;
-  /* Space Grotesk ships no italic: never let the browser fake one. */
+  font-family: var(--font-inter-tight), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
   font-synthesis-style: none;
+}
+
+/* Display sizes whisper: weight 300, never bolder. */
+h1,
+h2 {
+  font-weight: 300;
 }
 
 html {
@@ -716,7 +454,7 @@ html {
    * overlay ones, so touch devices get their full viewport back.
    */
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+  scrollbar-color: rgba(68, 64, 59, 0.25) transparent;
 
   /*
    * Keep the gutter reserved at all times. Locking scroll behind the mobile
@@ -730,8 +468,8 @@ html {
 }
 
 ::selection {
-  background: #fff;
-  color: #000;
+  background: var(--color-ink);
+  color: var(--color-surface-0);
 }
 
 @theme inline {

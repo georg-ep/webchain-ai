@@ -42,8 +42,8 @@ function StatePane({
         className={cn(
           "pointer-events-none absolute inset-0 opacity-70 transition-opacity duration-700 group-hover/pane:opacity-100",
           isFlow
-            ? "bg-[radial-gradient(ellipse_75%_60%_at_50%_100%,rgba(52,211,153,0.08),transparent_70%)]"
-            : "bg-[radial-gradient(ellipse_75%_60%_at_50%_100%,rgba(248,113,113,0.05),transparent_70%)]",
+            ? "bg-[radial-gradient(ellipse_75%_60%_at_50%_100%,rgba(4,71,255,0.06),transparent_70%)]"
+            : "bg-[radial-gradient(ellipse_75%_60%_at_50%_100%,rgba(217,61,26,0.05),transparent_70%)]",
         )}
       />
 
@@ -114,8 +114,8 @@ export function StateShift() {
       <div className="panel relative overflow-hidden rounded-3xl">
         {/* Corner registration marks */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <span className="absolute left-5 top-5 h-3 w-3 border-l border-t border-white/15" />
-          <span className="absolute right-5 top-5 h-3 w-3 border-r border-t border-white/15" />
+          <span className="absolute left-5 top-5 h-3 w-3 border-l border-t border-ink/15" />
+          <span className="absolute right-5 top-5 h-3 w-3 border-r border-t border-ink/15" />
         </div>
 
         <div className="relative grid grid-cols-1 lg:grid-cols-2">
@@ -158,7 +158,7 @@ export function StateShift() {
         </div>
 
         {/* Metric footer, part of the same instrument */}
-        <div className="relative border-t border-line bg-white/[0.02]">
+        <div className="relative border-t border-line bg-surface-2/60">
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3 px-6 py-7 md:px-9 md:py-8">
             <span className="font-mono text-[10px] font-medium uppercase tracking-[0.3em] text-ink-4">
               Typical Outcome
