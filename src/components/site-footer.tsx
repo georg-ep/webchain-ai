@@ -12,6 +12,12 @@ const EXPLORE_LINKS = [
   { href: "/#contact", label: "Book a Call" },
 ];
 
+/** Audience landing pages. Linked from here only, never the main nav. */
+const WORK_WITH_US_LINKS = [
+  { href: "/automation", label: "Admin, done for you" },
+  { href: "/partners", label: "Agency partners" },
+];
+
 /**
  * Shared footer: brand column, sitemap, socials and live office clocks,
  * anchored by a watermark wordmark. Bottom padding clears the home
@@ -67,6 +73,22 @@ export function SiteFooter() {
             </div>
             <ul className="mt-6 space-y-3.5">
               {EXPLORE_LINKS.map(({ href, label }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="text-xs font-light text-ink-3 transition-colors hover:text-ink"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-10 font-mono text-[10px] uppercase tracking-[0.28em] text-ink-4">
+              Work with us
+            </div>
+            <ul className="mt-6 space-y-3.5">
+              {WORK_WITH_US_LINKS.map(({ href, label }) => (
                 <li key={href}>
                   <Link
                     href={href}
